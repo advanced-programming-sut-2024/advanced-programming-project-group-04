@@ -1,8 +1,9 @@
 package controller;
 
-import module.Card;
-import module.Leader;
-import module.Player;
+
+import model.Card.Card;
+import model.Leader.Leader;
+import model.Player;
 
 import java.util.ArrayList;
 
@@ -13,10 +14,12 @@ public class GameMenu {
 
     public static ArrayList<Card> inHandCard() {
 
+        return null;
     }
 
     public static Card inHandCard(String cardNumber) {
 
+        return null;
     }
 
     public static void getRemainingCardsToPlay() {
@@ -25,14 +28,17 @@ public class GameMenu {
 
     public static ArrayList<Card> getOutOfPlayCards() {
 
+        return null;
     }
 
     public static ArrayList<Card> getCardsInRow(String rowNumber) {
 
+        return null;
     }
 
     public static Card getSpellsInPlay() {
 
+        return null;
     }
 
     public static void placeCard(String cardNumber, String rowNumber) {
@@ -41,6 +47,7 @@ public class GameMenu {
 
     public static Leader getCommander() {
 
+        return null;
     }
 
     public static void commanderPowerPlay() {
@@ -49,26 +56,32 @@ public class GameMenu {
 
     public static Player getCurrentPlayer() {
 
+        return null;
     }
 
     public static Player getOpponent() {
 
+        return null;
     }
 
     public static int getCurrentPlayerLives() {
 
+        return 0;
     }
 
     public static int getOpponentLives() {
 
+        return 0;
     }
 
     public static int getTotalScore() {
 
+        return 0;
     }
 
     public static int getRowTotalScore() {
 
+        return 0;
     }
 
     public static void passRound() {
