@@ -5,8 +5,8 @@ import model.card.*;
 public class UnitCard extends Card{
     private int power;
 
-    public UnitCard (String name , Ability ability , int power) {
-        super(name, ability);
+    public UnitCard (String name , String description, Ability ability , int power) {
+        super(name, description, ability);
         this.power = power;
     }
 }

@@ -1,6 +1,10 @@
 package controller;
 
-public class PreGameMenu {
+public class PreGameCommands {
+    public static void findCommand(String input) {
+
+    }
+
     public static void createGame(String playerUsername) {
 
     }

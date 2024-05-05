@@ -7,7 +7,12 @@ import model.Player;
 
 import java.util.ArrayList;
 
-public class GameMenu {
+public class GameCommands {
+
+    public static void findCommand(String input) {
+
+    }
+
     public static void vetoCard(String cardNumber) {
 
     }

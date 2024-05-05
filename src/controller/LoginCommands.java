@@ -1,6 +1,10 @@
 package controller;
 
-public class LoginMenu {
+public class LoginCommands {
+    public static void findCommand(String input) {
+
+    }
+
     public static void register(String username, String password, String passwordConfirm,
                          String nickname, String email) {
 

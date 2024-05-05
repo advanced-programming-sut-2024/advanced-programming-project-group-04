@@ -1,6 +1,10 @@
 package controller;
 
-public class ProfileMenu {
+public class ProfileCommands {
+    public static void findCommand(String input) {
+
+    }
+
     public static void changeUsername(String username) {
 
     }
