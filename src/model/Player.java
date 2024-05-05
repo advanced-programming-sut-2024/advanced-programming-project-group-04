@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
-import model.Faction.Faction;
+import model.faction.Faction;
 
 public class Player {
     private static ArrayList<Player> allPlayers = new ArrayList<>();

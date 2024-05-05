@@ -1,8 +1,8 @@
 package controller;
 
 
-import model.Card.Card;
-import model.Leader.Leader;
+import model.card.Card;
+import model.leader.Leader;
 import model.Player;
 
 import java.util.ArrayList;

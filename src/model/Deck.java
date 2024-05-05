@@ -2,8 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
-import model.Card.Card;
-import model.Leader.Leader;
+import model.card.Card;
+import model.leader.Leader;
 
 public class Deck {
     private Leader leader;
