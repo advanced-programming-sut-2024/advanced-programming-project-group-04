@@ -4,6 +4,6 @@ import model.leader.Leader;
 
 public class HopeOfTheAenSeidhe extends Leader{
     public HopeOfTheAenSeidhe() {
-        super("Hope of the Aen Seidhe")
+        super("Hope of the Aen Seidhe");
     }
 }
