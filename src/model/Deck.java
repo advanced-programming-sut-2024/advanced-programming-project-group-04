@@ -3,11 +3,14 @@ package model;
 import java.util.ArrayList;
 
 import model.card.Card;
+import model.card.specialcards.SpecialCard;
+import model.card.unitcards.UnitCard;
 import model.leader.Leader;
 
 public class Deck {
     private Leader leader;
-    private ArrayList<Card> cards = new ArrayList<>();
+    private final ArrayList<Card> cards = new ArrayList<>();
+    private final int UNIT_MIN = 22, SPELL_MAX = 10;
     
     public void setLeader(Leader leader){
         this.leader = leader;
@@ -33,15 +36,23 @@ public class Deck {
     }
 
     public boolean isNumberOfCardsValid(){
-
+        return getNumberOfUnits() >= UNIT_MIN && getNumberOfSpecialCards() >= SPELL_MAX;
     }
 
     public int getNumberOfUnits() {
-
+        int num = 0;
+        for (Card card : this.cards) {
+            if (card instanceof UnitCard) num++;
+        }
+        return num;
     }
 
-    public int getNumberOfSpellCards() {
-
+    public int getNumberOfSpecialCards() {
+        int num = 0;
+        for (Card card : this.cards) {
+            if (card instanceof SpecialCard) num++;
+        }
+        return num;
     }
 
     public Leader getLeader() {
