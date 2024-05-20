@@ -21,6 +21,8 @@ public class Player {
 
     private Deck deck;
     private Faction selectedFaction;
+
+    private ArrayList<Deck> savedDecks = new ArrayList<>();
     
     public Player (String username , String password , String email , String nickname) {
         this.username = username;
@@ -132,5 +134,22 @@ public class Player {
 
     public void selectFaction(Faction faction) {
         selectedFaction = faction;
+    }
+
+    public void saveDeck(Deck deck) {
+        savedDecks.add(deck);
+    }
+
+    public void loadDeck(Deck deck) {
+        this.deck = deck;
+    }
+
+    public boolean isDeckSaved(Deck deck) {
+        for (Deck savedDeck : savedDecks) {
+            if (savedDeck.equals(deck)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

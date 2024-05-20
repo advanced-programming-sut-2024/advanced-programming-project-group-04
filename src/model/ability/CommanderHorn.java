@@ -1,5 +1,5 @@
 package model.ability;
 
-public class CommanderHorn extends Ability{
+public class CommanderHorn extends Ability {
     
 }
