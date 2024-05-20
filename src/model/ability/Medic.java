@@ -1,5 +1,5 @@
 package model.ability;
 
-public class Medic extends Ability{
-    
+public class Medic extends Ability {
+
 }
