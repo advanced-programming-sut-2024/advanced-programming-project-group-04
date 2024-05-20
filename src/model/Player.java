@@ -36,15 +36,20 @@ public class Player {
     }
 
     public static Player findPlayerByUsername (String username) {
-
+        for (Player player : allPlayers) {
+            if (player.username.equals(username)) {
+                return player;
+            }
+        }
+        return null;
     }
     
     public boolean validatePassword (String password) {
-
+        return this.password.equals(password);
     }
 
-    public boolean validateAwnserToQuestion ( String answer ) {
-
+    public boolean validateAwnserToQuestion (String answer) {
+        return this.awnserToQuestion.equals(answer);
     }
 
     public String getNickname () {
@@ -59,9 +64,7 @@ public class Player {
         return this.maxScore;
     }
 
-    public int getRank () {
-        
-    }
+    // TODO calculate rank somhow
 
     public int getGameCount() {
         return this.gameCount;
@@ -105,6 +108,10 @@ public class Player {
 
     public void setMaxScore(int maxScore) {
         this.maxScore = maxScore;
+    }
+
+    public String getForgetPasswordQuestion() {
+        return forgetPasswordQuestion;
     }
 
     public void setGameCount(int gameCount) {
