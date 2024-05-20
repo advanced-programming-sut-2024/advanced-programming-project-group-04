@@ -1,7 +1,7 @@
 package model.leader;
 
-public class Leader {
-    private String name;
+public abstract class Leader {
+    private final String name;
 
     public Leader(String name) {
         this.name = name;
