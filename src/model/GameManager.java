@@ -71,10 +71,15 @@ public class GameManager {
         return "ba movafaghiat remove shod";
     }
     
-    public int getRemainingCardCount() {
-        return currentPlayer.getRemainingCardCount();
+    public int getRemainingCardsCount () {
+        return currentPlayer.getRemainingCardsCount();
     }
-
+    public int getGraveyardCount () {
+        return currentPlayer.getGraveyardCount();
+    }
+    public int getHandCount () {
+        return currentPlayer.getHandCount();
+    } 
     public String endTurn () {
         // TODO
 
