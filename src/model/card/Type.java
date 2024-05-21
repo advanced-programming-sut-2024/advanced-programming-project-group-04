@@ -1,12 +1,12 @@
 package model.card;
 
-public enum Position {
+public enum Type {
     CloseCombat,
     Agile,
     RangedCombat,
     Siege,
     Special,
     SpecialDuper;
-    Position() {
+    Type() {
     }
 }

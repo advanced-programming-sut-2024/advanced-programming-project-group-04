@@ -1,14 +1,11 @@
 package model;
 
 
-import java.util.ArrayList;
-
-import model.card.Card;
-import model.card.Position;
+import model.card.Type;
 import model.card.specialcards.SpecialCard;
 import model.card.unitcards.UnitCard;
 
-import static model.card.Position.*;
+import static model.card.Type.*;
 
 public class GameManager {
     
@@ -21,16 +18,16 @@ public class GameManager {
         this.currentPlayer = this.player1;
     }
 
-    public String placeUnitCard (UnitCard unitCard , Position position){
-        if (!canPlaceUnitCard(unitCard, position)){
+    public String placeUnitCard (UnitCard unitCard , Type type){
+        if (!canPlaceUnitCard(unitCard, type)){
             return "nashod place konam";
         }
 
-        if (position == CloseCombat){
+        if (type == CloseCombat){
             currentPlayer.addToMelee(unitCard);
-        } else if (position == Siege){
+        } else if (type == Siege){
             currentPlayer.addToSiege(unitCard);
-        } else if (position == RangedCombat){
+        } else if (type == RangedCombat){
             currentPlayer.addToRange(unitCard);
         } else {
             return "boosh miad";
@@ -38,16 +35,16 @@ public class GameManager {
         
         return "ba movaghiat anjam shod";
     }
-    public String placeSpecialCard (SpecialCard specialCard , Position position){
-        if (!canPlaceSpecialCard(specialCard, position)){
+    public String placeSpecialCard (SpecialCard specialCard , Type type){
+        if (!canPlaceSpecialCard(specialCard, type)){
             return "nashod place konam";
         }
 
-        if (position == CloseCombat){
+        if (type == CloseCombat){
             currentPlayer.placeSpecialCardMelee(specialCard);
-        } else if (position == Siege){
+        } else if (type == Siege){
             currentPlayer.placeSpecialCardSiege(specialCard);
-        } else if (position == RangedCombat){
+        } else if (type == RangedCombat){
             currentPlayer.placeSpecialCardRange(specialCard);
         } else {
             return "boosh miad";
@@ -95,12 +92,12 @@ public class GameManager {
         }
     }
 
-    public boolean canPlaceUnitCard (UnitCard unitCard , Position position){
+    public boolean canPlaceUnitCard (UnitCard unitCard , Type type){
         // TODO baad az neveshtan position card in kamel shavad
         return true;
     }
 
-    public boolean canPlaceSpecialCard (SpecialCard specialCard , Position position){
+    public boolean canPlaceSpecialCard (SpecialCard specialCard , Type type){
         // TODO baad az neveshtan position card in kamel shavad
         return true;
     }
