@@ -72,7 +72,7 @@ public class GameManager {
     }
     
     public int getRemainingCardCount() {
-        return currentPlayer.getRemainingCardCount();
+        return currentPlayer.getRemainingCardsCount();
     }
 
     public String endTurn () {
