@@ -1,6 +1,8 @@
 package model;
 
 
+import java.util.ArrayList;
+
 import model.card.Card;
 import model.card.specialcards.SpecialCard;
 import model.card.unitcards.UnitCard;
@@ -12,7 +14,7 @@ import model.position.Siege;
 public class GameManager {
     
     private PlayerInGame player1, player2, currentPlayer;
-    private Card weatherStatus;
+    // TODO arrayList of weatherCards
 
     public GameManager (Player player1, Player player2){
         this.player1 = new PlayerInGame(player1);
@@ -37,7 +39,6 @@ public class GameManager {
         
         return "ba movaghiat anjam shod";
     }
-
     public String placeSpecialCard (SpecialCard specialCard , Position position){
         if (!canPlaceSpecialCard(specialCard, position)){
             return "nashod place konam";
@@ -55,6 +56,39 @@ public class GameManager {
 
         return "ba movaghiat anjam shod";
     }
+    public String placeWeatherCard () {
+        return "OK";
+    }
+
+    public String removeUnitCard (UnitCard unitCard){
+        return currentPlayer.removeUnitCard(unitCard);
+    }
+    public String removeSpecialCard (SpecialCard specialCard){
+        return currentPlayer.removeSpecialCard(specialCard);
+    }
+    public String removeWeatherCard () {
+
+        return "ba movafaghiat remove shod";
+    }
+    
+    public int getRemainingCardCount() {
+        return currentPlayer.getRemainingCardCount();
+    }
+
+    public String endTurn () {
+        // TODO
+
+        switchTurn();
+        return "OK";
+    }
+
+    public void switchTurn () {
+        if(currentPlayer.equals(player1)){
+            currentPlayer = player2;
+        } else {
+            currentPlayer = player1;
+        }
+    }
 
     public boolean canPlaceUnitCard (UnitCard unitCard , Position position){
         // TODO baad az neveshtan position card in kamel shavad
@@ -65,4 +99,8 @@ public class GameManager {
         // TODO baad az neveshtan position card in kamel shavad
         return true;
     }
+
+    // TODO canPlaceWeatherCard
+
+
 }
