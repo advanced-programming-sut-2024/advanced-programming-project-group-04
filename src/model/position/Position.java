@@ -1,5 +1,5 @@
 package model.position;
 
-public interface Position {
+public class Position {
     
 }

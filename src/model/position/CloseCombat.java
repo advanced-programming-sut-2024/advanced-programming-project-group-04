@@ -1,5 +1,5 @@
 package model.position;
 
-public interface CloseCombat extends Position{
+public class CloseCombat extends Position{
     
 }

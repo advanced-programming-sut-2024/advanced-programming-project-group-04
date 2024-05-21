@@ -1,5 +1,5 @@
 package model.position;
 
-public interface SpecialDuper extends Position{
+public class SpecialDuper extends Position{
     
 }

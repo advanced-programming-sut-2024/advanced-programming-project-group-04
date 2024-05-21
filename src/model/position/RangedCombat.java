@@ -1,5 +1,5 @@
 package model.position;
 
-public interface RangedCombat extends Position{
+public class RangedCombat extends Position{
     
 }

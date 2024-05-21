@@ -1,5 +1,5 @@
 package model.position;
 
-public interface Siege extends Position{
+public class Siege extends Position{
     
 }
