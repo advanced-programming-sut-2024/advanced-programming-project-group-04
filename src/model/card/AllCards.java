@@ -60,4 +60,6 @@ public enum AllCards {
     public Position getPosition() { return this.position; }
 
     public Ability getAbility() { return this.ability; }
+
+    public String getDescription() { return this.description; }
 }
