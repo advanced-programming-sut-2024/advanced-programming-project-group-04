@@ -7,3 +7,4 @@ public class QueenOfDolBlathanna extends Leader {
         super("Queen of Dol Blathanna");
     }
 }
+    
