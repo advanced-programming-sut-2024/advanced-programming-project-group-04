@@ -6,7 +6,7 @@ import model.card.Card;
 import model.leader.Leader;
 
 public class Faction {
-    private String name;
+    private final String name;
     private ArrayList<Card> cards = new ArrayList<>();
     private ArrayList<Leader> leaders = new ArrayList<>();
 
