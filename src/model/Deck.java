@@ -9,8 +9,12 @@ import model.leader.Leader;
 
 public class Deck {
     private Leader leader;
-    private final ArrayList<Card> cards = new ArrayList<>();
+    private ArrayList<Card> cards = new ArrayList<>();
     private final int UNIT_MIN = 22, SPELL_MAX = 10;
+    
+    public ArrayList<Card> getCards(){
+        return cards;
+    }
     
     public void setLeader(Leader leader){
         this.leader = leader;
