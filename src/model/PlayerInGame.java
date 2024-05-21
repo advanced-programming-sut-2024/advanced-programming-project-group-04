@@ -13,6 +13,8 @@ public class PlayerInGame {
     private int roundsWon;
     private int point;
 
+    private boolean isPassed;
+
     private ArrayList<UnitCard> melee = new ArrayList<>();
     private ArrayList<UnitCard> siege = new ArrayList<>();
     private ArrayList<UnitCard> range = new ArrayList<>();
@@ -23,12 +25,28 @@ public class PlayerInGame {
 
     private ArrayList<Card> graveyard = new ArrayList<>();
     private ArrayList<Card> remainingCards = new ArrayList<>();
-    
-    
-    public PlayerInGame (Player player){
+    private ArrayList<Card> hand = new ArrayList<>();
+
+    public PlayerInGame(Player player) {
         this.player = player;
         this.remainingCards = player.getDeck().getCards();
         this.roundsWon = 0;
+        isPassed = false;
+        drawInitialCards();
+    }
+
+    private void drawInitialCards() {
+        for (int i = 0; i < 10; i++) {
+            Card card = drawRandomCard();
+            remainingCards.remove(card);
+            hand.add(card);
+        }
+    }
+
+    public void redrawCard(Card card) {
+        Card newCard = drawRandomCard();
+        remainingCards.add(card);
+        hand.add(newCard);
     }
 
     public int getRoundsWon() {
@@ -36,12 +54,62 @@ public class PlayerInGame {
     }
 
     public int getPoint() {
-        // TODO az rooye cardha mohasebe shava
+        // TODO az rooye cardha mohasebe shavad
         return point;
+    }
+
+    public Card drawRandomCard() {
+        int index = (int) (Math.random() * remainingCards.size());
+        Card card = remainingCards.get(index);
+        return card;
     }
 
     public void incrementRoundsWon() {
         roundsWon++;
+    }
+
+    public String removeUnitCard(UnitCard unitCard) {
+        for (UnitCard card : melee) {
+            if (card.equals(unitCard)) {
+                melee.remove(card);
+                return "aali";
+            }
+        }
+
+        for (UnitCard card : siege) {
+            if (card.equals(unitCard)) {
+                siege.remove(card);
+                return "aali";
+            }
+        }
+
+        for (UnitCard card : range) {
+            if (card.equals(unitCard)) {
+                range.remove(card);
+                return "aali";
+            }
+        }
+        return "in card vojood nadasht dalghak";
+    }
+
+
+
+    public String removeSpecialCard(SpecialCard card) {
+        if (siegeSpell.equals(card)) {
+            siegeSpell = null;
+            return "aali";
+        }
+
+        if (rangeSpell.equals(card)) {
+            rangeSpell = null;
+            return "aali";
+        }
+
+        if (meleeSpell.equals(card)) {
+            meleeSpell = null;
+            return "aali";
+        }
+        return "in card vojood nadasht dalghak";
     }
 
     public Player getPlayer() {
@@ -72,6 +140,10 @@ public class PlayerInGame {
         return rangeSpell;
     }
 
+    public boolean isPassed() {
+        return isPassed;
+    }
+
     public ArrayList<Card> getGraveyard() {
         return graveyard;
     }
@@ -82,26 +154,44 @@ public class PlayerInGame {
 
     public void addToMelee(UnitCard unitCard) {
         melee.add(unitCard);
+        hand.remove(unitCard);
     }
 
     public void addToSiege(UnitCard unitCard) {
         siege.add(unitCard);
+        hand.remove(unitCard);
     }
 
     public void addToRange(UnitCard unitCard) {
         range.add(unitCard);
+        hand.remove(unitCard);
     }
 
     public void placeSpecialCardMelee(SpecialCard specialCard) {
         this.meleeSpell = specialCard;
+        hand.remove(specialCard);
     }
 
     public void placeSpecialCardSiege(SpecialCard specialCard) {
         this.siegeSpell = specialCard;
+        hand.remove(specialCard);
     }
 
     public void placeSpecialCardRange(SpecialCard specialCard) {
         this.rangeSpell = specialCard;
+        hand.remove(specialCard);
+    }
+
+    public int getRemainingCardsCount() {
+        return remainingCards.size();
+    }
+
+    public int getGraveyardCount() {
+        return graveyard.size();
+    }
+
+    public int getHnadCount() {
+        return hand.size();
     }
 
 }
