@@ -4,9 +4,23 @@ import model.card.*;
 
 public class UnitCard extends Card{
     private int power;
+    private int currentHP;
 
-    public UnitCard (String name , String description, Ability ability , int power) {
-        super(name, description, ability);
-        this.power = power;
+    public UnitCard(AllCards allCard) {
+        super(allCard);
+        this.power = allCard.getPower();
+        this.currentHP = power;
+    }
+
+    public int getPower() {
+        return this.power;
+    }
+
+    public int getCurrentHP() {
+        return this.currentHP;
+    }
+
+    public void setCurrentHP(int HP) {
+        this.currentHP = HP;
     }
 }
