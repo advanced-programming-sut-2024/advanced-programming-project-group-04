@@ -190,7 +190,7 @@ public class PlayerInGame {
         return graveyard.size();
     }
 
-    public int getHnadCount() {
+    public int getHandCount() {
         return hand.size();
     }
 
