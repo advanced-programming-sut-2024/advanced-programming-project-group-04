@@ -4,12 +4,11 @@ package model;
 import java.util.ArrayList;
 
 import model.card.Card;
+import model.card.Position;
 import model.card.specialcards.SpecialCard;
 import model.card.unitcards.UnitCard;
-import model.position.CloseCombat;
-import model.position.Position;
-import model.position.RangedCombat;
-import model.position.Siege;
+
+import static model.card.Position.*;
 
 public class GameManager {
     
@@ -27,11 +26,11 @@ public class GameManager {
             return "nashod place konam";
         }
 
-        if (position instanceof CloseCombat){
+        if (position == CloseCombat){
             currentPlayer.addToMelee(unitCard);
-        } else if (position instanceof Siege){
+        } else if (position == Siege){
             currentPlayer.addToSiege(unitCard);
-        } else if (position instanceof RangedCombat){
+        } else if (position == RangedCombat){
             currentPlayer.addToRange(unitCard);
         } else {
             return "boosh miad";
@@ -44,11 +43,11 @@ public class GameManager {
             return "nashod place konam";
         }
 
-        if (position instanceof CloseCombat){
+        if (position == CloseCombat){
             currentPlayer.placeSpecialCardMelee(specialCard);
-        } else if (position instanceof Siege){
+        } else if (position == Siege){
             currentPlayer.placeSpecialCardSiege(specialCard);
-        } else if (position instanceof RangedCombat){
+        } else if (position == RangedCombat){
             currentPlayer.placeSpecialCardRange(specialCard);
         } else {
             return "boosh miad";
