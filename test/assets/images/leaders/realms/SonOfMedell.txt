@@ -1,0 +1,1 @@
+Destroy your enemy's strongest Ranged Combat unit(s) if the combined strength of all their Ranged Combat units is 10 or more.

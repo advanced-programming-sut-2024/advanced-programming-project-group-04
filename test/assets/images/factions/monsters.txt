@@ -1,0 +1,2 @@
+Monsters
+Keep a random unit card after each round.

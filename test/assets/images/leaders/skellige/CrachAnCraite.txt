@@ -1,0 +1,1 @@
+Shuffle all cards from each player's graveyard back into their decks.

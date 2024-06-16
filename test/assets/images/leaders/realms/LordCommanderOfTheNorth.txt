@@ -1,0 +1,1 @@
+Destroy your enemy's strongest Siege unit(s) if the combined strength of all their Siege units is 10 or more.
