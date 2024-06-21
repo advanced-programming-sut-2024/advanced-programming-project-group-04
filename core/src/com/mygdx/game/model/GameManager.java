@@ -16,6 +16,8 @@ public class GameManager {
         this.currentPlayer = this.player1;
     }
 
+    ///////// THE WTF PART
+    /**
     public String placeCard (Card card , Position position) {
         if (!canPlaceCard(card , position)) {
             return "nashod place konam";
@@ -90,7 +92,6 @@ public class GameManager {
     public String placeWeatherCard () {
         return "OK";
     }
-
     public String removeUnitCard (UnitCard unitCard){
         return currentPlayer.removeUnitCard(unitCard);
     }
@@ -101,37 +102,77 @@ public class GameManager {
 
         return "ba movafaghiat remove shod";
     }
-    
-    public String placeToMelee (Card card) {
+    /**/
+    ///////// END OF WTF
 
+    /// Functions for Placing the Cards
+    public String placeCard (Card card, Position position) {
+        if (position.equals(Position.Melee)) {
+            return placeToMelee(card);
+        } else if (position.equals(Position.Range)) {
+            return placeToRange(card);
+        } else if (position.equals(Position.Siege)) {
+            return placeToSiege(card);
+        } else if (position.equals(Position.SpellMelee)) {
+            return placeToSpellMelee(card);
+        } else if (position.equals(Position.SpellRange)) {
+            return placeToSpellRange(card);
+        } else if (position.equals(Position.SpellSiege)) {
+            return placeToSpellSiege(card);
+        } else if (position.equals(Position.WeatherPlace)) {
+            return placeToWeather(card);
+        } else {
+            return "NANI?!";
+        }
+    }
+    public String placeToMelee (Card card) {
+        if (!canBePlacedToMelee(card)) {
+            return "nemishe";
+        }
+        currentPlayer.addToMelee(card);
         return "ba movafaghiat remove shod";       
     }
     public String placeToRange (Card card) {
-
+        if (!canBePlacedToRange(card)) {
+            return "nemishe";
+        }
+        currentPlayer.addToRange(card);
         return "ba movafaghiat remove shod";
     }
     public String placeToSiege (Card card) {
-
+        if (!canBePlacedToSiege(card)) {
+            return "nemishe";
+        }
+        currentPlayer.addToSiege(card);
         return "ba movafaghiat remove shod";
     }
     public String placeToSpellMelee (Card card) {
-
+        if (!canBePlacedToSpellMelee(card)) {
+            return "nemishe";
+        }
+        currentPlayer.placeSpecialCardMelee(card);
         return "ba movafaghiat remove shod";
     }
     public String placeToSpellRange (Card card) {
-
+        if (!canBePlacedToSpellRange(card)) {
+            return "nemishe";
+        }
+        currentPlayer.placeSpecialCardRange(card);
         return "ba movafaghiat remove shod";
     }
     public String placeToSpellSiege (Card card) {
-
+        if (!canBePlacedToSpellSiege(card)) {
+            return "nemishe";
+        }
+        currentPlayer.placeSpecialCardSiege(card);
         return "ba movafaghiat remove shod";
     }
     public String placeToWeather (Card card) {
-
+        // TODO
         return "ba movafaghiat remove shod";
     }
 
-
+    /// Functions for checking if we can place that Card
     public boolean canBePlacedToMelee (Card card) {
         if(card.getType().equals(Type.CloseCombat) || card.getType().equals(Type.Agile)){
             return true;
@@ -151,23 +192,28 @@ public class GameManager {
         return false;
     }
     public boolean canBePlacedToSpellMelee (Card card) {
-        if(card.getType().equals(Type.CloseCombat) || card.getType().equals(Type.Agile)){
+        if(card.getType().equals(Type.Spell) && currentPlayer.getMeleeSpell().equals(null)){
             return true;
         }
         return false;
     }
     public boolean canBePlacedToSpellRange (Card card) {
-
+        if(card.getType().equals(Type.Spell) && currentPlayer.getRangeSpell().equals(null)){
+            return true;
+        }
         return true;
     }
     public boolean canBePlacedToSpellSiege (Card card) {
-
+        if(card.getType().equals(Type.Spell) && currentPlayer.getSiegeSpell().equals(null)){
+            return true;
+        }
         return true;
     }
     public boolean canBePlacedToWeather (Card card) {
-
+        // TODO
         return true;
     }
+    
 
     public int getRemainingCardsCount () {
         return currentPlayer.getRemainingCardsCount();
@@ -178,6 +224,11 @@ public class GameManager {
     public int getHandCount () {
         return currentPlayer.getHandCount();
     } 
+    
+    public boolean isTwoWeatherCardsSame () {
+        // TODO
+        return false;
+    }
     public String endTurn () {
         // TODO
 
