@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
+import com.mygdx.game.controller.ControllerResponse;
+import com.mygdx.game.controller.SignUpController;
 
 public class SignUpMenu extends Menu {
 
@@ -58,8 +60,12 @@ public class SignUpMenu extends Menu {
         usernameField.setAlignment(Align.center);
 
         TextField emailField = new TextField("", textFieldStyle);
-        usernameField.setMessageText("Email");
-        usernameField.setAlignment(Align.center);
+        emailField.setMessageText("Email");
+        emailField.setAlignment(Align.center);
+
+        TextField nicknameField = new TextField("", textFieldStyle);
+        nicknameField.setMessageText("Nickname");
+        nicknameField.setAlignment(Align.center);
 
         TextField passwordField = new TextField("", textFieldStyle);
         passwordField.setMessageText("Password");
@@ -78,7 +84,19 @@ public class SignUpMenu extends Menu {
         TextButton signUpButton = new TextButton("Sign Up", signUpStyle);
         signUpButton.addListener(event -> {
             if (signUpButton.isPressed()) {
-                // Handle sign-up logic
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+                String email = emailField.getText();
+                String nickname = nicknameField.getText();
+                ControllerResponse response = SignUpController.signUpButtonPressed(username, password, email, nickname);
+            }
+            return false;
+        });
+
+        TextButton backButton = new TextButton("Back", signUpStyle);
+        backButton.addListener(evnet -> {
+            if (backButton.isPressed()) {
+                setScreen(new LoginMenu(game));
             }
             return false;
         });
@@ -110,9 +128,14 @@ public class SignUpMenu extends Menu {
         table.row().pad(20, 0, 20, 0); // Double the row padding
         table.add(passwordField).fillX().uniformX().pad(pad);
         table.row().pad(20, 0, 20, 0);
+        table.add(emailField).fillX().uniformX().pad(pad);
+        table.row().pad(20, 0, 20, 0);
+        table.add(nicknameField).fillX().uniformX().pad(pad);
+        table.row().pad(20, 0, 20, 0);
         // Double width and height for buttons
         table.add(signUpButton).fillX().uniformX().pad(pad).width(400).height(120);
         table.row().pad(20, 0, 20, 0);
+        table.add(backButton).fillX().uniformX().pad(pad).width(400).height(120);
         // Set minimum width and height for buttons (double previous values)
     }
 
