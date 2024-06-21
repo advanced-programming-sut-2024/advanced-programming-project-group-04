@@ -1,5 +1,4 @@
 package com.mygdx.game.model.card.unitcards;
-import com.mygdx.game.model.ability.Ability;
 import com.mygdx.game.model.card.*;
 
 public class UnitCard extends Card{
