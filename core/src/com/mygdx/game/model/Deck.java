@@ -1,9 +1,9 @@
-package model;
+package com.mygdx.game.model;
 
 import java.util.ArrayList;
 
-import model.card.Card;
-import model.leader.Leader;
+import com.mygdx.game.model.card.Card;
+import com.mygdx.game.model.leader.Leader;
 
 public class Deck {
     private Leader leader;

@@ -1,8 +1,8 @@
-package model.card;
+package com.mygdx.game.model.card;
 
-import model.ability.*;
+import com.mygdx.game.model.ability.*;
 
-import static model.card.Type.*;
+import static com.mygdx.game.model.card.Type.*;
 
 public enum AllCards {
     Mardoeme("Mardoeme", 0, 3, Spell, new Mardroeme(), false,

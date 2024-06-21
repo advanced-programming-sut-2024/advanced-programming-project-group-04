@@ -1,9 +1,9 @@
-package model;
+package com.mygdx.game.model;
 
 
-import model.card.*;
+import com.mygdx.game.model.card.*;
 
-import static model.card.Type.*;
+import static com.mygdx.game.model.card.Type.*;
 
 public class GameManager {
     

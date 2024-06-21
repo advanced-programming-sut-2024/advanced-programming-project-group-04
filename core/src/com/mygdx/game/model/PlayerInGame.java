@@ -1,8 +1,8 @@
-package model;
+package com.mygdx.game.model;
 
 import java.util.ArrayList;
 
-import model.card.Card;
+import com.mygdx.game.model.card.Card;
 
 public class PlayerInGame {
 

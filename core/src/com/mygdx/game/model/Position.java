@@ -1,4 +1,4 @@
-package model;
+package com.mygdx.game.model;
 
 public enum Position {
     Melee,

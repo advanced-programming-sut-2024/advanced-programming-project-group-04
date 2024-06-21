@@ -27,11 +27,13 @@ public class Card {
         return this.allCard.getName();
     }
 
-    public Ability geAbility () {
+    public Ability getAbility () {
         return this.allCard.getAbility();
     }
 
     public String getDescription() { return this.allCard.getDescription(); }
+
+    public Type getType() { return this.allCard.getType(); }
 
     public boolean isUnitCard() { return this.allCard.isUnitCard(); }
 }
