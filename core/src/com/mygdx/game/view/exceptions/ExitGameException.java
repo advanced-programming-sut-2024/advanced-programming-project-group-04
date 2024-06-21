@@ -1,6 +1,6 @@
-package view.exceptions;
+package com.mygdx.game.view.exceptions;
 
-import view.CustomException;
+import com.mygdx.game.view.CustomException;
 
 public class ExitGameException extends CustomException {
 }

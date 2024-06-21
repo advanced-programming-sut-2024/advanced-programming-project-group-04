@@ -1,6 +1,6 @@
-package model.leader.nilfgaard;
+package com.mygdx.game.model.leader.nilfgaard;
 
-import model.leader.Leader;
+import com.mygdx.game.model.leader.Leader;
 
 public class TheWhiteFlame extends Leader {
     public TheWhiteFlame() {

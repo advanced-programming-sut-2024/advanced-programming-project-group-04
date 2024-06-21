@@ -1,4 +1,4 @@
-package view.meuns;
+package com.mygdx.game.view.meuns;
 
 import java.util.Scanner;
 

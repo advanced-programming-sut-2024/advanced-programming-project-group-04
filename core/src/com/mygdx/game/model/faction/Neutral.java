@@ -1,4 +1,4 @@
-package model.faction;
+package com.mygdx.game.model.faction;
 
 public class Neutral extends Faction{
     public Neutral() {

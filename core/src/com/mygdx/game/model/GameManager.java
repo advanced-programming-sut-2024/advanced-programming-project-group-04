@@ -1,14 +1,14 @@
-package model;
+package com.mygdx.game.model;
 
 
 import java.util.ArrayList;
 
-import model.card.Card;
-import model.card.Position;
-import model.card.specialcards.SpecialCard;
-import model.card.unitcards.UnitCard;
+import com.mygdx.game.model.card.Card;
+import com.mygdx.game.model.card.Position;
+import com.mygdx.game.model.card.specialcards.SpecialCard;
+import com.mygdx.game.model.card.unitcards.UnitCard;
 
-import static model.card.Position.*;
+import static com.mygdx.game.model.card.Position.*;
 
 public class GameManager {
     

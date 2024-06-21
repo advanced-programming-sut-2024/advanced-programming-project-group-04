@@ -1,6 +1,6 @@
-package model.leader.skellige;
+package com.mygdx.game.model.leader.skellige;
 
-import model.leader.Leader;
+import com.mygdx.game.model.leader.Leader;
 
 public class CrachAnCraite extends Leader {
     public CrachAnCraite() {

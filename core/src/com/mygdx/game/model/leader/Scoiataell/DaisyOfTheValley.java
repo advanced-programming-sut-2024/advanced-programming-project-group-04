@@ -1,6 +1,6 @@
-package model.leader.Scoiataell;
+package com.mygdx.game.model.leader.Scoiataell;
 
-import model.leader.Leader;
+import com.mygdx.game.model.leader.Leader;
 
 public class DaisyOfTheValley extends Leader {
     public DaisyOfTheValley() {

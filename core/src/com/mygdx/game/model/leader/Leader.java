@@ -1,4 +1,4 @@
-package model.leader;
+package com.mygdx.game.model.leader;
 
 public abstract class Leader {
     private final String name;

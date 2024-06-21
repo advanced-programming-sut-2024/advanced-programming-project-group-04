@@ -1,6 +1,6 @@
-package model.card;
+package com.mygdx.game.model.card;
 
-import model.ability.Ability;
+import com.mygdx.game.model.ability.Ability;
 
 public class Card {
     private String name;

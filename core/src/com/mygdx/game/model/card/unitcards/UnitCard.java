@@ -1,6 +1,6 @@
-package model.card.unitcards;
-import model.ability.Ability;
-import model.card.*;
+package com.mygdx.game.model.card.unitcards;
+import com.mygdx.game.model.ability.Ability;
+import com.mygdx.game.model.card.*;
 
 public class UnitCard extends Card{
     private int power;

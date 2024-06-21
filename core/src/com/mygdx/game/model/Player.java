@@ -1,8 +1,9 @@
-package model;
+package com.mygdx.game.model;
+
 
 import java.util.ArrayList;
 
-import model.faction.Faction;
+import com.mygdx.game.model.faction.Faction;
 
 public class Player {
     private static ArrayList<Player> allPlayers = new ArrayList<>();

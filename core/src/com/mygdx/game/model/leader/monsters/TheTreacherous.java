@@ -1,6 +1,6 @@
-package model.leader.monsters;
+package com.mygdx.game.model.leader.monsters;
 
-import model.leader.Leader;
+import com.mygdx.game.model.leader.Leader;
 
 public class TheTreacherous extends Leader{
     public TheTreacherous() {

@@ -1,9 +1,9 @@
-package controller;
+package com.mygdx.game.controller;
 
 
-import model.card.Card;
-import model.leader.Leader;
-import model.Player;
+import com.mygdx.game.model.card.Card;
+import com.mygdx.game.model.leader.Leader;
+import com.mygdx.game.model.Player;
 
 import java.util.ArrayList;
 

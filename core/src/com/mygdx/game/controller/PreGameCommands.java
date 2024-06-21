@@ -1,4 +1,4 @@
-package controller;
+package com.mygdx.game.controller;
 
 public class PreGameCommands {
     public static void findCommand(String input) {

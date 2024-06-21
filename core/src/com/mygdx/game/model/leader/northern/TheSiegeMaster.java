@@ -1,6 +1,6 @@
-package model.leader.northern;
+package com.mygdx.game.model.leader.northern;
 
-import model.leader.Leader;
+import com.mygdx.game.model.leader.Leader;
 
 public class TheSiegeMaster extends Leader {
     public TheSiegeMaster() {

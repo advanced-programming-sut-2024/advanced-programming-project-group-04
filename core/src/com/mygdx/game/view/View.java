@@ -1,4 +1,4 @@
-package view;
+package com.mygdx.game.view;
 
 public class View {
     public static void printMenuGame() {

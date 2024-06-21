@@ -1,4 +1,4 @@
-package controller;
+package com.mygdx.game.controller;
 
 public class ProfileCommands {
     public static void findCommand(String input) {

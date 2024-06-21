@@ -1,4 +1,4 @@
-package model.card;
+package com.mygdx.game.model.card;
 
 public enum Position {
     CloseCombat,
