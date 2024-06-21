@@ -13,6 +13,9 @@ public class PlayerInGame {
 
     private boolean isPassed;
 
+    // TODO
+    private boolean isLeaderUsed;
+
     private ArrayList<Card> melee = new ArrayList<>();
     private ArrayList<Card> siege = new ArrayList<>();
     private ArrayList<Card> range = new ArrayList<>();
@@ -22,12 +25,12 @@ public class PlayerInGame {
     private Card rangeSpell;
 
     private ArrayList<Card> graveyard = new ArrayList<>();
-    private ArrayList<Card> remainingCards = new ArrayList<>();
+    private ArrayList<Card> deckInGame = new ArrayList<>();
     private ArrayList<Card> hand = new ArrayList<>();
 
     public PlayerInGame(Player player) {
         this.player = player;
-        this.remainingCards = player.getDeck().getCards();
+        this.deckInGame = player.getDeck().getCards();
         this.roundsWon = 0;
         isPassed = false;
         drawInitialCards();
@@ -35,15 +38,16 @@ public class PlayerInGame {
 
     private void drawInitialCards() {
         for (int i = 0; i < 10; i++) {
-            Card card = drawRandomCard();
-            remainingCards.remove(card);
+            Card card = drawRandomCardFromDeckInGame();
+            deckInGame.remove(card);
             hand.add(card);
         }
     }
 
     public void redrawCard(Card card) {
-        Card newCard = drawRandomCard();
-        remainingCards.add(card);
+        Card newCard = drawRandomCardFromDeckInGame();
+        deckInGame.add(card);
+        hand.remove(card);
         hand.add(newCard);
     }
 
@@ -56,9 +60,14 @@ public class PlayerInGame {
         return point;
     }
 
-    public Card drawRandomCard() {
-        int index = (int) (Math.random() * remainingCards.size());
-        Card card = remainingCards.get(index);
+    public Card drawRandomCardFromDeckInGame() {
+        int index = (int) (Math.random() * deckInGame.size());
+        Card card = deckInGame.get(index);
+        return card;
+    }
+    public Card drawRandomCardFromGraveyard() {
+        int index = (int) (Math.random() * graveyard.size());
+        Card card = graveyard.get(index);
         return card;
     }
 
@@ -107,7 +116,6 @@ public class PlayerInGame {
         }
         return "in card vojood nadasht dalghak";
     }
-
     public Player getPlayer() {
         return player;
     }
@@ -115,79 +123,119 @@ public class PlayerInGame {
     public ArrayList<Card> getMelee() {
         return melee;
     }
-
     public ArrayList<Card> getSiege() {
         return siege;
     }
-
     public ArrayList<Card> getRange() {
         return range;
     }
-
     public Card getMeleeSpell() {
         return meleeSpell;
     }
-
     public Card getSiegeSpell() {
         return siegeSpell;
     }
-
     public Card getRangeSpell() {
         return rangeSpell;
     }
-
+    
     public boolean isPassed() {
         return isPassed;
     }
-
+    
+    
     public ArrayList<Card> getGraveyard() {
         return graveyard;
     }
-
-    public ArrayList<Card> getRemainingCards() {
-        return remainingCards;
+    public ArrayList<Card> getDeckInGame() {
+        return deckInGame;
     }
+
+    public void addToGraveyard(Card card) {
+        graveyard.add(card);
+    }
+    public void removeFromGraveyard(Card card) {
+        graveyard.remove(card);
+    }
+    public void addToHand(Card card) {
+        hand.add(card);
+    }
+    public void removeFromHand(Card card) {
+        hand.remove(card);
+    }
+    public void addToDeckInGame(Card card) {
+        deckInGame.add(card);
+    }
+    public void removeFromDeckInGame(Card card) {
+        deckInGame.remove(card);
+    }
+
+
 
     public void addToMelee(Card unitCard) {
         melee.add(unitCard);
-        hand.remove(unitCard);
     }
-
     public void addToSiege(Card unitCard) {
         siege.add(unitCard);
-        hand.remove(unitCard);
     }
-
     public void addToRange(Card unitCard) {
         range.add(unitCard);
-        hand.remove(unitCard);
     }
-
-    public void placeSpecialCardMelee(Card specialCard) {
+    public void placeSpellMelee(Card specialCard) {
         this.meleeSpell = specialCard;
-        hand.remove(specialCard);
     }
-
-    public void placeSpecialCardSiege(Card specialCard) {
+    public void placeSpellSiege(Card specialCard) {
         this.siegeSpell = specialCard;
-        hand.remove(specialCard);
     }
-
-    public void placeSpecialCardRange(Card specialCard) {
+    public void placeSpellRange(Card specialCard) {
         this.rangeSpell = specialCard;
-        hand.remove(specialCard);
+    }
+    public void removeFromMelee(Card card) {
+        melee.remove(card);
+    }
+    public void removeFromRange(Card card) {
+        range.remove(card);
+    }
+    public void removeFromSiege(Card card) {
+        siege.remove(card);
+    }
+    public void removeSpellMelee(Card card) {
+        meleeSpell = null;
+    }
+    public void removeSpellRange(Card card) {
+        rangeSpell = null;
+    }
+    public void removeSpellSiege(Card card) {
+        siegeSpell = null;
     }
 
-    public int getRemainingCardsCount() {
-        return remainingCards.size();
+
+
+    public void meleeCurrentHpTimesInt (int number) {
+        for (Card card : melee) {
+            card.setCurrentHP(card.getCurrentHP() * number);
+        }
+    }
+    public void rangeCurrentHpTimesInt (int number) {
+        for (Card card : range) {
+            card.setCurrentHP(card.getCurrentHP() * number);
+        }
+    }
+    public void siegeCurrentHpTimesInt (int number) {
+        for (Card card : siege) {
+            card.setCurrentHP(card.getCurrentHP() * number);
+        }
     }
 
+    public int getDeckInGameCount() {
+        return deckInGame.size();
+    }
     public int getGraveyardCount() {
         return graveyard.size();
     }
-
     public int getHandCount() {
         return hand.size();
     }
 
+    
 }
