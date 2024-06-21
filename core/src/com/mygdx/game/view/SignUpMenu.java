@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
+import com.mygdx.game.controller.SignUpController;
 
 public class SignUpMenu extends Menu {
 
@@ -78,7 +79,7 @@ public class SignUpMenu extends Menu {
         TextButton signUpButton = new TextButton("Sign Up", signUpStyle);
         signUpButton.addListener(event -> {
             if (signUpButton.isPressed()) {
-                // Handle sign-up logic
+                SignUpController.signUpButtonPressed();
             }
             return false;
         });

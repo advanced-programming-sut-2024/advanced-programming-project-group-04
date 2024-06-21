@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
+import com.mygdx.game.controller.LoginController;
 
 public class LoginMenu extends Menu {
 
@@ -74,7 +75,7 @@ public class LoginMenu extends Menu {
         TextButton signInButton = new TextButton("Sign In", signInStyle);
         signInButton.addListener(event -> {
             if (signInButton.isPressed()) {
-                // Handle sign-in logic
+                LoginController.signInButtonClicked();
             }
             return false;
         });
@@ -89,7 +90,7 @@ public class LoginMenu extends Menu {
         TextButton createAccountButton = new TextButton("Create Account", createAccountStyle);
         createAccountButton.addListener(event -> {
             if (createAccountButton.isPressed()) {
-                // Handle create account logic
+                LoginController.createAccountButtonClicked();
             }
             return false;
         });
