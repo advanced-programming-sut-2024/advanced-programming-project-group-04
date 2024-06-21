@@ -30,7 +30,6 @@ public class SignUpMenu extends Menu {
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
-
         // get the font
         BitmapFont font;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
@@ -38,7 +37,6 @@ public class SignUpMenu extends Menu {
         parameter.size = 48;
         font = generator.generateFont(parameter);
         generator.dispose();
-
 
         // Set up table for UI layout
         Table table = new Table();
@@ -71,8 +69,8 @@ public class SignUpMenu extends Menu {
 
         TextField passwordField = new TextField("", textFieldStyle);
         passwordField.setMessageText("Password");
-//        passwordField.setPasswordMode(true);
-//        passwordField.setPasswordCharacter('*');
+        passwordField.setPasswordMode(true);
+        passwordField.setPasswordCharacter('*');
         passwordField.setAlignment(Align.center);
 
         // Sign Up button
