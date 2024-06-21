@@ -6,12 +6,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.AssetLoader;
@@ -33,8 +30,6 @@ public class SignUpMenu extends Menu {
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
-
-
         // get the font
         BitmapFont font;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
@@ -43,11 +38,16 @@ public class SignUpMenu extends Menu {
         font = generator.generateFont(parameter);
         generator.dispose();
 
-
         // Set up table for UI layout
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
+
+        // Error label
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+
+        Label errorLabel = new Label("", labelStyle);
 
         // Username, email and Password fields
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
@@ -82,25 +82,27 @@ public class SignUpMenu extends Menu {
         signUpStyle.over = skin.getDrawable("button-over-c");
 
         TextButton signUpButton = new TextButton("Sign Up", signUpStyle);
-        signUpButton.addListener(event -> {
-            if (signUpButton.isPressed()) {
+        signUpButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
                 String email = emailField.getText();
                 String nickname = nicknameField.getText();
                 ControllerResponse response = SignUpController.signUpButtonPressed(username, password, email, nickname);
+                errorLabel.setText(response.getError());
+                if (response.isFailed()) errorLabel.setColor(Color.RED);
+                else errorLabel.setColor(Color.GREEN);
             }
-            return false;
         });
 
         TextButton backButton = new TextButton("Back", signUpStyle);
-        backButton.addListener(evnet -> {
-            if (backButton.isPressed()) {
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
                 setScreen(new LoginMenu(game));
             }
-            return false;
         });
-
 
         // Add input listener for Enter key
         usernameField.addListener(new InputListener() {
@@ -124,23 +126,18 @@ public class SignUpMenu extends Menu {
         });
 
         float pad = 40; // Double the padding
-        table.add(usernameField).fillX().uniformX().pad(pad);
+        table.add(errorLabel).pad(pad);
+        table.row().pad(20, 0, 20, 0);
+        table.add(usernameField).width(400).pad(pad);
         table.row().pad(20, 0, 20, 0); // Double the row padding
-        table.add(passwordField).fillX().uniformX().pad(pad);
+        table.add(passwordField).width(400).pad(pad);
         table.row().pad(20, 0, 20, 0);
-        table.add(emailField).fillX().uniformX().pad(pad);
+        table.add(emailField).width(400).pad(pad);
         table.row().pad(20, 0, 20, 0);
-        table.add(nicknameField).fillX().uniformX().pad(pad);
+        table.add(nicknameField).width(400).pad(pad);
         table.row().pad(20, 0, 20, 0);
-        // Double width and height for buttons
-        table.add(signUpButton).fillX().uniformX().pad(pad).width(400).height(120);
+        table.add(signUpButton).pad(pad).width(400).height(120);
         table.row().pad(20, 0, 20, 0);
-        table.add(backButton).fillX().uniformX().pad(pad).width(400).height(120);
-        // Set minimum width and height for buttons (double previous values)
-    }
-
-    @Override
-    public void render(float delta) {
-        super.render(delta);
+        table.add(backButton).pad(pad).width(400).height(120);
     }
 }
