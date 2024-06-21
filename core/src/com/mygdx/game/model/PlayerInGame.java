@@ -90,8 +90,6 @@ public class PlayerInGame {
         return "in card vojood nadasht dalghak";
     }
 
-
-
     public String removeSpellCard(Card specialCard) {
         if (siegeSpell.equals(specialCard)) {
             siegeSpell = null;
