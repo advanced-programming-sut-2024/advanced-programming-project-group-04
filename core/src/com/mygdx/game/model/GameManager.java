@@ -150,21 +150,21 @@ public class GameManager {
         if (!canBePlacedToSpellMelee(card)) {
             return "nemishe";
         }
-        currentPlayer.placeSpecialCardMelee(card);
+        currentPlayer.placeSpellMelee(card);
         return "ba movafaghiat remove shod";
     }
     public String placeToSpellRange (Card card) {
         if (!canBePlacedToSpellRange(card)) {
             return "nemishe";
         }
-        currentPlayer.placeSpecialCardRange(card);
+        currentPlayer.placeSpellRange(card);
         return "ba movafaghiat remove shod";
     }
     public String placeToSpellSiege (Card card) {
         if (!canBePlacedToSpellSiege(card)) {
             return "nemishe";
         }
-        currentPlayer.placeSpecialCardSiege(card);
+        currentPlayer.placeSpellSiege(card);
         return "ba movafaghiat remove shod";
     }
     public String placeToWeather (Card card) {
@@ -213,10 +213,25 @@ public class GameManager {
         // TODO
         return true;
     }
-    
 
-    public int getRemainingCardsCount () {
-        return currentPlayer.getRemainingCardsCount();
+    // Comander's horn related functions
+    public void meleeCurrentHpTimesInt (int number) {
+        currentPlayer.meleeCurrentHpTimesInt(number);
+    }
+    public void rangeCurrentHpTimesInt (int number) {
+        currentPlayer.rangeCurrentHpTimesInt(number);
+    }
+    public void siegeCurrentHpTimesInt (int number) {
+        currentPlayer.siegeCurrentHpTimesInt(number);
+    }
+
+
+
+
+
+
+    public int getDeckInGameCount () {
+        return currentPlayer.getDeckInGameCount();
     }
     public int getGraveyardCount () {
         return currentPlayer.getGraveyardCount();
