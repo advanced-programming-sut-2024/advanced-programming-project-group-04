@@ -93,7 +93,7 @@ public class LoginMenu extends Menu {
         TextButton createAccountButton = new TextButton("Create Account", createAccountStyle);
         createAccountButton.addListener(event -> {
             if (createAccountButton.isPressed()) {
-                ControllerResponse response = LoginController.createAccountButtonClicked();
+                setScreen(new SignUpMenu(game));
             }
             return false;
         });
