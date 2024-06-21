@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -16,7 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-
+import com.mygdx.game.AssetLoader;
+import com.mygdx.game.Main;
 
 
 public class FactionAndLeaderMenu extends Menu {

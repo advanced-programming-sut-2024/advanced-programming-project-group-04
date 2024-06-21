@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -12,9 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.Input;
+import com.mygdx.game.AssetLoader;
+import com.mygdx.game.Main;
 
 public class LoginMenu extends Menu {
 
