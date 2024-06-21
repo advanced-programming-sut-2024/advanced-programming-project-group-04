@@ -1,11 +1,17 @@
 package com.mygdx.game.controller;
 
 public class LoginController {
-    public static void createAccountButtonClicked() {
+    public static ControllerResponse createAccountButtonClicked() {
+        boolean isFail = true;
+        String errorMessage = "";
 
+        return new ControllerResponse(isFail, errorMessage);
     }
 
-    public static void signInButtonClicked() {
+    public static ControllerResponse signInButtonClicked(String username, String password) {
+        boolean isFail = true;
+        String errorMessage = "";
 
+        return new ControllerResponse(isFail, errorMessage);
     }
 }
