@@ -1,10 +1,8 @@
-package com.mygdx.game.model;
+package model;
 
 import java.util.ArrayList;
 
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.card.specialcards.SpecialCard;
-import com.mygdx.game.model.card.unitcards.UnitCard;
+import model.card.Card;
 
 public class PlayerInGame {
 
@@ -15,13 +13,13 @@ public class PlayerInGame {
 
     private boolean isPassed;
 
-    private ArrayList<UnitCard> melee = new ArrayList<>();
-    private ArrayList<UnitCard> siege = new ArrayList<>();
-    private ArrayList<UnitCard> range = new ArrayList<>();
+    private ArrayList<Card> melee = new ArrayList<>();
+    private ArrayList<Card> siege = new ArrayList<>();
+    private ArrayList<Card> range = new ArrayList<>();
 
-    private SpecialCard meleeSpell;
-    private SpecialCard siegeSpell;
-    private SpecialCard rangeSpell;
+    private Card meleeSpell;
+    private Card siegeSpell;
+    private Card rangeSpell;
 
     private ArrayList<Card> graveyard = new ArrayList<>();
     private ArrayList<Card> remainingCards = new ArrayList<>();
@@ -68,22 +66,22 @@ public class PlayerInGame {
         roundsWon++;
     }
 
-    public String removeUnitCard(UnitCard unitCard) {
-        for (UnitCard card : melee) {
+    public String removeUnitCard(Card unitCard) {
+        for (Card card : melee) {
             if (card.equals(unitCard)) {
                 melee.remove(card);
                 return "aali";
             }
         }
 
-        for (UnitCard card : siege) {
+        for (Card card : siege) {
             if (card.equals(unitCard)) {
                 siege.remove(card);
                 return "aali";
             }
         }
 
-        for (UnitCard card : range) {
+        for (Card card : range) {
             if (card.equals(unitCard)) {
                 range.remove(card);
                 return "aali";
@@ -94,18 +92,18 @@ public class PlayerInGame {
 
 
 
-    public String removeSpecialCard(SpecialCard card) {
-        if (siegeSpell.equals(card)) {
+    public String removeSpellCard(Card specialCard) {
+        if (siegeSpell.equals(specialCard)) {
             siegeSpell = null;
             return "aali";
         }
 
-        if (rangeSpell.equals(card)) {
+        if (rangeSpell.equals(specialCard)) {
             rangeSpell = null;
             return "aali";
         }
 
-        if (meleeSpell.equals(card)) {
+        if (meleeSpell.equals(specialCard)) {
             meleeSpell = null;
             return "aali";
         }
@@ -116,27 +114,27 @@ public class PlayerInGame {
         return player;
     }
 
-    public ArrayList<UnitCard> getMelee() {
+    public ArrayList<Card> getMelee() {
         return melee;
     }
 
-    public ArrayList<UnitCard> getSiege() {
+    public ArrayList<Card> getSiege() {
         return siege;
     }
 
-    public ArrayList<UnitCard> getRange() {
+    public ArrayList<Card> getRange() {
         return range;
     }
 
-    public SpecialCard getMeleeSpell() {
+    public Card getMeleeSpell() {
         return meleeSpell;
     }
 
-    public SpecialCard getSiegeSpell() {
+    public Card getSiegeSpell() {
         return siegeSpell;
     }
 
-    public SpecialCard getRangeSpell() {
+    public Card getRangeSpell() {
         return rangeSpell;
     }
 
@@ -152,32 +150,32 @@ public class PlayerInGame {
         return remainingCards;
     }
 
-    public void addToMelee(UnitCard unitCard) {
+    public void addToMelee(Card unitCard) {
         melee.add(unitCard);
         hand.remove(unitCard);
     }
 
-    public void addToSiege(UnitCard unitCard) {
+    public void addToSiege(Card unitCard) {
         siege.add(unitCard);
         hand.remove(unitCard);
     }
 
-    public void addToRange(UnitCard unitCard) {
+    public void addToRange(Card unitCard) {
         range.add(unitCard);
         hand.remove(unitCard);
     }
 
-    public void placeSpecialCardMelee(SpecialCard specialCard) {
+    public void placeSpecialCardMelee(Card specialCard) {
         this.meleeSpell = specialCard;
         hand.remove(specialCard);
     }
 
-    public void placeSpecialCardSiege(SpecialCard specialCard) {
+    public void placeSpecialCardSiege(Card specialCard) {
         this.siegeSpell = specialCard;
         hand.remove(specialCard);
     }
 
-    public void placeSpecialCardRange(SpecialCard specialCard) {
+    public void placeSpecialCardRange(Card specialCard) {
         this.rangeSpell = specialCard;
         hand.remove(specialCard);
     }

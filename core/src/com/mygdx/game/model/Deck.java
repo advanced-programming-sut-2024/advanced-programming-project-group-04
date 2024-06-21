@@ -1,11 +1,9 @@
-package com.mygdx.game.model;
+package model;
 
 import java.util.ArrayList;
 
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.card.specialcards.SpecialCard;
-import com.mygdx.game.model.card.unitcards.UnitCard;
-import com.mygdx.game.model.leader.Leader;
+import model.card.Card;
+import model.leader.Leader;
 
 public class Deck {
     private Leader leader;
@@ -46,7 +44,7 @@ public class Deck {
     public int getNumberOfUnits() {
         int num = 0;
         for (Card card : this.cards) {
-            if (card instanceof UnitCard) num++;
+            if (card.isUnitCard()) num++;
         }
         return num;
     }
@@ -54,7 +52,7 @@ public class Deck {
     public int getNumberOfSpecialCards() {
         int num = 0;
         for (Card card : this.cards) {
-            if (card instanceof SpecialCard) num++;
+            if (!card.isUnitCard()) num++;
         }
         return num;
     }
