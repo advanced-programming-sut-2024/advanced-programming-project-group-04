@@ -3,8 +3,6 @@ package model;
 import java.util.ArrayList;
 
 import model.card.Card;
-import model.card.specialcards.SpecialCard;
-import model.card.unitcards.UnitCard;
 import model.leader.Leader;
 
 public class Deck {
@@ -46,7 +44,7 @@ public class Deck {
     public int getNumberOfUnits() {
         int num = 0;
         for (Card card : this.cards) {
-            if (card instanceof UnitCard) num++;
+            if (card.isUnitCard()) num++;
         }
         return num;
     }
@@ -54,7 +52,7 @@ public class Deck {
     public int getNumberOfSpecialCards() {
         int num = 0;
         for (Card card : this.cards) {
-            if (card instanceof SpecialCard) num++;
+            if (!card.isUnitCard()) num++;
         }
         return num;
     }

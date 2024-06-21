@@ -1,14 +1,9 @@
 package model;
 
 
-import java.util.ArrayList;
+import model.card.*;
 
-import model.card.Card;
-import model.card.Position;
-import model.card.specialcards.SpecialCard;
-import model.card.unitcards.UnitCard;
-
-import static model.card.Position.*;
+import static model.card.Type.*;
 
 public class GameManager {
     
@@ -21,16 +16,53 @@ public class GameManager {
         this.currentPlayer = this.player1;
     }
 
-    public String placeUnitCard (UnitCard unitCard , Position position){
+    public String placeCard (Card card , Position position) {
+        if (!canPlaceCard(card , position)) {
+            return "nashod place konam";
+        }
+
+        if (position.equals(Position.Front)){
+            currentPlayer.addToMelee(card);
+        } else if (position.equals(Position.Middle)){
+            currentPlayer.addToRange(card);
+        } else if (position.equals(Position.Back)){
+            currentPlayer.addToSiege(card);
+        } else if (position.equals(Position.SpecialFront)){
+            currentPlayer.
+        } else if (position.equals(Position.SpecialMiddle)){
+
+        } else if (position.equals(Position.SpecialBack)){
+
+        } else if (position.equals(Position.WeatherPlace)){
+
+        }
+
+        if (card.getPosition().equals(Type.CloseCombat)){
+
+        } else if (card.getPosition().equals(Type.Agile)){
+
+        } else if (card.getPosition().equals(Type.RangedCombat)){
+
+        } else if (card.getPosition().equals(Type.Siege)){
+
+        } else if (card.getPosition().equals(Type.Special)){
+
+        } else if (card.getPosition().equals(Type.SpecialDuper)){
+
+        } else {
+            
+        }
+    }
+    public String placeUnitCard (Card unitCard , Position position){
         if (!canPlaceUnitCard(unitCard, position)){
             return "nashod place konam";
         }
 
-        if (position == CloseCombat){
+        if (type == CloseCombat){
             currentPlayer.addToMelee(unitCard);
-        } else if (position == Siege){
+        } else if (type == Siege){
             currentPlayer.addToSiege(unitCard);
-        } else if (position == RangedCombat){
+        } else if (type == RangedCombat){
             currentPlayer.addToRange(unitCard);
         } else {
             return "boosh miad";
@@ -38,16 +70,16 @@ public class GameManager {
         
         return "ba movaghiat anjam shod";
     }
-    public String placeSpecialCard (SpecialCard specialCard , Position position){
-        if (!canPlaceSpecialCard(specialCard, position)){
+    public String placeSpecialCard (SpecialCard specialCard , Type type){
+        if (!canPlaceSpecialCard(specialCard, type)){
             return "nashod place konam";
         }
 
-        if (position == CloseCombat){
+        if (type == CloseCombat){
             currentPlayer.placeSpecialCardMelee(specialCard);
-        } else if (position == Siege){
+        } else if (type == Siege){
             currentPlayer.placeSpecialCardSiege(specialCard);
-        } else if (position == RangedCombat){
+        } else if (type == RangedCombat){
             currentPlayer.placeSpecialCardRange(specialCard);
         } else {
             return "boosh miad";
@@ -70,6 +102,72 @@ public class GameManager {
         return "ba movafaghiat remove shod";
     }
     
+    public String placeToMelee (Card card) {
+
+        return "ba movafaghiat remove shod";       
+    }
+    public String placeToRange (Card card) {
+
+        return "ba movafaghiat remove shod";
+    }
+    public String placeToSiege (Card card) {
+
+        return "ba movafaghiat remove shod";
+    }
+    public String placeToSpellMelee (Card card) {
+
+        return "ba movafaghiat remove shod";
+    }
+    public String placeToSpellRange (Card card) {
+
+        return "ba movafaghiat remove shod";
+    }
+    public String placeToSpellSiege (Card card) {
+
+        return "ba movafaghiat remove shod";
+    }
+    public String placeToWeather (Card card) {
+
+        return "ba movafaghiat remove shod";
+    }
+
+
+    public boolean canBePlacedToMelee (Card card) {
+        if(card.getType().equals(Type.CloseCombat) || card.getType().equals(Type.Agile)){
+            return true;
+        }
+        return false;
+    }
+    public boolean canBePlacedToRange (Card card) {
+        if(card.getType().equals(Type.RangedCombat) || card.getType().equals(Type.Agile)){
+            return true;
+        }
+        return false;
+    }
+    public boolean canBePlacedToSiege (Card card) {
+        if(card.getType().equals(Type.Siege)){
+            return true;
+        }
+        return false;
+    }
+    public boolean canBePlacedToSpellMelee (Card card) {
+        if(card.getType().equals(Type.CloseCombat) || card.getType().equals(Type.Agile)){
+            return true;
+        }
+        return false;
+    }
+    public boolean canBePlacedToSpellRange (Card card) {
+
+        return true;
+    }
+    public boolean canBePlacedToSpellSiege (Card card) {
+
+        return true;
+    }
+    public boolean canBePlacedToWeather (Card card) {
+
+        return true;
+    }
 
     public int getRemainingCardsCount () {
         return currentPlayer.getRemainingCardsCount();
@@ -94,18 +192,5 @@ public class GameManager {
             currentPlayer = player1;
         }
     }
-
-    public boolean canPlaceUnitCard (UnitCard unitCard , Position position){
-        // TODO baad az neveshtan position card in kamel shavad
-        return true;
-    }
-
-    public boolean canPlaceSpecialCard (SpecialCard specialCard , Position position){
-        // TODO baad az neveshtan position card in kamel shavad
-        return true;
-    }
-
-    // TODO canPlaceWeatherCard
-
 
 }
