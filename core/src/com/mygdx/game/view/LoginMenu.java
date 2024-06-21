@@ -6,12 +6,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.AssetLoader;
@@ -33,8 +30,6 @@ public class LoginMenu extends Menu {
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
-
-
         // get the font
         BitmapFont font;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
@@ -43,11 +38,16 @@ public class LoginMenu extends Menu {
         font = generator.generateFont(parameter);
         generator.dispose();
 
-
         // Set up table for UI layout
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
+
+        // Error Label
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+
+        Label errorLabel = new Label("", labelStyle);
 
         // Username and Password fields
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
@@ -74,13 +74,19 @@ public class LoginMenu extends Menu {
         signInStyle.over = skin.getDrawable("button-over-c");
 
         TextButton signInButton = new TextButton("Sign In", signInStyle);
-        signInButton.addListener(event -> {
-            if (signInButton.isPressed()) {
+        signInButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
                 ControllerResponse response = LoginController.signInButtonClicked(username, password);
+
+                if (!response.isFailed()) setScreen(new FactionAndLeaderMenu(game));
+                else {
+                    errorLabel.setText(response.getError());
+                    errorLabel.setColor(Color.RED);
+                }
             }
-            return false;
         });
 
         TextButton.TextButtonStyle createAccountStyle = new TextButton.TextButtonStyle();
@@ -91,13 +97,12 @@ public class LoginMenu extends Menu {
         createAccountStyle.over = skin.getDrawable("button-over-c");
 
         TextButton createAccountButton = new TextButton("Create Account", createAccountStyle);
-        createAccountButton.addListener(event -> {
-            if (createAccountButton.isPressed()) {
+        createAccountButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
                 setScreen(new SignUpMenu(game));
             }
-            return false;
         });
-
 
         // Add input listener for Enter key
         usernameField.addListener(new InputListener() {
@@ -121,19 +126,14 @@ public class LoginMenu extends Menu {
         });
 
         float pad = 40; // Double the padding
-        table.add(usernameField).fillX().uniformX().pad(pad);
-        table.row().pad(20, 0, 20, 0); // Double the row padding
-        table.add(passwordField).fillX().uniformX().pad(pad);
+        table.add(errorLabel).pad(pad);
         table.row().pad(20, 0, 20, 0);
-        // Double width and height for buttons
-        table.add(signInButton).fillX().uniformX().pad(pad).width(400).height(120);
+        table.add(usernameField).width(400).pad(pad);
         table.row().pad(20, 0, 20, 0);
-        // Set minimum width and height for buttons (double previous values)
-        table.add(createAccountButton).fillX().uniformX().pad(pad).minWidth(400).minHeight(120);
-    }
-
-    @Override
-    public void render(float delta) {
-        super.render(delta);
+        table.add(passwordField).width(400).pad(pad);
+        table.row().pad(20, 0, 20, 0);
+        table.add(signInButton).pad(pad).width(400).height(120);
+        table.row().pad(20, 0, 20, 0);
+        table.add(createAccountButton).pad(pad).width(400).height(120);
     }
 }

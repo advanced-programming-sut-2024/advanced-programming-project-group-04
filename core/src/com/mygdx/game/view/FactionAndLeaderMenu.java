@@ -277,9 +277,4 @@ public class FactionAndLeaderMenu extends Menu {
         )));
         selectedLeaderButton = selectedButton;
     }
-
-    @Override
-    public void render(float delta) {
-        super.render(delta);
-    }
 }

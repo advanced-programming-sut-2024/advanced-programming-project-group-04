@@ -36,16 +36,20 @@ public class Player {
         this.winCount = 0;
         this.drawCount = 0;
         this.lossCount = 0;
+
+        allPlayers.add(this);
     }
 
     public static Player findPlayerByUsername (String username) {
         for (Player player : allPlayers) {
-            if (player.username.equals(username)) {
+            if (player.getUsername().equals(username)) {
                 return player;
             }
         }
         return null;
     }
+
+    public String getUsername() { return this.username; }
     
     public boolean validatePassword (String password) {
         return this.password.equals(password);
