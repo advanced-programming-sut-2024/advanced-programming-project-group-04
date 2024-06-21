@@ -5,6 +5,8 @@ import com.mygdx.game.model.card.*;
 
 import static com.mygdx.game.model.card.Type.*;
 
+import java.util.ArrayList;
+
 public class GameManager {
     
     private PlayerInGame player1, player2, currentPlayer;
@@ -108,11 +110,11 @@ public class GameManager {
     /// Functions for Placing the Cards
     public String placeCard (Card card, Position position) {
         if (position.equals(Position.Melee)) {
-            return placeToMelee(card);
+            return addToMelee(card);
         } else if (position.equals(Position.Range)) {
-            return placeToRange(card);
+            return addToRange(card);
         } else if (position.equals(Position.Siege)) {
-            return placeToSiege(card);
+            return addToSiege(card);
         } else if (position.equals(Position.SpellMelee)) {
             return placeToSpellMelee(card);
         } else if (position.equals(Position.SpellRange)) {
@@ -125,22 +127,22 @@ public class GameManager {
             return "NANI?!";
         }
     }
-    public String placeToMelee (Card card) {
-        if (!canBePlacedToMelee(card)) {
+    public String addToMelee (Card card) {
+        if (!canBeAddedToMelee(card)) {
             return "nemishe";
         }
         currentPlayer.addToMelee(card);
         return "ba movafaghiat remove shod";       
     }
-    public String placeToRange (Card card) {
-        if (!canBePlacedToRange(card)) {
+    public String addToRange (Card card) {
+        if (!canBeAddedToRange(card)) {
             return "nemishe";
         }
         currentPlayer.addToRange(card);
         return "ba movafaghiat remove shod";
     }
-    public String placeToSiege (Card card) {
-        if (!canBePlacedToSiege(card)) {
+    public String addToSiege (Card card) {
+        if (!canBeAddedToSiege(card)) {
             return "nemishe";
         }
         currentPlayer.addToSiege(card);
@@ -173,19 +175,19 @@ public class GameManager {
     }
 
     /// Functions for checking if we can place that Card
-    public boolean canBePlacedToMelee (Card card) {
+    public boolean canBeAddedToMelee (Card card) {
         if(card.getType().equals(Type.CloseCombat) || card.getType().equals(Type.Agile)){
             return true;
         }
         return false;
     }
-    public boolean canBePlacedToRange (Card card) {
+    public boolean canBeAddedToRange (Card card) {
         if(card.getType().equals(Type.RangedCombat) || card.getType().equals(Type.Agile)){
             return true;
         }
         return false;
     }
-    public boolean canBePlacedToSiege (Card card) {
+    public boolean canBeAddedToSiege (Card card) {
         if(card.getType().equals(Type.Siege)){
             return true;
         }
@@ -225,10 +227,25 @@ public class GameManager {
         currentPlayer.siegeCurrentHpTimesInt(number);
     }
 
-
-
-
-
+    // Muster related functions
+    public ArrayList<Card> getCardsWithSameNameFromHand (Card card) {
+        return currentPlayer.getCardsWithSameNameFromHand(card);
+    }
+    public ArrayList<Card> getCardsWithSameNameFromDeckInGame (Card card) {
+        return currentPlayer.getCardsWithSameNameFromDeckInGame(card);
+    }
+    public ArrayList<Card> getCardsWithSameNameFromGraveyard (Card card) {
+        return currentPlayer.getCardsWithSameNameFromGraveyard(card);
+    }
+    public ArrayList<Card> getCardsWithSameNameFromMelee (Card card) {
+        return currentPlayer.getCardsWithSameNameFromMelee(card);
+    }
+    public ArrayList<Card> getCardsWithSameNameFromRange (Card card) {
+        return currentPlayer.getCardsWithSameNameFromRange(card);
+    }
+    public ArrayList<Card> getCardsWithSameNameFromSiege (Card card) {
+        return currentPlayer.getCardsWithSameNameFromSiege(card);
+    }
 
     public int getDeckInGameCount () {
         return currentPlayer.getDeckInGameCount();

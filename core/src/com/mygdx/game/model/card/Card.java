@@ -23,6 +23,10 @@ public class Card {
         this.currentHP = HP;
     }
 
+    public void resetCurrentHP() {
+        this.currentHP = getPower();
+    }
+
     public String getName () {
         return this.allCard.getName();
     }
