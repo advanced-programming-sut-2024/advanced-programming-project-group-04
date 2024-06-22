@@ -2,6 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/advanced-programming-project-group-04.iml" filepath="$PROJECT_DIR$/.idea/modules/advanced-programming-project-group-04.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/advanced-programming-project-group-04.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/advanced-programming-project-group-04.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/advanced-programming-project-group-04.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/advanced-programming-project-group-04.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/advanced-programming-project-group-04.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/advanced-programming-project-group-04.core.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/advanced-programming-project-group-04.desktop.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/advanced-programming-project-group-04.desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/advanced-programming-project-group-04.desktop.main.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/advanced-programming-project-group-04.desktop.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/advanced-programming-project-group-04.desktop.test.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/advanced-programming-project-group-04.desktop.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/apProject.iml" filepath="$PROJECT_DIR$/apProject.iml" />
     </modules>
   </component>
