@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.view.FactionAndLeaderMenu;
+import com.mygdx.game.view.GameMenu;
 import com.mygdx.game.view.LoginMenu;
 
 public class Main extends Game {
