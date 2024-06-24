@@ -15,6 +15,7 @@ import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
 import com.mygdx.game.controller.ControllerResponse;
 import com.mygdx.game.controller.LoginController;
+import com.mygdx.game.model.Player;
 
 public class LoginMenu extends Menu {
 
@@ -81,7 +82,10 @@ public class LoginMenu extends Menu {
                 String password = passwordField.getText();
                 ControllerResponse response = LoginController.signInButtonClicked(username, password);
 
-                if (!response.isFailed()) setScreen(new FactionAndLeaderMenu(game));
+                if (!response.isFailed()) {
+                    setScreen(new MainMenu(game));
+                    Player.loginPlayer(Player.findPlayerByUsername(username));
+                }
                 else {
                     errorLabel.setText(response.getError());
                     errorLabel.setColor(Color.RED);

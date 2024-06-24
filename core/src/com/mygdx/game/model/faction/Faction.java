@@ -14,4 +14,9 @@ public class Faction {
     public Faction(String name) {
         this.name = name;
     }
+
+    public String getImageURL() {
+        String className = getClass().getSimpleName().toLowerCase();
+        return "images/factions/" + className + ".png";
+    }
 }

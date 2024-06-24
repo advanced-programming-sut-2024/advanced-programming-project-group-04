@@ -10,4 +10,9 @@ public abstract class Leader {
     public String getName() {
         return name;
     }
+
+    public String getImageURL() {
+        String className = getClass().getSimpleName();
+        return "images/factions/" + className + ".jpg";
+    }
 }

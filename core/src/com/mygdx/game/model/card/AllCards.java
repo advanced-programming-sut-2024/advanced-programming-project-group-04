@@ -71,4 +71,8 @@ public enum AllCards {
     public boolean isUnitCard() {
         return this.type != Spell && this.type != Weather;
     }
+
+    public String getImageUrl() {
+        return "images/cards/" + this.name() + ".jpg";
+    }
 }

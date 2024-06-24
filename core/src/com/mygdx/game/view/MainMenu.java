@@ -21,13 +21,6 @@ import com.mygdx.game.Main;
 
 
 public class MainMenu extends Menu {
-
-    private String selectedFaction = "";
-    private String selectedLeader = "";
-    private ImageButton selectedFactionButton = null;
-    private ImageButton selectedLeaderButton = null;
-    private Label explanationLabel = null;
-
     public MainMenu(Main game) {
         super(game);
 
@@ -68,7 +61,7 @@ public class MainMenu extends Menu {
             }
         });
 
-        // Start new game button
+        // select deck button
         TextButton.TextButtonStyle setUpDeckStyle = new TextButton.TextButtonStyle();
         setUpDeckStyle.font = font;
         setUpDeckStyle.fontColor = Color.WHITE;
@@ -80,6 +73,7 @@ public class MainMenu extends Menu {
         setUpDeckButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                setScreen(new FactionAndLeaderMenu(game));
             }
         });
 
@@ -95,6 +89,7 @@ public class MainMenu extends Menu {
         profileButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                setScreen(new ProfileMenu(game));
             }
         });
 

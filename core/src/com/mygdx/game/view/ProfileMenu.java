@@ -109,12 +109,20 @@ public class ProfileMenu extends Menu {
     }
 
     private void createChangeCredentialsContent() {
+        BitmapFont font2;
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
+        FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+        parameter.size = 40;
+        font2 = generator.generateFont(parameter);
+        generator.dispose();
+
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
+        buttonStyle.font = font2;
         buttonStyle.fontColor = Color.WHITE;
         buttonStyle.up = skin.getDrawable("button-c");
         buttonStyle.down = skin.getDrawable("button-pressed-c");
         buttonStyle.over = skin.getDrawable("button-over-c");
+
 
         TextButton changeUsernameButton = new TextButton("Change Username", buttonStyle);
         changeUsernameButton.addListener(new ChangeCredentialsClickListener("Username"));
@@ -125,11 +133,17 @@ public class ProfileMenu extends Menu {
         TextButton changeEmailButton = new TextButton("Change Email", buttonStyle);
         changeEmailButton.addListener(new ChangeCredentialsClickListener("Email"));
 
+        TextButton setUpForgetPasswordQuestionButton = new TextButton("Password Recovery", buttonStyle);
+        setUpForgetPasswordQuestionButton.addListener(new PasswordRecoveryClickListener());
+
         contentTable.add(changeUsernameButton).width(400).height(120).pad(10).center();
         contentTable.row().pad(10, 0, 10, 0);
         contentTable.add(changePasswordButton).width(400).height(120).pad(10).center();
         contentTable.row().pad(10, 0, 10, 0);
         contentTable.add(changeEmailButton).width(400).height(120).pad(10).center();
+        contentTable.row().pad(10, 0, 10, 0);
+        contentTable.add(setUpForgetPasswordQuestionButton).width(400).height(120).pad(10).center();
+
     }
 
     private class ChangeTabListener extends ClickListener {
@@ -221,7 +235,7 @@ public class ProfileMenu extends Menu {
                 @Override
                 protected void result(Object object) {
                     if ((Boolean) object) {
-                        // Handle the confirmation of the new credentials here
+                        // TODO Handle the confirmation of the new credentials here
                     }
                     hide();
                 }
@@ -229,6 +243,82 @@ public class ProfileMenu extends Menu {
             dialog.show(stage);
         }
     }
+
+    private class PasswordRecoveryClickListener extends ClickListener {
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            Dialog dialog = new Dialog("Password Recovery", skin) {
+                {
+                    // Dark blue background
+                    Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+                    pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f));
+                    pixmap.fill();
+                    Texture texture = new Texture(pixmap);
+                    pixmap.dispose();
+                    setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
+
+                    // Custom label style
+                    Label.LabelStyle labelStyle = new Label.LabelStyle();
+                    labelStyle.font = font;
+                    labelStyle.fontColor = Color.WHITE;
+
+                    // Create pixmap for cursor and selection if not present in skin
+                    Pixmap cursorPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+                    cursorPixmap.setColor(Color.WHITE);
+                    cursorPixmap.fill();
+                    Texture cursorTexture = new Texture(cursorPixmap);
+                    cursorPixmap.dispose();
+
+                    Pixmap selectionPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+                    selectionPixmap.setColor(new Color(0.5f, 0.5f, 1f, 0.5f));
+                    selectionPixmap.fill();
+                    Texture selectionTexture = new Texture(selectionPixmap);
+                    selectionPixmap.dispose();
+
+                    // Custom text field style
+                    TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+                    textFieldStyle.font = font;
+                    textFieldStyle.fontColor = Color.WHITE;
+                    textFieldStyle.background = skin.getDrawable("textfield");
+                    textFieldStyle.cursor = new TextureRegionDrawable(new TextureRegion(cursorTexture));
+                    textFieldStyle.selection = new TextureRegionDrawable(new TextureRegion(selectionTexture));
+
+                    getContentTable().add(new Label("Question:", labelStyle)).pad(20);
+
+                    TextField questionField = new TextField("", textFieldStyle);
+                    getContentTable().add(questionField).width(300).pad(20);
+                    getContentTable().row();
+
+                    getContentTable().add(new Label("Answer:", labelStyle)).pad(20);
+
+                    TextField answerField = new TextField("", textFieldStyle);
+                    answerField.setPasswordMode(true);
+                    answerField.setPasswordCharacter('*');
+                    getContentTable().add(answerField).width(300).pad(20);
+
+                    // Custom button style
+                    TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+                    buttonStyle.font = font;
+                    buttonStyle.fontColor = Color.WHITE;
+                    buttonStyle.up = skin.getDrawable("button-c");
+                    buttonStyle.down = skin.getDrawable("button-pressed-c");
+                    buttonStyle.over = skin.getDrawable("button-over-c");
+
+                    button(new TextButton("Confirm", buttonStyle), true);
+                }
+
+                @Override
+                protected void result(Object object) {
+                    if ((Boolean) object) {
+                        // TODO Handle the confirmation of the new credentials here
+                    }
+                    hide();
+                }
+            };
+            dialog.show(stage);
+        }
+    }
+
 
     @Override
     public void show() {
