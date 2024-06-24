@@ -174,6 +174,73 @@ public class GameManager {
         return "ba movafaghiat remove shod";
     }
 
+    public String removeCard (Card card, Position position) {
+        if (position.equals(Position.Melee)) {
+            return removeFromMelee(card);
+        } else if (position.equals(Position.Range)) {
+            return removeFromRange(card);
+        } else if (position.equals(Position.Siege)) {
+            return removeFromSiege(card);
+        } else if (position.equals(Position.SpellMelee)) {
+            return removeSpellMelee(card);
+        } else if (position.equals(Position.SpellRange)) {
+            return removeSpellRange(card);
+        } else if (position.equals(Position.SpellSiege)) {
+            return removeSpellSiege(card);
+        } else if (position.equals(Position.WeatherPlace)) {
+            return removeFromWeather(card);
+        } else {
+            return "NANI?!";
+        }
+    }
+    public String removeFromMelee (Card card) {
+        if (!canBeAddedToMelee(card)) {
+            return "nemishe";
+        }
+        currentPlayer.removeFromMelee(card);
+        return "ba movafaghiat remove shod";       
+    }
+    public String removeFromRange (Card card) {
+        if (!canBeAddedToRange(card)) {
+            return "nemishe";
+        }
+        currentPlayer.removeFromRange(card);
+        return "ba movafaghiat remove shod";
+    }
+    public String removeFromSiege (Card card) {
+        if (!canBeAddedToSiege(card)) {
+            return "nemishe";
+        }
+        currentPlayer.removeFromSiege(card);
+        return "ba movafaghiat remove shod";
+    }
+    public String removeSpellMelee (Card card) {
+        if (!canBePlacedToSpellMelee(card)) {
+            return "nemishe";
+        }
+        currentPlayer.removeSpellMelee(card);
+        return "ba movafaghiat remove shod";
+    }
+    public String removeSpellRange (Card card) {
+        if (!canBePlacedToSpellRange(card)) {
+            return "nemishe";
+        }
+        currentPlayer.removeSpellRange(card);
+        return "ba movafaghiat remove shod";
+    }
+    public String removeSpellSiege (Card card) {
+        if (!canBePlacedToSpellSiege(card)) {
+            return "nemishe";
+        }
+        currentPlayer.removeSpellSiege(card);
+        return "ba movafaghiat remove shod";
+    }
+    public String removeFromWeather (Card card) {
+        // TODO
+        return "ba movafaghiat remove shod";
+    }
+
+
     /// Functions for checking if we can place that Card
     public boolean canBeAddedToMelee (Card card) {
         if(card.getType().equals(Type.CloseCombat) || card.getType().equals(Type.Agile)){
@@ -221,7 +288,6 @@ public class GameManager {
 
         return null;
     }
-
     public Position findCardInGameForOtherPlayer(Card card){
         // TODO
 
@@ -237,6 +303,9 @@ public class GameManager {
     }
     public void siegeCurrentHpTimesInt (int number) {
         currentPlayer.siegeCurrentHpTimesInt(number);
+    }
+    public void someCardsCurrentHpTimesInt (int number , ArrayList<Card> someCards) {
+        currentPlayer.someCardsCurrentHpTimesInt(number, someCards);
     }
 
     // Muster related functions

@@ -83,29 +83,7 @@ public class PlayerInGame {
         roundsWon++;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public ArrayList<Card> getMelee() {
-        return melee;
-    }
-    public ArrayList<Card> getSiege() {
-        return siege;
-    }
-    public ArrayList<Card> getRange() {
-        return range;
-    }
-    public Card getMeleeSpell() {
-        return meleeSpell;
-    }
-    public Card getSiegeSpell() {
-        return siegeSpell;
-    }
-    public Card getRangeSpell() {
-        return rangeSpell;
-    }
-    
+ 
     public boolean isPassed() {
         return isPassed;
     }
@@ -113,34 +91,6 @@ public class PlayerInGame {
         isPassed = bool;
     }
     
-    public ArrayList<Card> getGraveyard() {
-        return graveyard;
-    }
-    public ArrayList<Card> getDeckInGame() {
-        return deckInGame;
-    }
-    public ArrayList<Card> getHand() {
-        return hand;
-    }
-
-    public void addToGraveyard(Card card) {
-        graveyard.add(card);
-    }
-    public void removeFromGraveyard(Card card) {
-        graveyard.remove(card);
-    }
-    public void addToHand(Card card) {
-        hand.add(card);
-    }
-    public void removeFromHand(Card card) {
-        hand.remove(card);
-    }
-    public void addToDeckInGame(Card card) {
-        deckInGame.add(card);
-    }
-    public void removeFromDeckInGame(Card card) {
-        deckInGame.remove(card);
-    }
 
 
 
@@ -181,10 +131,11 @@ public class PlayerInGame {
         siegeSpell = null;
     }
 
+    // Muster related functions
     public ArrayList<Card> getCardsWithSameNameFromHand (Card card) {
         ArrayList<Card> sample = new ArrayList<>();
         for (Card sampleCard : hand) {
-            if(card.getName().equals(sampleCard.getName())) {
+            if(card.musterEquality(sampleCard)) {
                 sample.add(card);
             }
         }
@@ -193,7 +144,7 @@ public class PlayerInGame {
     public ArrayList<Card> getCardsWithSameNameFromDeckInGame (Card card) {
         ArrayList<Card> sample = new ArrayList<>();
         for (Card sampleCard : deckInGame) {
-            if(card.getName().equals(sampleCard.getName())) {
+            if(card.musterEquality(sampleCard)) {
                 sample.add(card);
             }
         }
@@ -202,7 +153,7 @@ public class PlayerInGame {
     public ArrayList<Card> getCardsWithSameNameFromGraveyard (Card card) {
         ArrayList<Card> sample = new ArrayList<>();
         for (Card sampleCard : graveyard) {
-            if(card.getName().equals(sampleCard.getName())) {
+            if(card.musterEquality(sampleCard)) {
                 sample.add(card);
             }
         }
@@ -211,7 +162,7 @@ public class PlayerInGame {
     public ArrayList<Card> getCardsWithSameNameFromMelee (Card card) {
         ArrayList<Card> sample = new ArrayList<>();
         for (Card sampleCard : melee) {
-            if(card.getName().equals(sampleCard.getName())) {
+            if(card.musterEquality(sampleCard)) {
                 sample.add(card);
             }
         }
@@ -220,7 +171,7 @@ public class PlayerInGame {
     public ArrayList<Card> getCardsWithSameNameFromRange (Card card) {
         ArrayList<Card> sample = new ArrayList<>();
         for (Card sampleCard : range) {
-            if(card.getName().equals(sampleCard.getName())) {
+            if(card.musterEquality(sampleCard)) {
                 sample.add(card);
             }
         }
@@ -229,7 +180,7 @@ public class PlayerInGame {
     public ArrayList<Card> getCardsWithSameNameFromSiege (Card card) {
         ArrayList<Card> sample = new ArrayList<>();
         for (Card sampleCard : siege) {
-            if(card.getName().equals(sampleCard.getName())) {
+            if(card.musterEquality(sampleCard)) {
                 sample.add(card);
             }
         }
@@ -238,7 +189,7 @@ public class PlayerInGame {
 
 
 
-
+    // Commander's horn and Tight bond related functions
     public void meleeCurrentHpTimesInt (int number) {
         for (Card card : melee) {
             card.setCurrentHP(card.getCurrentHP() * number);
@@ -254,6 +205,12 @@ public class PlayerInGame {
             card.setCurrentHP(card.getCurrentHP() * number);
         }
     }
+    public void someCardsCurrentHpTimesInt (int number , ArrayList<Card> someCards) {
+        for (Card card : someCards) {
+            card.setCurrentHP(card.getCurrentHP()*number);
+        }
+    }
+
 
     public int getDeckInGameCount() {
         return deckInGame.size();
@@ -265,5 +222,56 @@ public class PlayerInGame {
         return hand.size();
     }
 
-    
+    public ArrayList<Card> getGraveyard() {
+        return graveyard;
+    }
+    public ArrayList<Card> getDeckInGame() {
+        return deckInGame;
+    }
+    public ArrayList<Card> getHand() {
+        return hand;
+    }
+
+    public void addToGraveyard(Card card) {
+        graveyard.add(card);
+    }
+    public void removeFromGraveyard(Card card) {
+        graveyard.remove(card);
+    }
+    public void addToHand(Card card) {
+        hand.add(card);
+    }
+    public void removeFromHand(Card card) {
+        hand.remove(card);
+    }
+    public void addToDeckInGame(Card card) {
+        deckInGame.add(card);
+    }
+    public void removeFromDeckInGame(Card card) {
+        deckInGame.remove(card);
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public ArrayList<Card> getMelee() {
+        return melee;
+    }
+    public ArrayList<Card> getSiege() {
+        return siege;
+    }
+    public ArrayList<Card> getRange() {
+        return range;
+    }
+    public Card getMeleeSpell() {
+        return meleeSpell;
+    }
+    public Card getSiegeSpell() {
+        return siegeSpell;
+    }
+    public Card getRangeSpell() {
+        return rangeSpell;
+    }
+   
 }
