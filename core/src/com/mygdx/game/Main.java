@@ -5,16 +5,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.view.FactionAndLeaderMenu;
+import com.mygdx.game.view.GameMenu;
 import com.mygdx.game.view.LoginMenu;
 
 public class Main extends Game {
-    public SpriteBatch batch;
     public AssetManager assetManager;
     public AssetLoader assetLoader; // Add this line
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
         assetManager = new AssetManager();
         assetLoader = new AssetLoader(assetManager); // Modify this line
         assetLoader.loadAll();
@@ -28,7 +27,7 @@ public class Main extends Game {
         backgroundMusic.play();
 
         // Set the initial screen
-        setScreen(new LoginMenu(this));
+        setScreen(new FactionAndLeaderMenu(this));
     }
 
     @Override
@@ -38,7 +37,6 @@ public class Main extends Game {
 
     @Override
     public void dispose() {
-        batch.dispose();
         assetManager.dispose();
     }
 }

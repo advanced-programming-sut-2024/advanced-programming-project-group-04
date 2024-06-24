@@ -1,5 +1,8 @@
 package com.mygdx.game.view;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.mygdx.game.Main;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,7 +19,7 @@ public abstract class Menu implements Screen {
 
         stage = new Stage();
         input.setInputProcessor(stage);
-        stage.setViewport(new FitViewport(graphics.getWidth(), graphics.getHeight()));
+        stage.setViewport(new FillViewport(graphics.getWidth(), graphics.getHeight()));
     }
 
     protected void setScreen(Menu menu) {
@@ -25,6 +28,8 @@ public abstract class Menu implements Screen {
 
     @Override
     public void render(float v) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(v);
         stage.draw();
     }
