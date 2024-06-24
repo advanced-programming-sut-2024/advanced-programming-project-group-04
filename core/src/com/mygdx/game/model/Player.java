@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.mygdx.game.model.faction.Faction;
 
+
 public class Player {
     private static ArrayList<Player> allPlayers = new ArrayList<>();
 

@@ -9,7 +9,7 @@ public enum AllCards {
             "This Spell card has Mardoeme Ability and can be placed in the commmander's Horn spot . it effects the row that it was placed in"),
     Berserker("Berserker", 4, 1, CloseCombat, new Berserker(), false,
             "Transforms into Vidkaarl when Mardroeme is used.Vidkaarl has Morale Boost effect."),
-    Vidkaarl("Vidkaarl", 14, 0, CloseCombat, new MoralBoost(), false,
+    TransformedVidkaarl("Vidkaarl", 14, 0, CloseCombat, new MoralBoost(), false,
             "it can only be played when a berserker transform into it."),
     Svanrige("Svanrige", 4, 1, CloseCombat, new NoAbility(), false, ""),
     Udalryk("Udalryk", 4, 1, CloseCombat, new NoAbility(), false, ""),
@@ -30,12 +30,36 @@ public enum AllCards {
     Hjalmar("Hjalmar", 10, 1, RangedCombat, new NoAbility(), true, ""),
     YoungBerserker("Young Berserker", 2, 3, RangedCombat, new Berserker(), false,
             "Transforms into Young Vidkaarl when Mardroeme is used.Young Vidkaarl has Tight Bond effect."),
-    YoungVidkaarl("Young Vidkaarl", 8, 0, RangedCombat, new TightBond(), false,
+    TransformedYoungVidkaarl("Young Vidkaarl", 8, 0, RangedCombat, new TightBond(), false,
             "it can only be played when a young berserker transform into it."),
     LightLongship("Light Longship", 4, 3, RangedCombat, new Muster(), false, ""),
     WarLongship("War Longship", 6, 3, Siege, new TightBond(), false, ""),
     DraigBonDhu("Draig Bon-Dhu", 2, 1, Siege, new CommanderHorn(), false, ""),
-    Olaf("Olaf", 12, 1, Agile, new MoralBoost(), false, "");
+    Olaf("Olaf", 12, 1, Agile, new MoralBoost(), false, ""),
+
+    ElvenSkirmisher("ElvenSkirmisher", 2, 3, RangedCombat, new Muster(), false, "")
+    
+    ;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     final String name;
     final int power;
     final int number;

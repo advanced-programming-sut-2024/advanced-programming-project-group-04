@@ -5,10 +5,15 @@ import com.mygdx.game.model.ability.Ability;
 public class Card {
     private final AllCards allCard;
     private int currentHP;
+    private boolean isMoralBoostAffected;
+    private boolean isCommandersHornAffected;
+
 
     public Card(AllCards allCard) {
         this.allCard = allCard;
         this.currentHP = getPower();
+        this.isMoralBoostAffected = false;
+        this.isCommandersHornAffected = false;
     }
 
     public int getPower() {
@@ -21,6 +26,10 @@ public class Card {
 
     public void setCurrentHP(int HP) {
         this.currentHP = HP;
+    }
+
+    public void resetCurrentHP() {
+        this.currentHP = getPower();
     }
 
     public String getName () {
@@ -36,4 +45,13 @@ public class Card {
     public Type getType() { return this.allCard.getType(); }
 
     public boolean isUnitCard() { return this.allCard.isUnitCard(); }
+
+    public AllCards getAllCard() { return this.allCard; }
+
+    public boolean musterEquality(Card card) {
+        // TODO : return true if THIS have muster ability and the card too 
+        // and they have same name
+        return false;
+    }
+
 }

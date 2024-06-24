@@ -1,5 +1,11 @@
 package com.mygdx.game.model.ability;
 
-public class Scorch extends Ability {
-    
+import com.mygdx.game.model.GameManager;
+import com.mygdx.game.model.card.Card;
+
+public class Scorch implements Ability {
+    @Override
+    public void run(GameManager gameManager , Card callerCard){
+
+    }
 }
