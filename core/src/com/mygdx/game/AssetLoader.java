@@ -51,7 +51,13 @@ public class AssetLoader {
                     factionExplanations.put(factionPath, explanationText);
                 }
             }
+        }
 
+        // Load cards
+        FileHandle cardsDir = Gdx.files.internal("assets/images/cards/");
+        for (FileHandle file : cardsDir.list()) {
+            String cardPath = "images/cards/" + file.name();
+            assetManager.load(cardPath, Texture.class);
         }
 
 
@@ -66,8 +72,7 @@ public class AssetLoader {
                 if (!leaderPath.endsWith(".txt")) {
                     leaders.add(leaderPath);
                     assetManager.load(leaderPath, Texture.class);
-                }
-                else {
+                } else {
                     FileHandle explanationFile = Gdx.files.internal(leaderPath);
                     if (explanationFile.exists()) {
                         String explanationText = explanationFile.readString();

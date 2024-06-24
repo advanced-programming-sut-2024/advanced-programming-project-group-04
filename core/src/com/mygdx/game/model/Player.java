@@ -8,6 +8,7 @@ import com.mygdx.game.model.faction.Faction;
 public class Player {
     private static ArrayList<Player> allPlayers = new ArrayList<>();
 
+    private static Player loggedInPlayer = null;
     private String username;
     private String password;
     private String email;
@@ -21,6 +22,7 @@ public class Player {
     private String awnserToQuestion;
 
     private Deck deck;
+
     private Faction selectedFaction;
 
     private ArrayList<Deck> savedDecks = new ArrayList<>();
@@ -156,5 +158,21 @@ public class Player {
             }
         }
         return false;
+    }
+
+    public static void loginPlayer(Player player) {
+        loggedInPlayer = player;
+    }
+
+    public static void logout() {
+        loggedInPlayer = null;
+    }
+
+    public static Player getLoggedInPlayer() {
+        return loggedInPlayer;
+    }
+
+    public Faction getSelectedFaction() {
+        return selectedFaction;
     }
 }
