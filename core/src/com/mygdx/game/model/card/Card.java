@@ -40,4 +40,6 @@ public class Card {
     public Type getType() { return this.allCard.getType(); }
 
     public boolean isUnitCard() { return this.allCard.isUnitCard(); }
+
+    public AllCards getAllCard() { return this.allCard; }
 }

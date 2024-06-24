@@ -216,6 +216,18 @@ public class GameManager {
         return true;
     }
 
+    public Position findCardInGameForCurrentPlayer(Card card){
+        // TODO
+
+        return null;
+    }
+
+    public Position findCardInGameForOtherPlayer(Card card){
+        // TODO
+
+        return null;
+    }
+
     // Comander's horn related functions
     public void meleeCurrentHpTimesInt (int number) {
         currentPlayer.meleeCurrentHpTimesInt(number);

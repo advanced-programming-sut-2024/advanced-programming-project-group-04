@@ -35,7 +35,31 @@ public enum AllCards {
     LightLongship("Light Longship", 4, 3, RangedCombat, new Muster(), false, ""),
     WarLongship("War Longship", 6, 3, Siege, new TightBond(), false, ""),
     DraigBonDhu("Draig Bon-Dhu", 2, 1, Siege, new CommanderHorn(), false, ""),
-    Olaf("Olaf", 12, 1, Agile, new MoralBoost(), false, "");
+    Olaf("Olaf", 12, 1, Agile, new MoralBoost(), false, ""),
+
+    ElvenSkirmisher("ElvenSkirmisher", 2, 3, RangedCombat, new Muster(), false, "")
+    
+    ;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     final String name;
     final int power;
     final int number;
