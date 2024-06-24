@@ -4,9 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.game.view.FactionAndLeaderMenu;
-import com.mygdx.game.view.GameMenu;
-import com.mygdx.game.view.LoginMenu;
+import com.mygdx.game.view.*;
 
 public class Main extends Game {
     public AssetManager assetManager;
@@ -27,7 +25,7 @@ public class Main extends Game {
         backgroundMusic.play();
 
         // Set the initial screen
-        setScreen(new FactionAndLeaderMenu(this));
+        setScreen(new LoginMenu(this));
     }
 
     @Override

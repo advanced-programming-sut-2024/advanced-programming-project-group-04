@@ -42,7 +42,7 @@ public class SignUpController {
         if (!matcher.find()) return false;
         matcher = Pattern.compile("[0-9]").matcher(password);
         if (!matcher.find()) return false;
-        matcher = Pattern.compile("[A-Z]").matcher(password);
+        matcher = Pattern.compile("[a-zA-Z]").matcher(password);
         if (!matcher.find()) return false;
         return true;
     }

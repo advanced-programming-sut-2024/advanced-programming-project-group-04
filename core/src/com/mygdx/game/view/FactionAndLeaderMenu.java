@@ -18,6 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
+import com.mygdx.game.model.Player;
+import com.mygdx.game.model.faction.*;
+
 
 
 public class FactionAndLeaderMenu extends Menu {
@@ -39,6 +42,10 @@ public class FactionAndLeaderMenu extends Menu {
         Image backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
+
+        Faction faction = Player.getLoggedInPlayer().getSelectedFaction();
+        if (faction == null) selectedFaction = "";
+        else selectedFaction = Player.getLoggedInPlayer().getSelectedFaction().getImageURL();
 
         // get the font
         BitmapFont font;
@@ -104,10 +111,22 @@ public class FactionAndLeaderMenu extends Menu {
             }
         });
 
+        TextButton backButton = new TextButton("Back", chooseLeaderStyle);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setScreen(new MainMenu(game));
+            }
+        });
+
         // Add buttons to table with updated sizes
         table.add(chooseFactionButton).width(400).height(120).pad(10);
         table.row().pad(10, 0, 10, 0);
         table.add(chooseLeaderButton).width(400).height(120).pad(10);
+        table.row().pad(20, 0, 20, 0);
+        table.add(backButton).pad(40).width(400).height(120);
+
+
     }
 
     private void showFactionSelection() {
@@ -165,6 +184,7 @@ public class FactionAndLeaderMenu extends Menu {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     selectedFaction = factionName;
+                    //TODO @arman Player.getLoggedInPlayer.setFaction() ro ye joori ezafe kon;
                     highlightSelectedFaction(factionButton);
                     dialog.hide();
                     System.out.println("Selected Faction: " + selectedFaction);
@@ -251,6 +271,7 @@ public class FactionAndLeaderMenu extends Menu {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     selectedLeader = leaderName;
+
                     highlightSelectedLeader(leaderButton);
                     dialog.hide();
                     System.out.println("Selected Leader: " + selectedLeader);
