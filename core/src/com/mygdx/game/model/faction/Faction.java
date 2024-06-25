@@ -2,13 +2,17 @@ package com.mygdx.game.model.faction;
 
 import java.util.ArrayList;
 
-import com.mygdx.game.model.card.Card;
+import static com.mygdx.game.model.card.AllCards.*;
+import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.leader.Leader;
 
 public class Faction {
     private final String name;
 
-    private ArrayList<Card> cards = new ArrayList<>();
+    private final static ArrayList<AllCards> neutralCards = new ArrayList<>();
+    neutralCards = {
+
+    };
     private ArrayList<Leader> leaders = new ArrayList<>();
 
     public Faction(String name) {

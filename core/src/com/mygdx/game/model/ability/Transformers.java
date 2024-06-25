@@ -8,7 +8,7 @@ public class Transformers implements Ability {
     @Override
     public void run(GameManager gameManager , Card callerCard){
         if (callerCard.getAllCard().equals(AllCards.Cow)) {
-            Card card = new Card(AllCards.BovineDefenceForce);
+            Card card = new Card(AllCards.BovineDefenseForce);
             gameManager.placeCard(card);
         }
         if (callerCard.getAllCard().equals(AllCards.Kambi)) {
