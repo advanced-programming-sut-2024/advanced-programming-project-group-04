@@ -37,7 +37,14 @@ public enum AllCards {
     DraigBonDhu("Draig Bon-Dhu", 2, 1, Siege, new CommanderHorn(), false, ""),
     Olaf("Olaf", 12, 1, Agile, new MoralBoost(), false, ""),
 
-    ElvenSkirmisher("ElvenSkirmisher", 2, 3, RangedCombat, new Muster(), false, "")
+    ElvenSkirmisher("ElvenSkirmisher", 2, 3, RangedCombat, new Muster(), false, ""),
+    Toad("Toad", 7, 1, RangedCombat, new Scorch(), false, ""),
+    Villentretenmerth("Villentretenmerth", 7, 1, CloseCombat, new Scorch(), false, ""),
+    Schirru("Schirru", 8, 1, Siege, new Scorch(), false, ""),
+    Decoy("Decoy", -1, 3, Spell, new NoAbility(), false, ""),
+    Cow("Cow", 0, 1, RangedCombat, new Transformers(), false, ""),
+    BovineDefenceForce("Bovine Defence Force", 8, 0, CloseCombat, new NoAbility(),false, ""),
+    Hemdall("Hemdall", 11, 0, CloseCombat, new NoAbility(), true, "")
     
     ;
     

@@ -20,8 +20,7 @@ import com.mygdx.game.Main;
 public class GameMenu extends Menu {
     public static ImageButton selectedLeader;
 
-    Table myCards, table, ground;
-    Label myCardsLabel, groundLabel;
+    Table myCards, table, ground, graveyard;
 
     public GameMenu(Main game) {
         super(game);
@@ -64,18 +63,14 @@ public class GameMenu extends Menu {
         }
 
         ground = new Table();
+        graveyard = new Table();
 
         table.setFillParent(true);
         table.setDebug(true);
 
-        myCardsLabel = new Label("My Cards", skin);
-        groundLabel = new Label("Ground", skin);
-
-        table.add(myCardsLabel);
-        table.add(groundLabel);
-        table.row();
         table.add(myCards).expand().fill();
         table.add(ground).expand().fill();
+        table.add(graveyard).expand().fill();
 
         DragAndDrop d = new DragAndDrop();
         d.addSource(new Source(myCards) {
@@ -107,6 +102,17 @@ public class GameMenu extends Menu {
             @Override
             public void drop(Source source, Payload payload, float v, float v1, int i) {
                 ground.add((ImageButton) payload.getObject());
+            }
+        });
+        d.addTarget(new Target(graveyard) {
+            @Override
+            public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
+                return true;
+            }
+
+            @Override
+            public void drop(Source source, Payload payload, float x, float y, int pointer) {
+                graveyard.add((ImageButton) payload.getObject());
             }
         });
 
