@@ -24,6 +24,7 @@ public class ProfileMenu extends Menu {
     private Label changeCredentialsLabel;
     private Label statisticsLabel;
     private Label matchHistoryLabel;
+    private Label backLabel;
     private Table contentTable;
 
     public ProfileMenu(Main game) {
@@ -59,16 +60,19 @@ public class ProfileMenu extends Menu {
         stage.addActor(tabTable);
 
         // Create tab labels
+        backLabel = createTabLabel("Back to Main Menu", Color.WHITE);
         changeCredentialsLabel = createTabLabel("Change Credentials", Color.WHITE);
         statisticsLabel = createTabLabel("Statistics", Color.WHITE);
         matchHistoryLabel = createTabLabel("Match History", Color.WHITE);
 
         // Add listeners to switch tabs
+        backLabel.addListener(new ChangeTabListener(backLabel, "back"));
         changeCredentialsLabel.addListener(new ChangeTabListener(changeCredentialsLabel, "changeCredentials"));
         statisticsLabel.addListener(new ChangeTabListener(statisticsLabel, "statistics"));
         matchHistoryLabel.addListener(new ChangeTabListener(matchHistoryLabel, "matchHistory"));
 
         // Add labels to the table
+        tabTable.add(backLabel).pad(20);
         tabTable.add(changeCredentialsLabel).pad(20);
         tabTable.add(statisticsLabel).pad(20);
         tabTable.add(matchHistoryLabel).pad(20);
@@ -93,6 +97,9 @@ public class ProfileMenu extends Menu {
     private void showTabContent(String tabName) {
         contentTable.clear();
         switch (tabName) {
+            case "back":
+                setScreen(new MainMenu(game));
+                break;
             case "changeCredentials":
                 // Add Change Credentials content
                 createChangeCredentialsContent();

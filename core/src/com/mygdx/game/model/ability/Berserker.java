@@ -10,8 +10,13 @@ public class Berserker implements Ability {
     public void run(GameManager gameManager , Card callerCard){
         Position callerCardPosition = gameManager.findCardInGameForCurrentPlayer(callerCard);
         if (callerCard.getAllCard().equals(AllCards.YoungBerserker)) {
-            // TODO Arman Check joon amat
             Card transformedCard = new Card(AllCards.TransformedYoungVidkaarl);
+            gameManager.placeCard(transformedCard, callerCardPosition);
+            gameManager.removeCard(callerCard, callerCardPosition);
+        }
+
+        if (callerCard.getAllCard().equals(AllCards.Berserker)) {
+            Card transformedCard = new Card(AllCards.TransformedVidkaarl);
             gameManager.placeCard(transformedCard, callerCardPosition);
             gameManager.removeCard(callerCard, callerCardPosition);
         }

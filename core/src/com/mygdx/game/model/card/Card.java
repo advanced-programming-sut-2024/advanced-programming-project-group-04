@@ -1,6 +1,6 @@
 package com.mygdx.game.model.card;
 
-import com.mygdx.game.model.ability.Ability;
+import com.mygdx.game.model.ability.*;
 
 public class Card {
     private final AllCards allCard;
@@ -52,6 +52,10 @@ public class Card {
         // TODO : return true if THIS have muster ability and the card too 
         // and they have same name
         return false;
+    }
+
+    public boolean isBerserker() {
+        return this.getAbility() instanceof Berserker;
     }
 
 }

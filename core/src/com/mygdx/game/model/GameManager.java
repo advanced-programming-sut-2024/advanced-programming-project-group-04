@@ -127,6 +127,19 @@ public class GameManager {
             return "NANI?!";
         }
     }
+
+    public String placeCard(Card card) {
+        //TODO @Arvin
+        //Kartaii ke faghat ye ja mitoonan place beshan ro place kon
+        return null;
+    }
+
+    public String placeCardEnemy(Card card) {
+        //TODO @Arvin
+        //Kartaii ke faghat ye ja mitoonan place beshan ro place kon faghat baraye spy
+        return null;
+    }
+
     public String addToMelee (Card card) {
         if (!canBeAddedToMelee(card)) {
             return "nemishe";
@@ -349,12 +362,36 @@ public class GameManager {
         return "OK";
     }
 
+    public ArrayList<Card> getCardRowFromPosition(Position position) {
+        return null;
+        // TODO @Arvin
+    }
+
     public void switchTurn () {
         if(currentPlayer.equals(player1)){
             currentPlayer = player2;
         } else {
             currentPlayer = player1;
         }
+    }
+
+    public ArrayList<Card> getMaximumPowerInRow(Position position) {
+        //TODO @Arvin
+        // BAYAD MAJMOO GHODRAT CARD HAYE GHEIR HERO TOYE OON RADIF OTHER PLAYER HESAB BEHSE
+        // AGE IN ADDAD KAMTAR AZ 10 bood return null
+        // AGE BISHTAR MOSAVI 10 BOOD TAMAM CARD HA BA BISHTARIN GHODRAT BE YE ARRAYLIST EZAFE VA RETURN SHAN
+        return null;
+    }
+
+    public ArrayList<Card> getMaximumPowerInField() {
+        //TODO @Arvin
+        // TOYE IN MAJMOO GHORAT MOHEM NIST VALI HERO HA HAMCHENAN REMOVE NEMITOONAN BESHAN
+        // AGE BISHTAR MOSAVI 10 BOOD TAMAM CARD HA BA BISHTARIN GHODRAT BE YE ARRAYLIST EZAFE VA RETURN SHAN
+        return null;
+    }
+
+    public void drawRandomCardFromDeck() {
+        currentPlayer.drawRandomCardFromDeckInGame();
     }
 
 }

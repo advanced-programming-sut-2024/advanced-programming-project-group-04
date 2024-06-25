@@ -48,6 +48,7 @@ public class PlayerInGame {
         deckInGame.add(card);
         hand.remove(card);
         hand.add(newCard);
+        deckInGame.remove(newCard);
     }
 
     public int getRoundsWon() {
@@ -73,6 +74,13 @@ public class PlayerInGame {
         Card card = deckInGame.get(index);
         return card;
     }
+
+    public void addRandomCardToDeck() {
+        Card card = drawRandomCardFromDeckInGame();
+        hand.add(card);
+        deckInGame.remove(card);
+    }
+
     public Card drawRandomCardFromGraveyard() {
         int index = (int) (Math.random() * graveyard.size());
         Card card = graveyard.get(index);
