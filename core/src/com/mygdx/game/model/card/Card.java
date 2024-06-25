@@ -49,13 +49,18 @@ public class Card {
     public AllCards getAllCard() { return this.allCard; }
 
     public boolean musterEquality(Card card) {
-        // TODO : return true if THIS have muster ability and the card too 
-        // and they have same name
+        // TODO
+        // return true if THIS have muster ability and
+        // THIS calls the card
         return false;
     }
 
     public boolean isBerserker() {
         return this.getAbility() instanceof Berserker;
+    }
+
+    public boolean isHero() {
+        return this.allCard.isHero();
     }
 
 }

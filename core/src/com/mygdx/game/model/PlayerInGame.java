@@ -120,6 +120,26 @@ public class PlayerInGame {
     public void placeSpellRange(Card specialCard) {
         this.rangeSpell = specialCard;
     }
+
+
+
+    public void removeCard (Card card, Position position) {
+        if (position.equals(Position.Melee)) {
+            removeFromMelee(card);
+        } else if (position.equals(Position.Range)) {
+            removeFromRange(card);
+        } else if (position.equals(Position.Siege)) {
+            removeFromSiege(card);
+        } else if (position.equals(Position.SpellMelee)) {
+            removeSpellMelee(card);
+        } else if (position.equals(Position.SpellRange)) {
+            removeSpellRange(card);
+        } else if (position.equals(Position.SpellSiege)) {
+            removeSpellSiege(card);
+        } else {
+            
+        }
+    }
     public void removeFromMelee(Card card) {
         melee.remove(card);
     }
@@ -280,6 +300,54 @@ public class PlayerInGame {
     }
     public Card getRangeSpell() {
         return rangeSpell;
+    }
+
+    public ArrayList<Card> getCardRowFromPosition(Position position) {
+        // range -> range , spellMelee -> melee
+        if (position.equals(Position.Melee)) {
+            return getMelee();
+        } else if (position.equals(Position.Range)) {
+            return getRange();
+        } else if (position.equals(Position.Siege)) {
+            return getSiege();
+        } else if (position.equals(Position.SpellMelee)) {
+            return getMelee();
+        } else if (position.equals(Position.SpellRange)) {
+            return getRange();
+        } else if (position.equals(Position.SpellSiege)) {
+            return getSiege();
+        } else {
+            return null;
+        }
+    }
+
+    public Position findCardInGame(Card card) {
+        for (Card sampleCard : getMelee()) {
+            if (card.equals(sampleCard)) {
+                return Position.Melee;
+            }
+        }
+        for (Card sampleCard : getRange()) {
+            if (card.equals(sampleCard)) {
+                return Position.Range;
+            }
+        }
+        for (Card sampleCard : getSiege()) {
+            if (card.equals(sampleCard)) {
+                return Position.Siege;
+            }
+        }
+        if (card.equals(getMeleeSpell())) {
+            return Position.SpellMelee;
+        }
+        if (card.equals(getRangeSpell())) {
+            return Position.SpellRange;
+        }
+        if (card.equals(getSiegeSpell())) {
+            return Position.SpellSiege;
+        } else {
+            return null;
+        }
     }
    
 }

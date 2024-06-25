@@ -1,16 +1,18 @@
 package com.mygdx.game.model;
 
 
+import com.mygdx.game.model.ability.Spy;
 import com.mygdx.game.model.card.*;
 
-import static com.mygdx.game.model.card.Type.*;
+import static com.mygdx.game.model.card.Type.Weather;
 
 import java.util.ArrayList;
 
 public class GameManager {
     
     private PlayerInGame player1, player2, currentPlayer;
-    // TODO arrayList of weatherCards
+
+    private ArrayList<Card> weatherCards = new ArrayList<>();
 
     public GameManager (Player player1, Player player2){
         this.player1 = new PlayerInGame(player1);
@@ -18,96 +20,7 @@ public class GameManager {
         this.currentPlayer = this.player1;
     }
 
-    ///////// THE WTF PART
-    /**
-    public String placeCard (Card card , Position position) {
-        if (!canPlaceCard(card , position)) {
-            return "nashod place konam";
-        }
-
-        if (position.equals(Position.Front)){
-            currentPlayer.addToMelee(card);
-        } else if (position.equals(Position.Middle)){
-            currentPlayer.addToRange(card);
-        } else if (position.equals(Position.Back)){
-            currentPlayer.addToSiege(card);
-        } else if (position.equals(Position.SpecialFront)){
-            currentPlayer.
-        } else if (position.equals(Position.SpecialMiddle)){
-
-        } else if (position.equals(Position.SpecialBack)){
-
-        } else if (position.equals(Position.WeatherPlace)){
-
-        }
-
-        if (card.getPosition().equals(Type.CloseCombat)){
-
-        } else if (card.getPosition().equals(Type.Agile)){
-
-        } else if (card.getPosition().equals(Type.RangedCombat)){
-
-        } else if (card.getPosition().equals(Type.Siege)){
-
-        } else if (card.getPosition().equals(Type.Special)){
-
-        } else if (card.getPosition().equals(Type.SpecialDuper)){
-
-        } else {
-            
-        }
-    }
-    public String placeUnitCard (Card unitCard , Position position){
-        if (!canPlaceUnitCard(unitCard, position)){
-            return "nashod place konam";
-        }
-
-        if (type == CloseCombat){
-            currentPlayer.addToMelee(unitCard);
-        } else if (type == Siege){
-            currentPlayer.addToSiege(unitCard);
-        } else if (type == RangedCombat){
-            currentPlayer.addToRange(unitCard);
-        } else {
-            return "boosh miad";
-        }
-        
-        return "ba movaghiat anjam shod";
-    }
-    public String placeSpecialCard (SpecialCard specialCard , Type type){
-        if (!canPlaceSpecialCard(specialCard, type)){
-            return "nashod place konam";
-        }
-
-        if (type == CloseCombat){
-            currentPlayer.placeSpecialCardMelee(specialCard);
-        } else if (type == Siege){
-            currentPlayer.placeSpecialCardSiege(specialCard);
-        } else if (type == RangedCombat){
-            currentPlayer.placeSpecialCardRange(specialCard);
-        } else {
-            return "boosh miad";
-        }
-
-        return "ba movaghiat anjam shod";
-    }
-    public String placeWeatherCard () {
-        return "OK";
-    }
-    public String removeUnitCard (UnitCard unitCard){
-        return currentPlayer.removeUnitCard(unitCard);
-    }
-    public String removeSpecialCard (SpecialCard specialCard){
-        return currentPlayer.removeSpecialCard(specialCard);
-    }
-    public String removeWeatherCard () {
-
-        return "ba movafaghiat remove shod";
-    }
-    /**/
-    ///////// END OF WTF
-
-    /// Functions for Placing the Cards
+    /// Functions for Placing the Cards with position
     public String placeCard (Card card, Position position) {
         if (position.equals(Position.Melee)) {
             return addToMelee(card);
@@ -128,16 +41,64 @@ public class GameManager {
         }
     }
 
+    /// Functions for Placing the Cards without the need of position
     public String placeCard(Card card) {
-        //TODO @Arvin
         //Kartaii ke faghat ye ja mitoonan place beshan ro place kon
-        return null;
-    }
+        Type theCardType = card.getType();
+        if (!(card.getAbility() instanceof Spy)){
+            if (theCardType.equals(Type.Agile)) {
+                return "kheir";
+            } else if (theCardType.equals(Type.CloseCombat)){
+                return placeCard(card, Position.Melee);
+            } else if (theCardType.equals(Type.RangedCombat)){
+                return placeCard(card , Position.Range);
+            } else if (theCardType.equals(Type.Siege)) {
+                return placeCard(card , Position.Siege);
+            } else if (theCardType.equals(Type.Spell)) {
+                return "kheir";
+            } else if (theCardType.equals(Type.Weather)) {
+                return placeCard(card , Position.WeatherPlace);
+            } else {
+                return "ay khar kose";
+            }
+        } else {
+            return "ay khar kose";
+        }
+    } 
 
     public String placeCardEnemy(Card card) {
-        //TODO @Arvin
         //Kartaii ke faghat ye ja mitoonan place beshan ro place kon faghat baraye spy
-        return null;
+        Type theCardType = card.getType();
+
+        PlayerInGame otherPlayer;
+        if (currentPlayer.equals(player1)) {
+            otherPlayer = player2;
+        } else {
+            otherPlayer = player1;
+        }
+
+        if ((card.getAbility() instanceof Spy)){
+            if (theCardType.equals(Type.Agile)) {
+                return "kheir";
+            } else if (theCardType.equals(Type.CloseCombat)){
+                otherPlayer.addToMelee(card);
+                return "yes";
+            } else if (theCardType.equals(Type.RangedCombat)){
+                otherPlayer.addToRange(card);
+                return "yes";
+            } else if (theCardType.equals(Type.Siege)) {
+                otherPlayer.addToSiege(card);
+                return "yes";
+            } else if (theCardType.equals(Type.Spell)) {
+                return "kheir";
+            } else if (theCardType.equals(Type.Weather)) {
+                return "kheir";
+            } else {
+                return "ay khar kose";
+            }
+        } else {
+            return "ay khar kose";
+        }
     }
 
     public String addToMelee (Card card) {
@@ -183,29 +144,51 @@ public class GameManager {
         return "ba movafaghiat remove shod";
     }
     public String placeToWeather (Card card) {
-        // TODO
+        if (!canBePlacedToWeather(card)) {
+            return "no";
+        }
+        weatherCards.add(card);
         return "ba movafaghiat remove shod";
     }
+    
 
-    public String removeCard (Card card, Position position) {
-        if (position.equals(Position.Melee)) {
-            return removeFromMelee(card);
-        } else if (position.equals(Position.Range)) {
-            return removeFromRange(card);
-        } else if (position.equals(Position.Siege)) {
-            return removeFromSiege(card);
-        } else if (position.equals(Position.SpellMelee)) {
-            return removeSpellMelee(card);
-        } else if (position.equals(Position.SpellRange)) {
-            return removeSpellRange(card);
-        } else if (position.equals(Position.SpellSiege)) {
-            return removeSpellSiege(card);
-        } else if (position.equals(Position.WeatherPlace)) {
-            return removeFromWeather(card);
+    public String removeCard (Card card) {
+        for (Card sampleCard : weatherCards) {
+            if (card.equals(sampleCard)) {
+                return removeFromWeather(card);
+            }
+        }
+
+        PlayerInGame otherPlayer;
+        if (currentPlayer.equals(player1)) {
+            otherPlayer = player2;
         } else {
-            return "NANI?!";
+            otherPlayer = player1;
+        }
+
+        Position forCurrentPlayer = findCardInGameForCurrentPlayer(card);
+        Position forOtherPlayer = findCardInGameForOtherPlayer(card);
+
+        if (forCurrentPlayer != null && forOtherPlayer == null) {
+            currentPlayer.removeCard(card, forCurrentPlayer);
+            return "yes";
+        } else if (forCurrentPlayer == null && forOtherPlayer != null) {
+            otherPlayer.removeCard(card, forOtherPlayer);
+            return "yes";
+        } else {
+            return "remove shekast khord";
         }
     }
+    /* *
+    public String removeCard (Card card, Position position) {
+        if (position.equals(Position.WeatherPlace)) {
+            return removeFromWeather(card);
+        }
+        currentPlayer.removeCard(card, position);
+        return "yes";
+    }
+    /* */
+
     public String removeFromMelee (Card card) {
         if (!canBeAddedToMelee(card)) {
             return "nemishe";
@@ -248,6 +231,7 @@ public class GameManager {
         currentPlayer.removeSpellSiege(card);
         return "ba movafaghiat remove shod";
     }
+
     public String removeFromWeather (Card card) {
         // TODO
         return "ba movafaghiat remove shod";
@@ -292,19 +276,34 @@ public class GameManager {
         return true;
     }
     public boolean canBePlacedToWeather (Card card) {
-        // TODO
-        return true;
+        if (card.getType().equals(Type.Weather)) {
+            return true;
+        }
+        return false;
     }
 
     public Position findCardInGameForCurrentPlayer(Card card){
-        // TODO
-
-        return null;
+        for (Card sampleCard : weatherCards) {
+            if (card.equals(sampleCard)) {
+                return Position.WeatherPlace;
+            }
+        }
+        return currentPlayer.findCardInGame(card);
     }
     public Position findCardInGameForOtherPlayer(Card card){
-        // TODO
+        PlayerInGame otherPlayer;
+        if (currentPlayer.equals(player1)) {
+            otherPlayer = player2;
+        } else {
+            otherPlayer = player1;
+        }
 
-        return null;
+        for (Card sampleCard : weatherCards) {
+            if (card.equals(sampleCard)) {
+                return Position.WeatherPlace;
+            }
+        }
+        return otherPlayer.findCardInGame(card);    
     }
 
     // Comander's horn related functions
@@ -321,7 +320,7 @@ public class GameManager {
         currentPlayer.someCardsCurrentHpTimesInt(number, someCards);
     }
 
-    // Muster related functions
+    // Muster related functions // TODO : what the hell is wrong with muster ability
     public ArrayList<Card> getCardsWithSameNameFromHand (Card card) {
         return currentPlayer.getCardsWithSameNameFromHand(card);
     }
@@ -350,11 +349,10 @@ public class GameManager {
     public int getHandCount () {
         return currentPlayer.getHandCount();
     } 
-    
-    public boolean isTwoWeatherCardsSame () {
-        // TODO
-        return false;
+    public ArrayList<Card> getWeatherCards () {
+        return weatherCards;
     }
+
     public String endTurn () {
         // TODO
 
@@ -363,8 +361,11 @@ public class GameManager {
     }
 
     public ArrayList<Card> getCardRowFromPosition(Position position) {
-        return null;
-        // TODO @Arvin
+        if (position.equals(Position.WeatherPlace)) {
+            return getWeatherCards();
+        } else {
+            return currentPlayer.getCardRowFromPosition(position);
+        }
     }
 
     public void switchTurn () {
@@ -375,18 +376,82 @@ public class GameManager {
         }
     }
 
+
+    // Functions Related To Scorch
     public ArrayList<Card> getMaximumPowerInRow(Position position) {
-        //TODO @Arvin
         // BAYAD MAJMOO GHODRAT CARD HAYE GHEIR HERO TOYE OON RADIF OTHER PLAYER HESAB BEHSE
         // AGE IN ADDAD KAMTAR AZ 10 bood return null
         // AGE BISHTAR MOSAVI 10 BOOD TAMAM CARD HA BA BISHTARIN GHODRAT BE YE ARRAYLIST EZAFE VA RETURN SHAN
-        return null;
+        PlayerInGame otherPlayer;
+        if (currentPlayer.equals(player1)) {
+            otherPlayer = player2;
+        } else {
+            otherPlayer = player1;
+        }
+        
+        int sumOfNoneHeroPowers = 0;
+        int maxOfCurrentHP = 0;
+        ArrayList<Card> cardInRow = otherPlayer.getCardRowFromPosition(position);
+        for (Card card : cardInRow) {
+            if (!card.isHero()) {
+                sumOfNoneHeroPowers += card.getCurrentHP();
+                if (card.getCurrentHP() > maxOfCurrentHP) {
+                    maxOfCurrentHP = card.getCurrentHP();
+                }
+            }
+        }
+        if (sumOfNoneHeroPowers < 10) {
+            return null;
+        }
+        
+        ArrayList<Card> theStrongests = new ArrayList<>();
+        for (Card card : cardInRow) {
+            if (!card.isHero()) {
+                if (card.getCurrentHP() == maxOfCurrentHP) {
+                    theStrongests.add(card);
+                }
+            }
+        }
+        return theStrongests;
     }
 
     public ArrayList<Card> getMaximumPowerInField() {
         //TODO @Arvin
         // TOYE IN MAJMOO GHORAT MOHEM NIST VALI HERO HA HAMCHENAN REMOVE NEMITOONAN BESHAN
         // AGE BISHTAR MOSAVI 10 BOOD TAMAM CARD HA BA BISHTARIN GHODRAT BE YE ARRAYLIST EZAFE VA RETURN SHAN
+
+        // ARVIN IS WORKING HERE
+        /* *
+        PlayerInGame otherPlayer;
+        if (currentPlayer.equals(player1)) {
+            otherPlayer = player2;
+        } else {
+            otherPlayer = player1;
+        }
+
+        int maxOfCurrentHP = 0;
+        ArrayList<Card> cardInRow = otherPlayer.getCardRowFromPosition(position);
+        for (Card card : cardInRow) {
+            if (!card.isHero()) {
+                sumOfNoneHeroPowers += card.getCurrentHP();
+                if (card.getCurrentHP() > maxOfCurrentHP) {
+                    maxOfCurrentHP = card.getCurrentHP();
+                }
+            }
+        }
+        
+        
+        ArrayList<Card> theStrongests = new ArrayList<>();
+        for (Card card : cardInRow) {
+            if (!card.isHero()) {
+                if (card.getCurrentHP() == maxOfCurrentHP) {
+                    theStrongests.add(card);
+                }
+            }
+        }
+        return theStrongests;
+        /* */
+
         return null;
     }
 
