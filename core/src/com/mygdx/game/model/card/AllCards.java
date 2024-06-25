@@ -44,7 +44,8 @@ public enum AllCards {
     Decoy("Decoy", -1, 3, Spell, new NoAbility(), false, ""),
     Cow("Cow", 0, 1, RangedCombat, new Transformers(), false, ""),
     BovineDefenceForce("Bovine Defence Force", 8, 0, CloseCombat, new NoAbility(),false, ""),
-    Hemdall("Hemdall", 11, 0, CloseCombat, new NoAbility(), true, "")
+    Hemdall("Hemdall", 11, 0, CloseCombat, new NoAbility(), true, ""),
+    Scorch("Scorch", 0, 3, Spell, new Scorch(), false, "")
     
     ;
     

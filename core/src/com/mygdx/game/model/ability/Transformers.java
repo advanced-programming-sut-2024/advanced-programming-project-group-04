@@ -11,7 +11,7 @@ public class Transformers implements Ability {
             Card card = new Card(AllCards.BovineDefenceForce);
             gameManager.placeCard(card);
         }
-        if (callerCard.getAllCard().equals(AllCards.Kambi) {
+        if (callerCard.getAllCard().equals(AllCards.Kambi)) {
             Card card = new Card(AllCards.Hemdall);
             gameManager.placeCard(card);
         }

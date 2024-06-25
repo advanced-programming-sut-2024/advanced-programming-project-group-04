@@ -25,7 +25,7 @@ public class Main extends Game {
         backgroundMusic.play();
 
         // Set the initial screen
-        setScreen(new GameMenu(this));
+        setScreen(new LoginMenu(this));
     }
 
     @Override
