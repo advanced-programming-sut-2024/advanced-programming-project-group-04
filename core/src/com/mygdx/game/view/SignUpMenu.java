@@ -52,8 +52,9 @@ public class SignUpMenu extends Menu {
         // Username, email and Password fields
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
         textFieldStyle.font = font;
-        textFieldStyle.fontColor = Color.BLACK;
+        textFieldStyle.fontColor = Color.CHARTREUSE;
         textFieldStyle.background = skin.getDrawable("textfield");
+        textFieldStyle.messageFontColor = Color.CYAN;
 
         TextField usernameField = new TextField("", textFieldStyle);
         usernameField.setMessageText("Username");
