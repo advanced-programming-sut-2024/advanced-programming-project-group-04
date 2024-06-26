@@ -10,7 +10,7 @@ import com.mygdx.game.model.leader.Leader;
 public class Faction {
     private final String name;
 
-    private static ArrayList<AllCards> neutralCards = new ArrayList<>();
+    private final static ArrayList<AllCards> neutralCards = new ArrayList<>();
 
     private ArrayList<Leader> leaders = new ArrayList<>();
 
@@ -30,7 +30,7 @@ public class Faction {
         neutralCards.add(GaunterODimmDarkness);
         neutralCards.add(GeraltOfRivia);
         neutralCards.add(Avallach);
-        neutralCards.add(OlgierdVonEverc);
+        neutralCards.add(OlgierdVonEverec);
         neutralCards.add(TrissMerigold);
         neutralCards.add(Vesemir);
         neutralCards.add(Villentretenmerth);
@@ -50,7 +50,7 @@ public class Faction {
         return "images/factions/" + className + ".png";
     }
 
-    public String getName() {
-        return name;
+    public static ArrayList<AllCards> getNeutralCards() {
+        return neutralCards;
     }
 }

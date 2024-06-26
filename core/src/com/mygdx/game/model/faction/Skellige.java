@@ -8,39 +8,43 @@ import static com.mygdx.game.model.card.AllCards.*;
 
 public class Skellige extends Faction{
 
-    private static ArrayList<AllCards> skelligeCards = new ArrayList<>();
+    private final static ArrayList<AllCards> cards = new ArrayList<>();
 
     static {
-        skelligeCards.add(Mardoeme);
-        skelligeCards.add(Berserker);
-        skelligeCards.add(TransformedVidkaarl);
-        skelligeCards.add(Svanrige);
-        skelligeCards.add(Udalryk);
-        skelligeCards.add(DonarAnHindar);
-        skelligeCards.add(ClanAnCraite);
-        skelligeCards.add(BlueboyLugos);
-        skelligeCards.add(MadmanLugos);
-        skelligeCards.add(Cerys);
-        skelligeCards.add(Kambi);
-        skelligeCards.add(BirnaBran);
-        skelligeCards.add(ClanDrummondShieldmaiden);
-        skelligeCards.add(ClanTordarrochArmorsmith);
-        skelligeCards.add(ClanDimunPirate);
-        skelligeCards.add(ClanBrokvarArcher);
-        skelligeCards.add(Ermion);
-        skelligeCards.add(Hjalmar);
-        skelligeCards.add(YoungBerserker);
-        skelligeCards.add(TransformedYoungVidkaarl);
-        skelligeCards.add(LightLongship);
-        skelligeCards.add(HolgerBlackhand);
-        skelligeCards.add(WarLongship);
-        skelligeCards.add(DraigBonDhu);
-        skelligeCards.add(Olaf);
-        skelligeCards.add(Hemdall);
-        skelligeCards.add(ClanHeymaeySkald);    
+        cards.add(Mardroeme);
+        cards.add(Berserker);
+        cards.add(TransformedVidkaarl);
+        cards.add(Svanrige);
+        cards.add(Udalryk);
+        cards.add(DonarAnHindar);
+        cards.add(ClanAnCraite);
+        cards.add(BlueboyLugos);
+        cards.add(MadmanLugos);
+        cards.add(Cerys);
+        cards.add(Kambi);
+        cards.add(BirnaBran);
+        cards.add(ClanDrummondShieldMaiden);
+        cards.add(ClanTordarrochArmorsmith);
+        cards.add(ClanDimunPirate);
+        cards.add(ClanBrokvarArcher);
+        cards.add(Ermion);
+        cards.add(Hjalmar);
+        cards.add(YoungBerserker);
+        cards.add(TransformedYoungVidkaarl);
+        cards.add(LightLongship);
+        cards.add(HolgerBlackhand);
+        cards.add(WarLongship);
+        cards.add(DraigBonDhu);
+        cards.add(Olaf);
+        cards.add(Hemdall);
+        cards.add(ClanHeymaeySkald);
     }
 
     public Skellige() {
         super("Skellige");
+    }
+
+    public static ArrayList<AllCards> getCards() {
+        return cards;
     }
 }

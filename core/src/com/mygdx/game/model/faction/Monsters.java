@@ -7,47 +7,51 @@ import static com.mygdx.game.model.card.AllCards.*;
 
 public class Monsters extends Faction{
     
-    private static ArrayList<AllCards> monsterCards = new ArrayList<>();
+    private final static ArrayList<AllCards> cards = new ArrayList<>();
     
     static {
-        monsterCards.add(Draug);
-        monsterCards.add(Imlerith);
-        monsterCards.add(Leshen);
-        monsterCards.add(Kayran);
-        monsterCards.add(Toad);
-        monsterCards.add(ArachasBehemoth);
-        monsterCards.add(CroneBrewess);
-        monsterCards.add(CroneWeavess);
-        monsterCards.add(CroneWhispess);
-        monsterCards.add(EarthElemental);
-        monsterCards.add(Fiend);
-        monsterCards.add(FireElemental);
-        monsterCards.add(Forktail);
-        monsterCards.add(Frightener);
-        monsterCards.add(GraveHag);
-        monsterCards.add(Griffin);
-        monsterCards.add(IceGiant);
-        monsterCards.add(PlagueMaiden);
-        monsterCards.add(VampireKatakan);
-        monsterCards.add(Werewolf);
-        monsterCards.add(Arachas);
-        monsterCards.add(Botchling);
-        monsterCards.add(VampireBruxa);
-        monsterCards.add(VampireEkimmara);
-        monsterCards.add(VampireFleder);
-        monsterCards.add(VampireGarkain);
-        monsterCards.add(CelaenoHarpy);
-        monsterCards.add(Cockatrice);
-        monsterCards.add(Endrega);
-        monsterCards.add(Foglet);
-        monsterCards.add(Gargoyle);
-        monsterCards.add(Harpy);
-        monsterCards.add(Nekker);
-        monsterCards.add(Wyvern);
-        monsterCards.add(Ghoul);
+        cards.add(Draug);
+        cards.add(Imlerith);
+        cards.add(Leshen);
+        cards.add(Kayran);
+        cards.add(Toad);
+        cards.add(ArachasBehemoth);
+        cards.add(CroneBrewess);
+        cards.add(CroneWeavess);
+        cards.add(CroneWhispess);
+        cards.add(EarthElemental);
+        cards.add(Fiend);
+        cards.add(FireElemental);
+        cards.add(Forktail);
+        cards.add(Frightener);
+        cards.add(GraveHag);
+        cards.add(Griffin);
+        cards.add(IceGiant);
+        cards.add(PlagueMaiden);
+        cards.add(VampireKatakan);
+        cards.add(Werewolf);
+        cards.add(Arachas);
+        cards.add(Botchling);
+        cards.add(VampireBruxa);
+        cards.add(VampireEkimmara);
+        cards.add(VampireFleder);
+        cards.add(VampireGarkain);
+        cards.add(CelaenoHarpy);
+        cards.add(Cockatrice);
+        cards.add(Endrega);
+        cards.add(Foglet);
+        cards.add(Gargoyle);
+        cards.add(Harpy);
+        cards.add(Nekker);
+        cards.add(Wyvern);
+        cards.add(Ghoul);
     }
 
     public Monsters() {
         super("Monsters");
+    }
+
+    public static ArrayList<AllCards> getCards() {
+        return cards;
     }
 }

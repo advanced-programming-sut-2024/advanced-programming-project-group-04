@@ -16,11 +16,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
 import com.mygdx.game.model.Player;
+import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.faction.*;
 
+import java.util.ArrayList;
 
 
 public class FactionAndLeaderMenu extends Menu {
@@ -30,6 +33,11 @@ public class FactionAndLeaderMenu extends Menu {
     private ImageButton selectedFactionButton = null;
     private ImageButton selectedLeaderButton = null;
     private Label explanationLabel = null;
+    private Faction faction;
+
+    Table availableCardsTable = new Table();
+    Table selectedCardsTable = new Table();
+    Table statsTable = new Table();
 
     public FactionAndLeaderMenu(Main game) {
         super(game);
@@ -43,7 +51,7 @@ public class FactionAndLeaderMenu extends Menu {
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
-        Faction faction = Player.getLoggedInPlayer().getSelectedFaction();
+        faction = Player.getLoggedInPlayer().getSelectedFaction();
         if (faction == null) selectedFaction = "";
         else selectedFaction = Player.getLoggedInPlayer().getSelectedFaction().getImageURL();
 
@@ -111,6 +119,14 @@ public class FactionAndLeaderMenu extends Menu {
             }
         });
 
+        TextButton selectDeckButton = new TextButton("Select Deck", chooseLeaderStyle);
+        selectDeckButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                showDeckSelection();
+            }
+        });
+
         TextButton backButton = new TextButton("Back", chooseLeaderStyle);
         backButton.addListener(new ClickListener() {
             @Override
@@ -123,6 +139,8 @@ public class FactionAndLeaderMenu extends Menu {
         table.add(chooseFactionButton).width(400).height(120).pad(10);
         table.row().pad(10, 0, 10, 0);
         table.add(chooseLeaderButton).width(400).height(120).pad(10);
+        table.row().pad(20, 0, 20, 0);
+        table.add(selectDeckButton).width(400).height(120).pad(10);
         table.row().pad(20, 0, 20, 0);
         table.add(backButton).pad(40).width(400).height(120);
 
@@ -145,7 +163,7 @@ public class FactionAndLeaderMenu extends Menu {
 
         // Create a texture from the pixmap
         Texture texture = new Texture(pixmap);
-        pixmap.dispose(); // Dispose pixmap as it's no longer needed
+        pixmap.dispose();
 
         // Set the texture as the dialog's background
         dialog.setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
@@ -184,6 +202,12 @@ public class FactionAndLeaderMenu extends Menu {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     selectedFaction = factionName;
+                    if (factionName.contains("skellige")) faction = new Skellige();
+                    if (factionName.contains("scoiatael")) faction = new Scoiatael();
+                    if (factionName.contains("realms")) faction = new NorthernRealms();
+                    if (factionName.contains("nilfgaard")) faction = new Nilfgaard();
+                    if (factionName.contains("monsters")) faction = new Monsters();
+                    Player.getLoggedInPlayer().setFaction(faction);
                     //TODO @arman Player.getLoggedInPlayer.setFaction() ro ye joori ezafe kon;
                     highlightSelectedFaction(factionButton);
                     dialog.hide();
@@ -213,7 +237,7 @@ public class FactionAndLeaderMenu extends Menu {
     }
 
     private void showLeaderSelection() {
-        if (selectedFaction.isEmpty()) {
+        if (faction == null) {
             System.out.println("Please select a faction first.");
             return;
         }
@@ -233,7 +257,7 @@ public class FactionAndLeaderMenu extends Menu {
 
         // Create a texture from the pixmap
         Texture texture = new Texture(pixmap);
-        pixmap.dispose(); // Dispose pixmap as it's no longer needed
+        pixmap.dispose();
 
         // Set the texture as the dialog's background
         dialog.setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
@@ -298,4 +322,179 @@ public class FactionAndLeaderMenu extends Menu {
         )));
         selectedLeaderButton = selectedButton;
     }
+
+    private void showDeckSelection() {
+        Skin skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
+        Dialog dialog = new Dialog("Select Deck", skin);
+
+        if (faction == null) {
+            System.out.println("Error: No faction selected!");
+            return;
+        }
+
+        float dialogWidth = Gdx.graphics.getWidth();
+        float dialogHeight = Gdx.graphics.getHeight() * 0.8f; // 80% of the screen height
+        dialog.setSize(dialogWidth, dialogHeight);
+        dialog.setPosition(0, Gdx.graphics.getHeight() * 0.05f);
+
+        // Set dark blue background
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f)); // Dark blue color
+        pixmap.fill();
+
+        // Create a texture from the pixmap
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+
+        // Set the texture as the dialog's background
+        dialog.setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
+
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+
+        // Left section for available cards
+
+        availableCardsTable.top();
+        ScrollPane availableCardsScrollPane = new ScrollPane(availableCardsTable, skin);
+        availableCardsScrollPane.setScrollingDisabled(true, false); // Enable vertical scrolling only
+        mainTable.add(availableCardsScrollPane).width(dialogWidth * 0.4f).height(dialogHeight).pad(10);
+
+        // Middle section for stats
+
+        Label heroCountLabel = new Label("Number of Hero Cards: 0", skin);
+        Label unitCountLabel = new Label("Number of Unit Cards: 0", skin);
+        Label spellCountLabel = new Label("Number of Spell Cards: 0", skin);
+        statsTable.add(heroCountLabel).pad(10).row();
+        statsTable.add(unitCountLabel).pad(10).row();
+        statsTable.add(spellCountLabel).pad(10).row();
+        mainTable.add(statsTable).width(dialogWidth * 0.2f).height(dialogHeight).pad(10);
+
+        // Right section for selected cards
+
+        selectedCardsTable.top();
+        ScrollPane selectedCardsScrollPane = new ScrollPane(selectedCardsTable, skin);
+        selectedCardsScrollPane.setScrollingDisabled(true, false); // Enable vertical scrolling only
+        mainTable.add(selectedCardsScrollPane).width(dialogWidth * 0.4f).height(dialogHeight).pad(10);
+
+        AssetLoader assetLoader = game.assetLoader;
+        ArrayList<AllCards> neutralCards = Faction.getNeutralCards();
+        ArrayList<AllCards> factionCards = new ArrayList<>();
+
+        if (faction instanceof Skellige) {
+            factionCards = Skellige.getCards();
+        } else if (faction instanceof Scoiatael) {
+            factionCards = Scoiatael.getCards();
+        } else if (faction instanceof NorthernRealms) {
+            factionCards = NorthernRealms.getCards();
+        } else if (faction instanceof Monsters) {
+            factionCards = Monsters.getCards();
+        } else if (faction instanceof Nilfgaard) {
+            factionCards = Nilfgaard.getCards();
+        }
+
+        addCardsToTable(neutralCards, availableCardsTable, assetLoader, heroCountLabel, unitCountLabel, spellCountLabel);
+        addCardsToTable(factionCards, availableCardsTable, assetLoader, heroCountLabel, unitCountLabel, spellCountLabel);
+
+        dialog.getContentTable().add(mainTable).pad(10);
+        dialog.button("Cancel").pad(20); // Update padding for Cancel button
+        dialog.show(stage);
+    }
+
+    private void addCardsToTable(ArrayList<AllCards> cards, Table table, AssetLoader assetLoader, Label heroCountLabel, Label unitCountLabel, Label spellCountLabel) {
+        for (AllCards card : cards) {
+            if (card.getNumber() > 0) {
+                for (int i = 0; i < card.getNumber(); i++) {
+                    String cardImagePath = card.getImageURL();
+                    Texture cardTexture = assetLoader.getAssetManager().get(cardImagePath, Texture.class);
+                    ImageButton cardButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(cardTexture)));
+
+                    float buttonSize = 300;
+                    cardButton.getImageCell().size(buttonSize, buttonSize);
+
+                    // Add hover and click effects
+                    cardButton.addListener(new ClickListener() {
+                        @Override
+                        public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                            cardButton.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                            explanationLabel.setText(card.getDescription());
+                        }
+
+                        @Override
+                        public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                            cardButton.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+                            explanationLabel.setText("");
+                        }
+
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            Table parentTable = cardButton.getParent() instanceof Table ? (Table) cardButton.getParent() : null;
+
+                            if (parentTable != null && parentTable.equals(availableCardsTable)) {
+                                moveCardToTable(cardButton, availableCardsTable, selectedCardsTable, buttonSize);
+                            } else if (parentTable != null && parentTable.equals(selectedCardsTable)) {
+                                moveCardToTable(cardButton, selectedCardsTable, availableCardsTable, buttonSize);
+                            }
+                            updateStats(selectedCardsTable, heroCountLabel, unitCountLabel, spellCountLabel);
+                        }
+                    });
+
+                    table.add(cardButton).pad(10).width(buttonSize).height(buttonSize);
+
+                    // Create a new row after every 3 cards
+                    if (table.getChildren().size % 3 == 0) {
+                        table.row();
+                    }
+                }
+            }
+        }
+    }
+
+    private void moveCardToTable(ImageButton cardButton, Table fromTable, Table toTable, float buttonSize) {
+        fromTable.removeActor(cardButton);
+        toTable.add(cardButton).pad(10).width(buttonSize).height(buttonSize);
+
+        rebuildTableGrid(fromTable, buttonSize);
+
+        if (toTable.getChildren().size % 3 == 0) {
+            toTable.row();
+        }
+    }
+
+    private void rebuildTableGrid(Table table, float buttonSize) {
+        Array<Actor> children = new Array<>(table.getChildren());
+        table.clearChildren();
+
+        for (int i = 0; i < children.size; i++) {
+            table.add(children.get(i)).pad(10).width(buttonSize).height(buttonSize);
+            if ((i + 1) % 3 == 0) {
+                table.row();
+            }
+        }
+    }
+
+    private void updateStats(Table selectedCardsTable, Label heroCountLabel, Label unitCountLabel, Label spellCountLabel) {
+//        int heroCount = 0;
+//        int unitCount = 0;
+//        int spellCount = 0;
+//
+//        for (Actor actor : selectedCardsTable.getChildren()) {
+//            if (actor instanceof ImageButton) {
+//                ImageButton cardButton = (ImageButton) actor;
+//                AllCards card = (AllCards) cardButton.getUserObject();
+//                if (card.isHero()) {
+//                    heroCount++;
+//                }
+//                if (card.isUnitCard()) {
+//                    unitCount++;
+//                } else {
+//                    spellCount++;
+//                }
+//            }
+//        }
+//
+//        heroCountLabel.setText("Number of Hero Cards: " + heroCount);
+//        unitCountLabel.setText("Number of Unit Cards: " + unitCount);
+//        spellCountLabel.setText("Number of Spell Cards: " + spellCount);
+    }
+
 }
