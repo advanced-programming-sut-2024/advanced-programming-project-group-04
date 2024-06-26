@@ -163,7 +163,7 @@ public class FactionAndLeaderMenu extends Menu {
 
         // Create a texture from the pixmap
         Texture texture = new Texture(pixmap);
-        pixmap.dispose(); // Dispose pixmap as it's no longer needed
+        pixmap.dispose();
 
         // Set the texture as the dialog's background
         dialog.setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
@@ -257,7 +257,7 @@ public class FactionAndLeaderMenu extends Menu {
 
         // Create a texture from the pixmap
         Texture texture = new Texture(pixmap);
-        pixmap.dispose(); // Dispose pixmap as it's no longer needed
+        pixmap.dispose();
 
         // Set the texture as the dialog's background
         dialog.setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
@@ -332,11 +332,10 @@ public class FactionAndLeaderMenu extends Menu {
             return;
         }
 
-        // Set dialog size to fill most of the screen except a thin layer in the top and bottom
         float dialogWidth = Gdx.graphics.getWidth();
-        float dialogHeight = Gdx.graphics.getHeight() * 0.9f; // 90% of the screen height
+        float dialogHeight = Gdx.graphics.getHeight() * 0.8f; // 80% of the screen height
         dialog.setSize(dialogWidth, dialogHeight);
-        dialog.setPosition(0, Gdx.graphics.getHeight() * 0.05f); // Center the dialog
+        dialog.setPosition(0, Gdx.graphics.getHeight() * 0.05f);
 
         // Set dark blue background
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -345,12 +344,11 @@ public class FactionAndLeaderMenu extends Menu {
 
         // Create a texture from the pixmap
         Texture texture = new Texture(pixmap);
-        pixmap.dispose(); // Dispose pixmap as it's no longer needed
+        pixmap.dispose();
 
         // Set the texture as the dialog's background
         dialog.setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
 
-        // Create the main table with 3 sections
         Table mainTable = new Table();
         mainTable.setFillParent(true);
 
@@ -378,7 +376,6 @@ public class FactionAndLeaderMenu extends Menu {
         selectedCardsScrollPane.setScrollingDisabled(true, false); // Enable vertical scrolling only
         mainTable.add(selectedCardsScrollPane).width(dialogWidth * 0.4f).height(dialogHeight).pad(10);
 
-        // Load card images using AssetLoader
         AssetLoader assetLoader = game.assetLoader;
         ArrayList<AllCards> neutralCards = Faction.getNeutralCards();
         ArrayList<AllCards> factionCards = new ArrayList<>();
@@ -456,10 +453,8 @@ public class FactionAndLeaderMenu extends Menu {
         fromTable.removeActor(cardButton);
         toTable.add(cardButton).pad(10).width(buttonSize).height(buttonSize);
 
-        // Fill the grid in the fromTable
         rebuildTableGrid(fromTable, buttonSize);
 
-        // Add the card to the end of the toTable
         if (toTable.getChildren().size % 3 == 0) {
             toTable.row();
         }
