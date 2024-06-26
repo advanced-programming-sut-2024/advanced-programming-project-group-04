@@ -5,10 +5,10 @@ import com.mygdx.game.model.ability.*;
 import static com.mygdx.game.model.card.Type.*;
 
 public enum AllCards {
-
+        // TODO 1 card is missing now
         // Skellige
 
-        Mardoeme("Mardoeme", 0, 3, Spell, new Mardroeme(), false, "This Spell card has Mardoeme Ability and can be placed in the commmander's Horn spot . it effects the row that it was placed in"),
+        Mardroeme("Mardroeme", 0, 3, Spell, new Mardroeme(), false, "This Spell card has Mardroeme Ability and can be placed in the commmander's Horn spot . it effects the row that it was placed in"),
         Berserker("Berserker", 4, 1, CloseCombat, new Berserker(), false, "Transforms into Vidkaarl when Mardroeme is used.Vidkaarl has Morale Boost effect."),
         TransformedVidkaarl("Transformed Vidkaarl", 14, 0, CloseCombat, new MoralBoost(), false, "it can only be played when a berserker transform into it."),
         Svanrige("Svanrige", 4, 1, CloseCombat, new NoAbility(), false, ""),
@@ -20,7 +20,7 @@ public enum AllCards {
         Cerys("Cerys", 10, 1, CloseCombat, new Muster(), true, "Its Muster effect will summon Shield Maiden cards and other musters."),
         Kambi("Kambi", 11, 1, CloseCombat, new Transformers(), true, "Turns into a card with a power of 8 after one round"),
         BirnaBran("Birna Bran", 2, 1, CloseCombat, new Medic(), false, ""),
-        ClanDrummondShieldmaiden("Clan Drummond Shieldmaiden", 4, 3, CloseCombat, new TightBond(), false, "Can be Mustered by Cerys."),
+        ClanDrummondShieldMaiden("Clan Drummond Shieldmaiden", 4, 3, CloseCombat, new TightBond(), false, "Can be Mustered by Cerys."),
         ClanTordarrochArmorsmith("Clan Tordarroch Armorsmith", 4, 1, CloseCombat, new NoAbility(), false, ""),
         ClanDimunPirate("Clan Dimun Pirate", 6, 1, RangedCombat, new Scorch(), false, "kills opponent card(s) with most power(does not matter in which row in this card)"),
         ClanBrokvarArcher("Clan Brokvar Archer", 6, 3, RangedCombat, new NoAbility(), false, ""),
@@ -46,21 +46,21 @@ public enum AllCards {
         DolBlathannaScout("Dol Blathanna Scout", 6, 3, Agile, new NoAbility(), false, ""),
         DolBlathannaArcher("Dol Blathanna Archer", 4, 1, RangedCombat, new NoAbility(), false, ""),
         DwarvenSkirmisher("Dwarven Skirmisher", 3, 3, CloseCombat, new Muster(), false, ""),
-        Filavandrel("Filavandrel", 6, 1, Agile, new NoAbility(), false, ""),
+        FilavandrelAenFidhail("FilavandrelAenFidhail", 6, 1, Agile, new NoAbility(), false, ""),
         HavekarHealer("Havekar Healer", 0, 3, RangedCombat, new Medic(), false, ""),
         HavekarSmuggler("Havekar Smuggler", 5, 3, CloseCombat, new Muster(), false, ""),
-        IdaEmeanAep("Ida Emean aep", 6, 1, RangedCombat, new NoAbility(), false, ""),
+        IdaEmeanAepSivney("Ida Emean aep", 6, 1, RangedCombat, new NoAbility(), false, ""),
         Riordain("Riordain", 1, 1, RangedCombat, new NoAbility(), false, ""),
         Toruviel("Toruviel", 2, 1, RangedCombat, new NoAbility(), false, ""),
         VriheddBrigadeRecruit("Vrihedd Brigade Recruit", 4, 1, RangedCombat, new NoAbility(), false, ""),
         MahakamanDefender("Mahakaman Defender", 5, 5, CloseCombat, new NoAbility(), false, ""),
         VriheddBrigadeVeteran("Vrihedd Brigade Veteran", 5, 2, Agile, new NoAbility(), false, ""),
         Milva("Milva", 10, 1, RangedCombat, new MoralBoost(), false, ""),
-        Seasenthessis("Seasenthessis", 10, 1, RangedCombat, new NoAbility(), true, ""),
+        Saesenthessis("Saesenthessis", 10, 1, RangedCombat, new NoAbility(), true, ""),
         Schirru("Schirru", 8, 1, Siege, new Scorch(), false, "kills the opponent's card(s) with most power in enemy's Siege combat row if the sum of powers of none-hero cards in this row is 10 or more"),
         BarclayEls("Barclay Els", 6, 1, Agile, new NoAbility(), false, "-"),
         Eithne("Eithne", 10, 1, RangedCombat, new NoAbility(), true, ""),
-        IsengrimFaoiltiarna("Isengrim Faoiltiarna", 10, 1, CloseCombat, new MoralBoost(), true, ""),  
+        IsengrimFaolitarna("Isengrim Faoiltiarna", 10, 1, CloseCombat, new MoralBoost(), true, ""),  
 
         // Northen Realms
 
@@ -78,17 +78,17 @@ public enum AllCards {
         PoorFuckingInfantry("Poor Fucking Infantry", 1, 4, CloseCombat, new TightBond(), false, ""),
         PrinceStennis("Prince Stennis", 5, 1, CloseCombat, new Spy(), false, ""),
         RedanianFootSoldier("Redanian Foot Soldier", 1, 2, CloseCombat, new NoAbility(), false, ""),
-        SabrinaGlevissing("Sabrina Glevissing", 4, 1, RangedCombat, new NoAbility(), false, ""),
+        SabrinaGlevissig("Sabrina Glevissing", 4, 1, RangedCombat, new NoAbility(), false, ""),
         SheldonSkaggs("Sheldon Skaggs", 4, 1, RangedCombat, new NoAbility(), false, ""),
         SiegeTower("Siege Tower", 6, 1, Siege, new NoAbility(), false, ""),
         SiegfriedOfDenesle("Siegfried of Denesle", 5, 1, CloseCombat, new NoAbility(), false, ""),
         SigismundDijkstra("Sigismund Dijkstra", 4, 1, CloseCombat, new Spy(), false, ""),
-        SleDeTansarville("Síle de Tansarville", 5, 1, RangedCombat, new NoAbility(), false, ""),
+        SileDeTansarville("Síle de Tansarville", 5, 1, RangedCombat, new NoAbility(), false, ""),
         Thaler("Thaler", 1, 1, Siege, new Spy(), false, ""),
         Trebuchet("Trebuchet", 6, 2, Siege, new NoAbility(), false, ""),
         VernonRoche("Vernon Roche", 10, 1, CloseCombat, new NoAbility(), true, ""),
         Ves("Ves", 5, 1, CloseCombat, new NoAbility(), false, ""),
-        YarpenZirgrin("Yarpen Zirgrin", 2, 1, CloseCombat, new NoAbility(), false, ""),
+        YarpenZigrin("Yarpen Zirgrin", 2, 1, CloseCombat, new NoAbility(), false, ""),
         
         // Milf gaard
 
@@ -98,7 +98,6 @@ public enum AllCards {
         YoungEmissary("Young Emissary", 5, 2, CloseCombat, new TightBond(), false, ""),
         CahirMawrDyffrynAepCeallach("Cahir Mawr Dyffryn aep Ceallach", 6, 1, CloseCombat, new NoAbility(), false, ""),
         VattierDeRideaux("Vattier de Rideaux", 4, 1, CloseCombat, new Spy(), false, ""),
-        MennoCoehorn("Menno Coehorn", 10, 1, CloseCombat, new Medic(), true, ""),
         Puttkammer("Puttkammer", 3, 1, RangedCombat, new NoAbility(), false, ""),
         AssireVarAnahid("Assire var Anahid", 6, 1, RangedCombat, new NoAbility(), false, ""),
         BlackInfantryArcher("Black Infantry Archer", 10, 2, RangedCombat, new NoAbility(), false, ""),
@@ -178,7 +177,7 @@ public enum AllCards {
         GaunterODimmDarkness("Gaunter O'Dimm Darkness", 4, 3, RangedCombat, new Muster(), false, ""),
         GeraltOfRivia("Geralt of Rivia", 15, 1, CloseCombat, new NoAbility(), true, ""),
         Avallach("Avallach", 0, 1, CloseCombat, new Spy(), true, ""),
-        OlgierdVonEverc("Olgierd Von Everc", 6, 1, Agile, new MoralBoost(), false, ""),
+        OlgierdVonEverec("Olgierd Von Everc", 6, 1, Agile, new MoralBoost(), false, ""),
         TrissMerigold("Triss Merigold", 7, 1, CloseCombat, new NoAbility(), true, ""),
         Vesemir("Vesemir", 6, 1, CloseCombat, new NoAbility(), false, "-"),
         Villentretenmerth("Villentretenmerth", 7, 1, CloseCombat, new Scorch(), false, "Works only on opponent's close combat"),
@@ -243,7 +242,7 @@ public enum AllCards {
         return this.type != Spell && this.type != Weather;
     }
 
-    public String getImageUrl() {
+    public String getImageURL() {
         return "images/cards/" + this.name() + ".jpg";
     }
 }

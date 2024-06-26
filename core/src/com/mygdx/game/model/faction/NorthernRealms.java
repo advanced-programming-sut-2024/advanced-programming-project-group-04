@@ -7,38 +7,42 @@ import static com.mygdx.game.model.card.AllCards.*;
 import com.mygdx.game.model.card.AllCards;
 
 public class NorthernRealms extends Faction{
-    
-    private static ArrayList<AllCards> northenRealmsCards = new ArrayList<>();
+
+    private final static ArrayList<AllCards> cards = new ArrayList<>();
 
     static {
-        northenRealmsCards.add(Ballista);
-        northenRealmsCards.add(BlueStripesCommando);
-        northenRealmsCards.add(Catapult);
-        northenRealmsCards.add(DragonHunter);
-        northenRealmsCards.add(Dethmold);
-        northenRealmsCards.add(DunBannerMedic);
-        northenRealmsCards.add(EsteradThyssen);
-        northenRealmsCards.add(JohnNatalis);
-        northenRealmsCards.add(KaedweniSiegeExpert);
-        northenRealmsCards.add(KeiraMetz);
-        northenRealmsCards.add(PhilippaEilhart);
-        northenRealmsCards.add(PoorFuckingInfantry);
-        northenRealmsCards.add(PrinceStennis);
-        northenRealmsCards.add(RedanianFootSoldier);
-        northenRealmsCards.add(SabrinaGlevissing);
-        northenRealmsCards.add(SheldonSkaggs);
-        northenRealmsCards.add(SiegeTower);
-        northenRealmsCards.add(SiegfriedOfDenesle);
-        northenRealmsCards.add(SigismundDijkstra);
-        northenRealmsCards.add(SleDeTansarville);
-        northenRealmsCards.add(Thaler);
-        northenRealmsCards.add(Trebuchet);
-        northenRealmsCards.add(VernonRoche);
-        northenRealmsCards.add(Ves);
-        northenRealmsCards.add(YarpenZirgrin);
+        cards.add(Ballista);
+        cards.add(BlueStripesCommando);
+        cards.add(Catapult);
+        cards.add(DragonHunter);
+        cards.add(Dethmold);
+        cards.add(DunBannerMedic);
+        cards.add(EsteradThyssen);
+        cards.add(JohnNatalis);
+        cards.add(KaedweniSiegeExpert);
+        cards.add(KeiraMetz);
+        cards.add(PhilippaEilhart);
+        cards.add(PoorFuckingInfantry);
+        cards.add(PrinceStennis);
+        cards.add(RedanianFootSoldier);
+        cards.add(SabrinaGlevissig);
+        cards.add(SheldonSkaggs);
+        cards.add(SiegeTower);
+        cards.add(SiegfriedOfDenesle);
+        cards.add(SigismundDijkstra);
+        cards.add(SileDeTansarville);
+        cards.add(Thaler);
+        cards.add(Trebuchet);
+        cards.add(VernonRoche);
+        cards.add(Ves);
+        cards.add(YarpenZigrin);
     }
-    
+
     public NorthernRealms() {
         super("Northern Realms");
+    }
+
+    public static ArrayList<AllCards> getCards() {
+        return cards;
     }
 }

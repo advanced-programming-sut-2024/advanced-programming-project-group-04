@@ -96,9 +96,11 @@ public class Player {
         return this.deck;
     }
 
-    public Faction geFaction() {
+    public Faction getFaction() {
         return this.selectedFaction;
     }
+
+    public void setFaction(Faction faction) { this.selectedFaction = faction;}
 
     public void setPassword(String password) {
         this.password = password;
