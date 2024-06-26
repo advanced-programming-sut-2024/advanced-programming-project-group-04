@@ -24,6 +24,7 @@ import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.faction.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class FactionAndLeaderMenu extends Menu {
@@ -38,6 +39,12 @@ public class FactionAndLeaderMenu extends Menu {
     Table availableCardsTable = new Table();
     Table selectedCardsTable = new Table();
     Table statsTable = new Table();
+
+    Label heroCountLabel;
+    Label unitCountLabel;
+    Label spellCountLabel;
+
+    private HashMap<String, AllCards> cardLookupMap = new HashMap<>();
 
     public FactionAndLeaderMenu(Main game) {
         super(game);
@@ -143,6 +150,14 @@ public class FactionAndLeaderMenu extends Menu {
         table.add(selectDeckButton).width(400).height(120).pad(10);
         table.row().pad(20, 0, 20, 0);
         table.add(backButton).pad(40).width(400).height(120);
+
+
+        heroCountLabel = new Label("Number of Hero Cards: 0", skin);
+        unitCountLabel = new Label("Number of Unit Cards: 0", skin);
+        spellCountLabel = new Label("Number of Spell Cards: 0", skin);
+        heroCountLabel.setStyle(new Label.LabelStyle(font, Color.WHITE));
+        unitCountLabel.setStyle(new Label.LabelStyle(font, Color.WHITE));
+        spellCountLabel.setStyle(new Label.LabelStyle(font, Color.WHITE));
 
 
     }
@@ -361,9 +376,7 @@ public class FactionAndLeaderMenu extends Menu {
 
         // Middle section for stats
 
-        Label heroCountLabel = new Label("Number of Hero Cards: 0", skin);
-        Label unitCountLabel = new Label("Number of Unit Cards: 0", skin);
-        Label spellCountLabel = new Label("Number of Spell Cards: 0", skin);
+
         statsTable.add(heroCountLabel).pad(10).row();
         statsTable.add(unitCountLabel).pad(10).row();
         statsTable.add(spellCountLabel).pad(10).row();
@@ -392,21 +405,24 @@ public class FactionAndLeaderMenu extends Menu {
             factionCards = Nilfgaard.getCards();
         }
 
-        addCardsToTable(neutralCards, availableCardsTable, assetLoader, heroCountLabel, unitCountLabel, spellCountLabel);
-        addCardsToTable(factionCards, availableCardsTable, assetLoader, heroCountLabel, unitCountLabel, spellCountLabel);
+        addCardsToTable(neutralCards, availableCardsTable, assetLoader);
+        addCardsToTable(factionCards, availableCardsTable, assetLoader);
 
         dialog.getContentTable().add(mainTable).pad(10);
         dialog.button("Cancel").pad(20); // Update padding for Cancel button
         dialog.show(stage);
     }
 
-    private void addCardsToTable(ArrayList<AllCards> cards, Table table, AssetLoader assetLoader, Label heroCountLabel, Label unitCountLabel, Label spellCountLabel) {
+    private void addCardsToTable(ArrayList<AllCards> cards, Table table, AssetLoader assetLoader) {
         for (AllCards card : cards) {
+            cardLookupMap.put(card.getImageURL(), card);
             if (card.getNumber() > 0) {
                 for (int i = 0; i < card.getNumber(); i++) {
                     String cardImagePath = card.getImageURL();
                     Texture cardTexture = assetLoader.getAssetManager().get(cardImagePath, Texture.class);
                     ImageButton cardButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(cardTexture)));
+
+                    cardButton.setUserObject(cardImagePath);
 
                     float buttonSize = 300;
                     cardButton.getImageCell().size(buttonSize, buttonSize);
@@ -473,28 +489,34 @@ public class FactionAndLeaderMenu extends Menu {
     }
 
     private void updateStats(Table selectedCardsTable, Label heroCountLabel, Label unitCountLabel, Label spellCountLabel) {
-//        int heroCount = 0;
-//        int unitCount = 0;
-//        int spellCount = 0;
-//
-//        for (Actor actor : selectedCardsTable.getChildren()) {
-//            if (actor instanceof ImageButton) {
-//                ImageButton cardButton = (ImageButton) actor;
-//                AllCards card = (AllCards) cardButton.getUserObject();
-//                if (card.isHero()) {
-//                    heroCount++;
-//                }
-//                if (card.isUnitCard()) {
-//                    unitCount++;
-//                } else {
-//                    spellCount++;
-//                }
-//            }
-//        }
-//
-//        heroCountLabel.setText("Number of Hero Cards: " + heroCount);
-//        unitCountLabel.setText("Number of Unit Cards: " + unitCount);
-//        spellCountLabel.setText("Number of Spell Cards: " + spellCount);
+        int heroCount = 0;
+        int unitCount = 0;
+        int spellCount = 0;
+
+        for (Actor actor : selectedCardsTable.getChildren()) {
+            if (actor instanceof ImageButton) {
+                ImageButton cardButton = (ImageButton) actor;
+                String cardName = (String) cardButton.getUserObject();
+                AllCards card = cardLookupMap.get(cardName);
+                System.out.println(cardName);
+                if (card != null) {
+                    if (card.isHero()) {
+                        heroCount++;
+                    }
+                    if (card.isUnitCard()) {
+                        unitCount++;
+                    } else {
+                        spellCount++;
+                    }
+                } else {
+                    System.out.println("Error: Card is null for button: " + cardButton);
+                }
+            }
+        }
+
+        heroCountLabel.setText("Number of Hero Cards: " + heroCount);
+        unitCountLabel.setText("Number of Unit Cards: " + unitCount);
+        spellCountLabel.setText("Number of Spell Cards: " + spellCount);
     }
 
 }
