@@ -6,7 +6,6 @@ import com.mygdx.game.model.card.Card;
 public class Spy implements Ability {
     @Override
     public void run(GameManager gameManager , Card callerCard){
-        gameManager.placeCardEnemy(callerCard);
         gameManager.drawRandomCardFromDeck();
         gameManager.drawRandomCardFromDeck();
     }

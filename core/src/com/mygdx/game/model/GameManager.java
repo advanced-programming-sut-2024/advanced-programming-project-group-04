@@ -4,8 +4,6 @@ package com.mygdx.game.model;
 import com.mygdx.game.model.ability.Spy;
 import com.mygdx.game.model.card.*;
 
-import static com.mygdx.game.model.card.Type.Weather;
-
 import java.util.ArrayList;
 
 public class GameManager {
@@ -70,12 +68,7 @@ public class GameManager {
         //Kartaii ke faghat ye ja mitoonan place beshan ro place kon faghat baraye spy
         Type theCardType = card.getType();
 
-        PlayerInGame otherPlayer;
-        if (currentPlayer.equals(player1)) {
-            otherPlayer = player2;
-        } else {
-            otherPlayer = player1;
-        }
+        PlayerInGame otherPlayer = getOtherPlayer();
 
         if ((card.getAbility() instanceof Spy)){
             if (theCardType.equals(Type.Agile)) {
@@ -159,13 +152,8 @@ public class GameManager {
             }
         }
 
-        PlayerInGame otherPlayer;
-        if (currentPlayer.equals(player1)) {
-            otherPlayer = player2;
-        } else {
-            otherPlayer = player1;
-        }
-
+        PlayerInGame otherPlayer = getOtherPlayer();
+        
         Position forCurrentPlayer = findCardInGameForCurrentPlayer(card);
         Position forOtherPlayer = findCardInGameForOtherPlayer(card);
 
@@ -233,8 +221,8 @@ public class GameManager {
     }
 
     public boolean removeFromWeather (Card card) {
-        // TODO
-        return false;
+        weatherCards.remove(card);
+        return true;
     }
 
 
@@ -291,12 +279,7 @@ public class GameManager {
         return currentPlayer.findCardInGame(card);
     }
     public Position findCardInGameForOtherPlayer(Card card){
-        PlayerInGame otherPlayer;
-        if (currentPlayer.equals(player1)) {
-            otherPlayer = player2;
-        } else {
-            otherPlayer = player1;
-        }
+        PlayerInGame otherPlayer = getOtherPlayer();
 
         for (Card sampleCard : weatherCards) {
             if (card.equals(sampleCard)) {
@@ -457,6 +440,18 @@ public class GameManager {
 
     public void drawRandomCardFromDeck() {
         currentPlayer.drawRandomCardFromDeckInGame();
+    }
+
+    public PlayerInGame getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public PlayerInGame getOtherPlayer() {
+        if (currentPlayer.equals(player1)) {
+            return player2;
+        } else {
+            return player1;
+        }
     }
 
 }

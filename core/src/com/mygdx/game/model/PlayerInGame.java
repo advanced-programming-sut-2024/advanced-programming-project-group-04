@@ -13,7 +13,6 @@ public class PlayerInGame {
 
     private boolean isPassed;
 
-    // TODO
     private boolean isLeaderUsed;
 
     private ArrayList<Card> melee = new ArrayList<>();
@@ -349,5 +348,27 @@ public class PlayerInGame {
             return null;
         }
     }
-   
+
+    public void setMeleeCardsIsWeather (boolean bool) {
+        for (Card card : melee) {
+            card.setIsWeathered(bool);
+        }
+    }
+    public void setRangeCardsIsWeather (boolean bool) {
+        for (Card card : range) {
+            card.setIsWeathered(bool);
+        }
+    }
+    public void setSiegeCardsIsWeather (boolean bool) {
+        for (Card card : siege) {
+            card.setIsWeathered(bool);
+        }
+    }
+    
+    public boolean getIsLeaderUsed() {
+        return isLeaderUsed;
+    }
+    public void setIsLeaderUsed(boolean bool) {
+        isLeaderUsed = bool;
+    }
 }

@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import com.mygdx.game.model.card.AllCards;
 import static com.mygdx.game.model.card.AllCards.*;
 
-import com.mygdx.game.model.leader.Leader;
-
 public class Faction {
     private final String name;
 
     private final static ArrayList<AllCards> neutralCards = new ArrayList<>();
-
-    private ArrayList<Leader> leaders = new ArrayList<>();
 
     static {
         neutralCards.add(BitingFrost);
@@ -48,6 +44,10 @@ public class Faction {
     public String getImageURL() {
         String className = getClass().getSimpleName().toLowerCase();
         return "images/factions/" + className + ".png";
+    }
+
+    public String getName() {
+        return name;
     }
 
     public static ArrayList<AllCards> getNeutralCards() {

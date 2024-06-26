@@ -168,8 +168,8 @@ public enum AllCards {
         SkelligeStorm("Skellige Storm", 0, 3, Weather, new NoAbility(), false, "Sets the power of all siege and ranged units of both sides to 1"),
         ClearWeather("Clear Weather", 0, 3, Weather, new NoAbility(), false, "Cancel all the weather cards"),
         Scorch("Scorch", 0, 3, Spell, new NoAbility(), false, "Remove card(s) with the maximum power points in the field (ignores heroes)"),
-        CommandersHorn("Commanders horn", 0, 3, Spell, new NoAbility(), false, "Doubles the power of the cards in the row that was placed. Only one of this type can be played in a row"),
-        Decoy("Decoy", 0, 3, Spell, new NoAbility(), false, "The description has been given before"),
+        CommandersHorn("Commanders horn", 0, 3, Spell, new CommanderHorn(), false, "Doubles the power of the cards in the row that was placed. Only one of this type can be played in a row"),
+        Decoy("Decoy", 0, 3, Spell, new NoAbility(), false, "The description has been given before"), // Chenged
         Dandelion("Dandelion", 2, 1, CloseCombat, new CommanderHorn(), false, "Same power as the commander's horn"),
         Cow("Cow", 0, 1, RangedCombat, new NoAbility(), false, "Turns into a card with a power of 8 after one round"),
         EmielRegis("Emiel Regis", 5, 1, CloseCombat, new NoAbility(), false, ""),
