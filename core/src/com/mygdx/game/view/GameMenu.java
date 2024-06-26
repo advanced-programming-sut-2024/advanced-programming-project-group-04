@@ -1,9 +1,7 @@
 package com.mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -16,105 +14,160 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
+import com.mygdx.game.controller.GameController;
+import com.mygdx.game.model.card.AllCards;
+import com.mygdx.game.model.faction.Faction;
+
+import java.util.ArrayList;
 
 public class GameMenu extends Menu {
-    public static ImageButton selectedLeader;
+    public static ImageButton selectedCard;
 
-    Table myCards, table, ground, graveyard;
+    Table table, upperSectionTable, middleSectionTable, lowerSectionTable;
+    CustomTable weatherTable, myHandTable, myLeaderTable, enemyLeaderTable, myGraveyardTable;
+    CustomTable[] myRowsTables, enemyRowsTables;
+    ArrayList<Table> allTables;
 
     public GameMenu(Main game) {
         super(game);
 
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        Skin skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
-        table = new Table();
-        myCards = new Table();
+        tableInit();
 
         // Load leader images using AssetLoader
-        String selectedFaction = "realms";
         AssetLoader assetLoader = game.assetLoader;
-        for (String leaderPath : assetLoader.getLeaders(selectedFaction)) {
-            Texture leaderTexture = assetLoader.getAssetManager().get(leaderPath, Texture.class);
-            ImageButton leaderButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(leaderTexture)));
+        ArrayList<AllCards> cards = Faction.getNeutralCards();
+        for (AllCards card : cards) {
+            Texture texture = assetLoader.getImageFromAllCard(card);
+            GraphicalCard graphicalCard = new GraphicalCard(new TextureRegionDrawable(new TextureRegion(texture)), card);
 
-            float SCALE = 0.5f, offset = 70;
-            leaderButton.getImageCell().size(leaderTexture.getWidth() * SCALE + offset, leaderTexture.getHeight() * SCALE + offset);
+            float SCALE = 0.01f, offset = 70;
+            graphicalCard.getImageCell().size(texture.getWidth() * SCALE + offset, texture.getHeight() * SCALE + offset);
 
             // Add hover and click effects
-            leaderButton.addListener(new ClickListener() {
+            graphicalCard.addListener(new ClickListener() {
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    leaderButton.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
-                    selectedLeader = leaderButton;
+                    graphicalCard.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                    selectedCard = graphicalCard;
                 }
 
                 @Override
                 public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    leaderButton.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+                    graphicalCard.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
                 }
 
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    selectedLeader = leaderButton;
+                    selectedCard = graphicalCard;
                 }
             });
 
-            myCards.add(leaderButton);
+            myHandTable.add(graphicalCard);
         }
 
-        ground = new Table();
-        graveyard = new Table();
+    }
 
+    private void tableInit() {
+        table = new Table();
         table.setFillParent(true);
         table.setDebug(true);
+        allTables = new ArrayList<>();
+        weatherTable = new CustomTable("Weather", allTables);
+        myHandTable = new CustomTable("My Hand");
+        myLeaderTable = new CustomTable("My Leader");
+        enemyLeaderTable = new CustomTable("Enemy Leader");
+        myGraveyardTable = new CustomTable("My Graveyard");
+        myRowsTables = new CustomTable[]{
+                new CustomTable("My Melee", allTables),
+                new CustomTable("My Siege", allTables),
+                new CustomTable("My Range", allTables),
+                new CustomTable("My Melee Special", allTables),
+                new CustomTable("My Siege Special", allTables),
+                new CustomTable("My Range Special", allTables)};
+        enemyRowsTables = new CustomTable[]{
+                new CustomTable("Enemy Melee", allTables),
+                new CustomTable("Enemy Siege", allTables),
+                new CustomTable("Enemy Range", allTables),
+                new CustomTable("Enemy Melee Special", allTables),
+                new CustomTable("Enemy Siege Special", allTables),
+                new CustomTable("Enemy Range Special", allTables)};
+//        myHandTable.setDebug(true);
 
-        table.add(myCards).expand().fill();
-        table.add(ground).expand().fill();
-        table.add(graveyard).expand().fill();
-
-        DragAndDrop d = new DragAndDrop();
-        d.addSource(new Source(myCards) {
+        DragAndDrop dnd = new DragAndDrop();
+        dnd.addSource(new Source(myHandTable) {
             final Payload payload = new Payload();
 
             @Override
             public Payload dragStart(InputEvent event, float x, float y, int pointer) {
-                payload.setObject(selectedLeader);
-                payload.setDragActor(selectedLeader);
-                myCards.removeActor(selectedLeader);
+                payload.setObject(selectedCard);
+                payload.setDragActor(selectedCard);
+                myHandTable.removeActor(selectedCard);
 
                 return payload;
             }
 
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
-                System.out.println(target);
                 if (target == null) {
-                    myCards.add((ImageButton) payload.getObject());
+                    myHandTable.add((ImageButton) payload.getObject());
                 }
             }
         });
-        d.addTarget(new Target(ground) {
-            @Override
-            public boolean drag(Source source, Payload payload, float v, float v1, int i) {
-                return true;
-            }
 
-            @Override
-            public void drop(Source source, Payload payload, float v, float v1, int i) {
-                ground.add((ImageButton) payload.getObject());
-            }
-        });
-        d.addTarget(new Target(graveyard) {
-            @Override
-            public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
-                return true;
-            }
+        for (Table table : allTables) {
+            dnd.addTarget(new Target(table) {
+                @Override
+                public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
+                    return GameController.placeCardController(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getId());
+                }
 
-            @Override
-            public void drop(Source source, Payload payload, float x, float y, int pointer) {
-                graveyard.add((ImageButton) payload.getObject());
-            }
-        });
+                @Override
+                public void drop(Source source, Payload payload, float x, float y, int pointer) {
+                    table.add((ImageButton) payload.getObject());
+                    System.out.println(((CustomTable)table).getId());
+                }
+            });
+        }
+
+        table.add(enemyLeaderTable).height(200).width(100);
+
+        upperSectionTable = new Table();
+        upperSectionTable.setDebug(true);
+        upperSectionTable.add(enemyRowsTables[5]).height(100).width(100);
+        upperSectionTable.add(enemyRowsTables[2]).height(100).width(400);
+        upperSectionTable.row();
+        upperSectionTable.add(enemyRowsTables[4]).height(100).width(100);
+        upperSectionTable.add(enemyRowsTables[1]).height(100).width(400);
+
+        table.add(upperSectionTable).height(200).width(500);
+        table.row();
+        table.add(weatherTable).height(200).width(100);
+
+        middleSectionTable = new Table();
+        middleSectionTable.setDebug(true);
+        middleSectionTable.add(enemyRowsTables[3]).height(100).width(100);
+        middleSectionTable.add(enemyRowsTables[0]).height(100).width(400);
+        middleSectionTable.row();
+        middleSectionTable.add(myRowsTables[3]).height(100).width(100);
+        middleSectionTable.add(myRowsTables[0]).height(100).width(400);
+
+        table.add(middleSectionTable).height(200).width(500);
+        table.row();
+        table.add(myLeaderTable).height(200).width(100);
+
+        lowerSectionTable = new Table();
+        lowerSectionTable.setDebug(true);
+        lowerSectionTable.add(myRowsTables[4]).height(100).width(100);
+        lowerSectionTable.add(myRowsTables[1]).height(100).width(400);
+        lowerSectionTable.row();
+        lowerSectionTable.add(myRowsTables[5]).height(100).width(100);
+        lowerSectionTable.add(myRowsTables[2]).height(100).width(400);
+
+        table.add(lowerSectionTable).height(200).width(500);
+        table.row();
+        table.add(myGraveyardTable).height(100).width(100);
+        table.add(myHandTable);
 
         stage.addActor(table);
     }
