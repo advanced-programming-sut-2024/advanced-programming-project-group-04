@@ -12,13 +12,13 @@ public class Berserker implements Ability {
         if (callerCard.getAllCard().equals(AllCards.YoungBerserker)) {
             Card transformedCard = new Card(AllCards.TransformedYoungVidkaarl);
             gameManager.placeCard(transformedCard, callerCardPosition);
-            gameManager.removeCard(callerCard, callerCardPosition);
+            gameManager.removeCard(callerCard);
         }
 
         if (callerCard.getAllCard().equals(AllCards.Berserker)) {
             Card transformedCard = new Card(AllCards.TransformedVidkaarl);
             gameManager.placeCard(transformedCard, callerCardPosition);
-            gameManager.removeCard(callerCard, callerCardPosition);
+            gameManager.removeCard(callerCard);
         }
     }
 }

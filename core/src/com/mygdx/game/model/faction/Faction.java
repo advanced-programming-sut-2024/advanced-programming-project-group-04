@@ -49,4 +49,8 @@ public class Faction {
         String className = getClass().getSimpleName().toLowerCase();
         return "images/factions/" + className + ".png";
     }
+
+    public String getName() {
+        return name;
+    }
 }
