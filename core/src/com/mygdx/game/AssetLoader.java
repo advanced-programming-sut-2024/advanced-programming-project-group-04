@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.Gdx;
+import com.mygdx.game.model.card.AllCards;
 
 
 import java.util.ArrayList;
@@ -105,5 +106,8 @@ public class AssetLoader {
         return factionLeadersMap.get(faction);
     }
 
-
+    public Texture getImageFromAllCard(AllCards allCard) {
+        String path = "images/cards/" + allCard.name() + ".jpg";
+        return assetManager.get(path, Texture.class);
+    }
 }
