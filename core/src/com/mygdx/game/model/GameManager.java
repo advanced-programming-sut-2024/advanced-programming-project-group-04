@@ -21,7 +21,7 @@ public class GameManager {
     }
 
     /// Functions for Placing the Cards with position
-    public String placeCard (Card card, Position position) {
+    public boolean placeCard (Card card, Position position) {
         if (position.equals(Position.Melee)) {
             return addToMelee(card);
         } else if (position.equals(Position.Range)) {
@@ -37,17 +37,17 @@ public class GameManager {
         } else if (position.equals(Position.WeatherPlace)) {
             return placeToWeather(card);
         } else {
-            return "NANI?!";
+            return false;
         }
     }
 
     /// Functions for Placing the Cards without the need of position
-    public String placeCard(Card card) {
+    public boolean placeCard(Card card) {
         //Kartaii ke faghat ye ja mitoonan place beshan ro place kon
         Type theCardType = card.getType();
         if (!(card.getAbility() instanceof Spy)){
             if (theCardType.equals(Type.Agile)) {
-                return "kheir";
+                return false;
             } else if (theCardType.equals(Type.CloseCombat)){
                 return placeCard(card, Position.Melee);
             } else if (theCardType.equals(Type.RangedCombat)){
@@ -55,18 +55,18 @@ public class GameManager {
             } else if (theCardType.equals(Type.Siege)) {
                 return placeCard(card , Position.Siege);
             } else if (theCardType.equals(Type.Spell)) {
-                return "kheir";
+                return false;
             } else if (theCardType.equals(Type.Weather)) {
                 return placeCard(card , Position.WeatherPlace);
             } else {
-                return "ay khar kose";
+                throw new RuntimeException();
             }
         } else {
-            return "ay khar kose";
+            throw new RuntimeException();
         }
     } 
 
-    public String placeCardEnemy(Card card) {
+    public boolean placeCardEnemy(Card card) {
         //Kartaii ke faghat ye ja mitoonan place beshan ro place kon faghat baraye spy
         Type theCardType = card.getType();
 
@@ -79,80 +79,80 @@ public class GameManager {
 
         if ((card.getAbility() instanceof Spy)){
             if (theCardType.equals(Type.Agile)) {
-                return "kheir";
+                return false;
             } else if (theCardType.equals(Type.CloseCombat)){
                 otherPlayer.addToMelee(card);
-                return "yes";
+                return true;
             } else if (theCardType.equals(Type.RangedCombat)){
                 otherPlayer.addToRange(card);
-                return "yes";
+                return true;
             } else if (theCardType.equals(Type.Siege)) {
                 otherPlayer.addToSiege(card);
-                return "yes";
+                return true;
             } else if (theCardType.equals(Type.Spell)) {
-                return "kheir";
+                return false;
             } else if (theCardType.equals(Type.Weather)) {
-                return "kheir";
+                return false;
             } else {
-                return "ay khar kose";
+                throw new RuntimeException();
             }
         } else {
-            return "ay khar kose";
+            throw new RuntimeException();
         }
     }
 
-    public String addToMelee (Card card) {
+    public boolean addToMelee (Card card) {
         if (!canBeAddedToMelee(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.addToMelee(card);
-        return "ba movafaghiat remove shod";       
+        return true;
     }
-    public String addToRange (Card card) {
+    public boolean addToRange (Card card) {
         if (!canBeAddedToRange(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.addToRange(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
-    public String addToSiege (Card card) {
+    public boolean addToSiege (Card card) {
         if (!canBeAddedToSiege(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.addToSiege(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
-    public String placeToSpellMelee (Card card) {
+    public boolean placeToSpellMelee (Card card) {
         if (!canBePlacedToSpellMelee(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.placeSpellMelee(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
-    public String placeToSpellRange (Card card) {
+    public boolean placeToSpellRange (Card card) {
         if (!canBePlacedToSpellRange(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.placeSpellRange(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
-    public String placeToSpellSiege (Card card) {
+    public boolean placeToSpellSiege (Card card) {
         if (!canBePlacedToSpellSiege(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.placeSpellSiege(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
-    public String placeToWeather (Card card) {
+    public boolean placeToWeather (Card card) {
         if (!canBePlacedToWeather(card)) {
-            return "no";
+            return false;
         }
         weatherCards.add(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
     
 
-    public String removeCard (Card card) {
+    public boolean removeCard (Card card) {
         for (Card sampleCard : weatherCards) {
             if (card.equals(sampleCard)) {
                 return removeFromWeather(card);
@@ -171,70 +171,70 @@ public class GameManager {
 
         if (forCurrentPlayer != null && forOtherPlayer == null) {
             currentPlayer.removeCard(card, forCurrentPlayer);
-            return "yes";
+            return true;
         } else if (forCurrentPlayer == null && forOtherPlayer != null) {
             otherPlayer.removeCard(card, forOtherPlayer);
-            return "yes";
+            return true;
         } else {
-            return "remove shekast khord";
+            return false;
         }
     }
     /* *
-    public String removeCard (Card card, Position position) {
+    public boolean removeCard (Card card, Position position) {
         if (position.equals(Position.WeatherPlace)) {
             return removeFromWeather(card);
         }
         currentPlayer.removeCard(card, position);
-        return "yes";
+        return true;
     }
     /* */
 
-    public String removeFromMelee (Card card) {
+    public boolean removeFromMelee (Card card) {
         if (!canBeAddedToMelee(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.removeFromMelee(card);
-        return "ba movafaghiat remove shod";       
+        return true;
     }
-    public String removeFromRange (Card card) {
+    public boolean removeFromRange (Card card) {
         if (!canBeAddedToRange(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.removeFromRange(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
-    public String removeFromSiege (Card card) {
+    public boolean removeFromSiege (Card card) {
         if (!canBeAddedToSiege(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.removeFromSiege(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
-    public String removeSpellMelee (Card card) {
+    public boolean removeSpellMelee (Card card) {
         if (!canBePlacedToSpellMelee(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.removeSpellMelee(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
-    public String removeSpellRange (Card card) {
+    public boolean removeSpellRange (Card card) {
         if (!canBePlacedToSpellRange(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.removeSpellRange(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
-    public String removeSpellSiege (Card card) {
+    public boolean removeSpellSiege (Card card) {
         if (!canBePlacedToSpellSiege(card)) {
-            return "nemishe";
+            return false;
         }
         currentPlayer.removeSpellSiege(card);
-        return "ba movafaghiat remove shod";
+        return true;
     }
 
-    public String removeFromWeather (Card card) {
+    public boolean removeFromWeather (Card card) {
         // TODO
-        return "ba movafaghiat remove shod";
+        return false;
     }
 
 
@@ -353,11 +353,11 @@ public class GameManager {
         return weatherCards;
     }
 
-    public String endTurn () {
+    public boolean endTurn () {
         // TODO
 
         switchTurn();
-        return "OK";
+        return true;
     }
 
     public ArrayList<Card> getCardRowFromPosition(Position position) {
