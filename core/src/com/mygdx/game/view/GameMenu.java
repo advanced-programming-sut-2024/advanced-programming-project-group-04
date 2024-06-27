@@ -132,7 +132,7 @@ public class GameMenu extends Menu {
             dnd.addTarget(new Target(table) {
                 @Override
                 public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
-                    return true;
+                    return GameController.canPlaceCardToPositionController(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getTableSection());
                 }
 
                 @Override

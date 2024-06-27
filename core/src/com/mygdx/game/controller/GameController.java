@@ -2,6 +2,7 @@ package com.mygdx.game.controller;
 
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.Player;
+import com.mygdx.game.model.Position;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.view.TableSection;
 
@@ -21,5 +22,11 @@ public class GameController {
         System.out.println(isMyTurn);
         if (result) isMyTurn = !isMyTurn;
         return result;
+    }
+
+    public static boolean canPlaceCardToPositionController(Card card, TableSection tableSection) {
+        Position position = tableSection.getPosition();
+        if (tableSection.isEnemy() ^ !isMyTurn) return gameManager.canPlaceCardEnemy(card, position);
+        else return gameManager.canPlaceCard(card, tableSection.getPosition());
     }
 }
