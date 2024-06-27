@@ -1,6 +1,7 @@
 package com.mygdx.game.model;
 
 
+import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.ability.Spy;
 import com.mygdx.game.model.card.*;
 
@@ -18,6 +19,39 @@ public class GameManager {
         this.player1 = new PlayerInGame(player1);
         this.player2 = new PlayerInGame(player2);
         this.currentPlayer = this.player1;
+    }
+
+    public PlayerInGame getPlayer1() { return this.player1; }
+    public PlayerInGame getPlayer2() { return this.player2; }
+
+    public boolean canPlaceCard(Card card, Position position) {
+        if (card.getAbility() instanceof Spy) return false;
+        else return canPlaceTypeToPosition(card, position);
+    }
+
+    public boolean canPlaceCardEnemy(Card card, Position position) {
+        if (!(card.getAbility() instanceof Spy)) return false;
+        else return canPlaceTypeToPosition(card, position);
+    }
+
+    public boolean canPlaceTypeToPosition(Card card, Position position) {
+        if (position.equals(Position.Melee)) {
+            return canBeAddedToMelee(card);
+        } else if (position.equals(Position.Range)) {
+            return canBeAddedToRange(card);
+        } else if (position.equals(Position.Siege)) {
+            return canBeAddedToSiege(card);
+        } else if (position.equals(Position.SpellMelee)) {
+            return canBePlacedToSpellMelee(card);
+        } else if (position.equals(Position.SpellRange)) {
+            return canBePlacedToSpellRange(card);
+        } else if (position.equals(Position.SpellSiege)) {
+            return canBePlacedToSpellSiege(card);
+        } else if (position.equals(Position.WeatherPlace)) {
+            return canBePlacedToWeather(card);
+        } else {
+            return false;
+        }
     }
 
     /// Functions for Placing the Cards with position
@@ -55,7 +89,7 @@ public class GameManager {
     public boolean placeCard(Card card) {
         //Kartaii ke faghat ye ja mitoonan place beshan ro place kon
         Type theCardType = card.getType();
-        boolean flag = false;
+        boolean flag;
         if (!(card.getAbility() instanceof Spy)){
             if (theCardType.equals(Type.Agile)) {
                 flag = false;
@@ -70,15 +104,13 @@ public class GameManager {
             } else if (theCardType.equals(Type.Weather)) {
                 flag = placeCard(card , Position.WeatherPlace);
             } else {
-                flag = false;
+                throw new RuntimeException();
             }
         } else {
             flag = false;
         }
 
-        if (!flag) {
-            throw new RuntimeException("Place Card na movafagh");
-        }
+        if (!flag) return false;
 
         if (!(card.isBerserker() || card.isCardsAbilityPassive())) {
             card.getAbility().run(this, card);
@@ -91,33 +123,34 @@ public class GameManager {
         Type theCardType = card.getType();
 
         PlayerInGame otherPlayer = getOtherPlayer();
-        boolean flag = false;
+        boolean flag;
         if ((card.getAbility() instanceof Spy)){
             if (theCardType.equals(Type.Agile)) {
                 flag = false;
             } else if (theCardType.equals(Type.CloseCombat)){
                 otherPlayer.addToMelee(card);
+                GameController.addCardToTableSection(card, Position.Melee, true);
                 flag = true;
             } else if (theCardType.equals(Type.RangedCombat)){
                 otherPlayer.addToRange(card);
+                GameController.addCardToTableSection(card, Position.Range, true);
                 flag = true;
             } else if (theCardType.equals(Type.Siege)) {
                 otherPlayer.addToSiege(card);
+                GameController.addCardToTableSection(card, Position.Siege, true);
                 flag = true;
             } else if (theCardType.equals(Type.Spell)) {
                 flag = false;
             } else if (theCardType.equals(Type.Weather)) {
                 flag = false;
             } else {
-                flag = false;
+                throw new RuntimeException();
             }
         } else {
             flag = false;
         }
 
-        if (!flag) {
-            throw new RuntimeException("Place Card Spy na movafagh");
-        }
+        if (!flag) return false;
 
         card.getAbility().run(this, card);    
         return true;
@@ -128,6 +161,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.addToMelee(card);
+        GameController.addCardToTableSection(card, Position.Melee, false);
         return true;
     }
     public boolean addToRange (Card card) {
@@ -135,6 +169,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.addToRange(card);
+        GameController.addCardToTableSection(card, Position.Range, false);
         return true;
     }
     public boolean addToSiege (Card card) {
@@ -142,6 +177,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.addToSiege(card);
+        GameController.addCardToTableSection(card, Position.Siege, false);
         return true;
     }
     public boolean placeToSpellMelee (Card card) {
@@ -149,6 +185,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.placeSpellMelee(card);
+        GameController.addCardToTableSection(card, Position.SpellMelee, false);
         return true;
     }
     public boolean placeToSpellRange (Card card) {
@@ -156,6 +193,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.placeSpellRange(card);
+        GameController.addCardToTableSection(card, Position.SpellRange, false);
         return true;
     }
     public boolean placeToSpellSiege (Card card) {
@@ -163,6 +201,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.placeSpellSiege(card);
+        GameController.addCardToTableSection(card, Position.SpellSiege, false);
         return true;
     }
     public boolean placeToWeather (Card card) {
@@ -170,6 +209,7 @@ public class GameManager {
             return false;
         }
         weatherCards.add(card);
+        GameController.addCardToTableSection(card, Position.WeatherPlace, false);
         return true;
     }
     
@@ -188,9 +228,11 @@ public class GameManager {
 
         if (forCurrentPlayer != null && forOtherPlayer == null) {
             currentPlayer.removeCard(card, forCurrentPlayer);
+            GameController.removeCardFromView(card);
             return true;
         } else if (forCurrentPlayer == null && forOtherPlayer != null) {
             otherPlayer.removeCard(card, forOtherPlayer);
+            GameController.removeCardFromView(card);
             return true;
         } else {
             return false;
@@ -211,6 +253,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromMelee(card);
+        GameController.removeCardFromView(card);
         return true;
     }
     public boolean removeFromRange (Card card) {
@@ -218,6 +261,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromRange(card);
+        GameController.removeCardFromView(card);
         return true;
     }
     public boolean removeFromSiege (Card card) {
@@ -225,6 +269,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromSiege(card);
+        GameController.removeCardFromView(card);
         return true;
     }
     public boolean removeSpellMelee (Card card) {
@@ -232,6 +277,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellMelee(card);
+        GameController.removeCardFromView(card);
         return true;
     }
     public boolean removeSpellRange (Card card) {
@@ -239,6 +285,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellRange(card);
+        GameController.removeCardFromView(card);
         return true;
     }
     public boolean removeSpellSiege (Card card) {
@@ -246,11 +293,13 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellSiege(card);
+        GameController.removeCardFromView(card);
         return true;
     }
 
     public boolean removeFromWeather (Card card) {
         weatherCards.remove(card);
+        GameController.removeCardFromView(card);
         return true;
     }
 
@@ -318,7 +367,7 @@ public class GameManager {
         return otherPlayer.findCardInGame(card);    
     }
 
-    // Comander's horn related functions
+    // Commander's horn related functions
     public void meleeCurrentHpTimesInt (int number) {
         currentPlayer.meleeCurrentHpTimesInt(number);
     }
@@ -365,11 +414,10 @@ public class GameManager {
         return weatherCards;
     }
 
-    public boolean endTurn () {
+    public void endTurn () {
         runPassiveAbilities();
         calculateAllHPs();
         switchTurn();
-        return true;
     }
     
     public ArrayList<Card> getAllCards() {
@@ -411,6 +459,7 @@ public class GameManager {
         } else {
             currentPlayer = player1;
         }
+        GameController.changeTurn();
     }
 
 
