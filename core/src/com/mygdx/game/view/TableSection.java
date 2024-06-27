@@ -46,6 +46,7 @@ public enum TableSection {
     public String getTitle() { return this.title; }
 
     public static TableSection getTableSectionByPosition(Position position, boolean isEnemy) {
+        if (position == Position.WeatherPlace) return TableSection.WEATHER;
         for (TableSection tableSection : TableSection.values()) {
             if (tableSection.getPosition() != null && tableSection.getPosition().equals(position) &&
                     tableSection.isEnemy() == isEnemy) return tableSection;

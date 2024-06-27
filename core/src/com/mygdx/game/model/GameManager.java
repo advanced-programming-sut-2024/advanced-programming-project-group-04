@@ -21,6 +21,9 @@ public class GameManager {
         this.currentPlayer = this.player1;
     }
 
+    public PlayerInGame getPlayer1() { return this.player1; }
+    public PlayerInGame getPlayer2() { return this.player2; }
+
     public boolean canPlaceCard(Card card, Position position) {
         if (card.getAbility() instanceof Spy) return false;
         else return canPlaceTypeToPosition(card, position);
@@ -225,9 +228,11 @@ public class GameManager {
 
         if (forCurrentPlayer != null && forOtherPlayer == null) {
             currentPlayer.removeCard(card, forCurrentPlayer);
+            GameController.removeCardFromView(card);
             return true;
         } else if (forCurrentPlayer == null && forOtherPlayer != null) {
             otherPlayer.removeCard(card, forOtherPlayer);
+            GameController.removeCardFromView(card);
             return true;
         } else {
             return false;
@@ -248,6 +253,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromMelee(card);
+        GameController.removeCardFromView(card);
         return true;
     }
     public boolean removeFromRange (Card card) {
@@ -255,6 +261,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromRange(card);
+        GameController.removeCardFromView(card);
         return true;
     }
     public boolean removeFromSiege (Card card) {
@@ -262,6 +269,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromSiege(card);
+        GameController.removeCardFromView(card);
         return true;
     }
     public boolean removeSpellMelee (Card card) {
@@ -269,6 +277,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellMelee(card);
+        GameController.removeCardFromView(card);
         return true;
     }
     public boolean removeSpellRange (Card card) {
@@ -276,6 +285,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellRange(card);
+        GameController.removeCardFromView(card);
         return true;
     }
     public boolean removeSpellSiege (Card card) {
@@ -283,11 +293,13 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellSiege(card);
+        GameController.removeCardFromView(card);
         return true;
     }
 
     public boolean removeFromWeather (Card card) {
         weatherCards.remove(card);
+        GameController.removeCardFromView(card);
         return true;
     }
 
@@ -355,7 +367,7 @@ public class GameManager {
         return otherPlayer.findCardInGame(card);    
     }
 
-    // Comander's horn related functions
+    // Commander's horn related functions
     public void meleeCurrentHpTimesInt (int number) {
         currentPlayer.meleeCurrentHpTimesInt(number);
     }

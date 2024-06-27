@@ -2,6 +2,7 @@ package com.mygdx.game.model;
 
 import java.util.ArrayList;
 
+import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.card.Card;
 
 public class PlayerInGame {
@@ -273,9 +274,11 @@ public class PlayerInGame {
     }
     public void addToHand(Card card) {
         hand.add(card);
+        GameController.addCardToHand(card, this);
     }
     public void removeFromHand(Card card) {
         hand.remove(card);
+        GameController.removeCardFromView(card);
     }
     public void addToDeckInGame(Card card) {
         deckInGame.add(card);
