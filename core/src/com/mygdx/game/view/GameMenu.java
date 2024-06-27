@@ -1,6 +1,8 @@
 package com.mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -10,7 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
@@ -39,6 +44,7 @@ public class GameMenu extends Menu {
     HashMap<Card, GraphicalCard> allCardsCreated;
     Source myHandSource, enemyHandSource;
     DragAndDrop dnd;
+    Skin skin;
 
     public GameMenu(Main game) {
         super(game);
@@ -46,6 +52,7 @@ public class GameMenu extends Menu {
 
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         assetLoader = game.assetLoader;
+        this.skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
         allCardsCreated = new HashMap<>();
 
         tableInit();
@@ -101,6 +108,24 @@ public class GameMenu extends Menu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 selectedCard = graphicalCard;
+                Card card = graphicalCard.getCard();
+                Window window = new Window(card.getName(), skin);
+                Table table = new Table();
+                Drawable drawable = graphicalCard.getImage().getDrawable();
+                table.add(new Image(drawable));
+                table.row();
+                table.add(getLabelFromString("Name " + card.getName()));
+                table.row();
+                table.add(getLabelFromString("Description " + card.getDescription()));
+                table.row();
+                table.add(getLabelFromString("CurrentHP " + Integer.toString(card.getCurrentHP())));
+                table.row();
+                table.setFillParent(true);
+                table.setX(0);
+                table.setY(0);
+                window.addActor(table);
+                window.setFillParent(true);
+                stage.addActor(window);
             }
         });
 
@@ -135,6 +160,7 @@ public class GameMenu extends Menu {
                 new CustomTable(ENEMY_SPELL_RANGE, allTables)};
 
         dnd = new DragAndDrop();
+        dnd.setButton(Input.Buttons.RIGHT);
         myHandSource = getSource(myHandTable);
         enemyHandSource = getSource(enemyHandTable);
         dnd.addSource(myHandSource);
@@ -234,7 +260,30 @@ public class GameMenu extends Menu {
         }
     }
 
+    public Label getLabelFromString(String input) {
+        Label label = new Label(input, skin);
+        label.setFontScale(5);
+        return label;
+    }
+
     public HashMap<Card, GraphicalCard> getAllCardsCreated() { return this.allCardsCreated; }
 
     public HashMap<TableSection, CustomTable> getAllTables() { return this.allTables; }
+
+    @Override
+    public void render(float v) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Array<Actor> actors = new Array<>(stage.getActors());
+            stage.clear();
+            for (Actor actor : actors) {
+                if (!(actor instanceof Window)) {
+                    stage.addActor(actor);
+                }
+            }
+        }
+        stage.act(v);
+        stage.draw();
+    }
 }
