@@ -20,9 +20,9 @@ public class Main extends Game {
         assetManager.finishLoading();
 
         // Play background music
-//        Music backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
-//        backgroundMusic.setLooping(true);
-//        backgroundMusic.play();
+        Music backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
 
         // Set the initial screen
         setScreen(new GameMenu(this));
