@@ -242,6 +242,18 @@ public enum AllCards {
         return this.type != Spell && this.type != Weather;
     }
 
+    public boolean isWeather() {
+        return type == Weather;
+    }
+
+    public boolean isCardsAbilityPassive() {
+        return ability instanceof CommanderHorn
+            || ability instanceof MoralBoost
+            || ability instanceof TightBond
+            || isWeather()
+        ;
+    }
+
     public String getImageURL() {
         return "images/cards/" + this.name() + ".jpg";
     }

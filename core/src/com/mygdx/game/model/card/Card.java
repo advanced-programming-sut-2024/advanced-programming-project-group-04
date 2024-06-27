@@ -8,6 +8,7 @@ public class Card {
     private int howManyMoralBoostAffected;
     private boolean isCommandersHornAffected;
     private boolean isWeathered;
+    private int howManyTightBond;
 
 
     public Card(AllCards allCard) {
@@ -16,6 +17,19 @@ public class Card {
         this.howManyMoralBoostAffected = 0;
         this.isCommandersHornAffected = false;
         this.isWeathered = false;
+        this.howManyMoralBoostAffected = 1;
+    }
+
+    public int getHowManyTightBond() {
+        return this.howManyTightBond;
+    }
+
+    public void setHowManyTightBond(int number) {
+        this.howManyTightBond = number;
+    }
+
+    public boolean isCardsAbilityPassive() {
+        return allCard.isCardsAbilityPassive();
     }
 
     public int getPower() {
@@ -59,6 +73,7 @@ public class Card {
         this.howManyMoralBoostAffected = 0;
         this.isCommandersHornAffected = false;
         this.isWeathered = false;
+        this.howManyMoralBoostAffected = 1;
     }
 
     public String getName () {
@@ -78,9 +93,19 @@ public class Card {
     public AllCards getAllCard() { return this.allCard; }
 
     public boolean musterEquality(Card card) {
-        // TODO
-        // return true if THIS have muster ability and
-        // THIS calls the card
+        if (this.getName().equals(card.getName())) { return true; }
+        if (getName().startsWith("Vampire") && card.getName().startsWith("Vampire")) {
+            return true;
+        }
+        if (getName().startsWith("Crone") && card.getName().startsWith("Crone")) {
+            return true;
+        }
+        if (allCard.equals(AllCards.GaunterODimm) && card.getAllCard().equals(AllCards.GaunterODimmDarkness)) {
+            return true;
+        }
+        if (allCard.equals(AllCards.Cerys) && card.getAllCard().equals(AllCards.ClanDrummondShieldMaiden)) {
+            return true;
+        }
         return false;
     }
 
@@ -90,6 +115,18 @@ public class Card {
 
     public boolean isHero() {
         return this.allCard.isHero();
+    }
+
+    public int calculateCurrentHP() {
+        int calculatedHP = getPower();
+        if (isHero()) {
+            return calculatedHP;
+        }
+        if (isWeathered) {
+            calculatedHP = 1;
+        }
+        int commandersAffect = isCommandersHornAffected ? 2 : 1;
+        return ((calculatedHP + howManyMoralBoostAffected) * howManyTightBond) * commandersAffect;
     }
 
 }

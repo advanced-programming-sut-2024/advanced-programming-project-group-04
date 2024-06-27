@@ -6,6 +6,8 @@ import com.mygdx.game.model.card.*;
 
 import java.util.ArrayList;
 
+import javax.management.RuntimeErrorException;
+
 public class GameManager {
     
     private PlayerInGame player1, player2, currentPlayer;
@@ -20,48 +22,68 @@ public class GameManager {
 
     /// Functions for Placing the Cards with position
     public boolean placeCard (Card card, Position position) {
+        boolean flag;
         if (position.equals(Position.Melee)) {
-            return addToMelee(card);
+            flag = addToMelee(card);
         } else if (position.equals(Position.Range)) {
-            return addToRange(card);
+            flag = addToRange(card);
         } else if (position.equals(Position.Siege)) {
-            return addToSiege(card);
+            flag = addToSiege(card);
         } else if (position.equals(Position.SpellMelee)) {
-            return placeToSpellMelee(card);
+            flag = placeToSpellMelee(card);
         } else if (position.equals(Position.SpellRange)) {
-            return placeToSpellRange(card);
+            flag = placeToSpellRange(card);
         } else if (position.equals(Position.SpellSiege)) {
-            return placeToSpellSiege(card);
+            flag = placeToSpellSiege(card);
         } else if (position.equals(Position.WeatherPlace)) {
-            return placeToWeather(card);
+            flag = placeToWeather(card);
         } else {
+            flag = false;
+        }
+
+        if (!flag) {
             return false;
         }
+
+        if (!(card.isBerserker() || card.isCardsAbilityPassive())) {
+            card.getAbility().run(this, card);
+        }
+        return true;
     }
 
     /// Functions for Placing the Cards without the need of position
     public boolean placeCard(Card card) {
         //Kartaii ke faghat ye ja mitoonan place beshan ro place kon
         Type theCardType = card.getType();
+        boolean flag = false;
         if (!(card.getAbility() instanceof Spy)){
             if (theCardType.equals(Type.Agile)) {
-                return false;
+                flag = false;
             } else if (theCardType.equals(Type.CloseCombat)){
-                return placeCard(card, Position.Melee);
+                flag = placeCard(card, Position.Melee);
             } else if (theCardType.equals(Type.RangedCombat)){
-                return placeCard(card , Position.Range);
+                flag = placeCard(card , Position.Range);
             } else if (theCardType.equals(Type.Siege)) {
-                return placeCard(card , Position.Siege);
+                flag = placeCard(card , Position.Siege);
             } else if (theCardType.equals(Type.Spell)) {
-                return false;
+                flag = false;
             } else if (theCardType.equals(Type.Weather)) {
-                return placeCard(card , Position.WeatherPlace);
+                flag = placeCard(card , Position.WeatherPlace);
             } else {
-                throw new RuntimeException();
+                flag = false;
             }
         } else {
-            throw new RuntimeException();
+            flag = false;
         }
+
+        if (!flag) {
+            throw new RuntimeException("Place Card na movafagh");
+        }
+
+        if (!(card.isBerserker() || card.isCardsAbilityPassive())) {
+            card.getAbility().run(this, card);
+        }
+        return true;
     } 
 
     public boolean placeCardEnemy(Card card) {
@@ -69,29 +91,36 @@ public class GameManager {
         Type theCardType = card.getType();
 
         PlayerInGame otherPlayer = getOtherPlayer();
-
+        boolean flag = false;
         if ((card.getAbility() instanceof Spy)){
             if (theCardType.equals(Type.Agile)) {
-                return false;
+                flag = false;
             } else if (theCardType.equals(Type.CloseCombat)){
                 otherPlayer.addToMelee(card);
-                return true;
+                flag = true;
             } else if (theCardType.equals(Type.RangedCombat)){
                 otherPlayer.addToRange(card);
-                return true;
+                flag = true;
             } else if (theCardType.equals(Type.Siege)) {
                 otherPlayer.addToSiege(card);
-                return true;
+                flag = true;
             } else if (theCardType.equals(Type.Spell)) {
-                return false;
+                flag = false;
             } else if (theCardType.equals(Type.Weather)) {
-                return false;
+                flag = false;
             } else {
-                throw new RuntimeException();
+                flag = false;
             }
         } else {
-            throw new RuntimeException();
+            flag = false;
         }
+
+        if (!flag) {
+            throw new RuntimeException("Place Card Spy na movafagh");
+        }
+
+        card.getAbility().run(this, card);    
+        return true;
     }
 
     public boolean addToMelee (Card card) {
@@ -337,12 +366,37 @@ public class GameManager {
     }
 
     public boolean endTurn () {
-        // TODO
-
+        runPassiveAbilities();
+        calculateAllHPs();
         switchTurn();
         return true;
     }
+    
+    public ArrayList<Card> getAllCards() {
+        ArrayList<Card> allOfTheCards = new ArrayList<>();
+        allOfTheCards.addAll(currentPlayer.getAllCards());
+        allOfTheCards.addAll(getOtherPlayer().getAllCards());
+        allOfTheCards.addAll(weatherCards);
+        return allOfTheCards;
+    }
+    
+    public void runPassiveAbilities() {
+        for (Card sampleCard : getAllCards()) {
+            sampleCard.resetCard();
+        }
+        for (Card sampleCard : getAllCards()) {
+            if (sampleCard.isCardsAbilityPassive()) {
+                sampleCard.getAbility().run(this , sampleCard);
+            }
+        }
+    }
 
+    public void calculateAllHPs() {
+        for (Card sampleCard : getAllCards()) {
+            sampleCard.setCurrentHP(sampleCard.calculateCurrentHP());
+        }
+    }
+    
     public ArrayList<Card> getCardRowFromPosition(Position position) {
         if (position.equals(Position.WeatherPlace)) {
             return getWeatherCards();

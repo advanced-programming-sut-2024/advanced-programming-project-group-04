@@ -4,11 +4,14 @@ import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.PlayerInGame;
 import com.mygdx.game.model.card.Card;
 
-public class Spy implements Ability {
+public class SkelligeStrom implements Ability{
     @Override
     public void run(GameManager gameManager , Card callerCard){
         PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
-        currentPlayer.addRandomCardToHandFromDeck();
-        currentPlayer.addRandomCardToHandFromDeck();
+        PlayerInGame otherPlayer = gameManager.getOtherPlayer();
+        currentPlayer.setSiegeCardsIsWeather(true);
+        otherPlayer.setSiegeCardsIsWeather(true);
+        currentPlayer.setRangeCardsIsWeather(true);
+        otherPlayer.setRangeCardsIsWeather(true);
     }
 }
