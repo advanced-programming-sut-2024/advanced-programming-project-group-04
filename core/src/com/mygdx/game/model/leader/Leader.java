@@ -1,5 +1,7 @@
 package com.mygdx.game.model.leader;
 
+import com.mygdx.game.model.GameManager;
+
 public abstract class Leader {
     private final String name;
 
@@ -15,4 +17,6 @@ public abstract class Leader {
         String className = getClass().getSimpleName();
         return "images/factions/" + className + ".jpg";
     }
+
+    public abstract void run(GameManager gameManager);
 }
