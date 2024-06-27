@@ -28,6 +28,7 @@ import static com.mygdx.game.view.TableSection.*;
 
 public class GameMenu extends Menu {
     public static ImageButton selectedCard;
+    public static float SCALE = 0.01f, offset = 70;
 
     Table table, upperSectionTable, middleSectionTable, lowerSectionTable;
     CustomTable weatherTable, myHandTable, myLeaderTable, enemyLeaderTable, myGraveyardTable, enemyHandTable, enemyGraveyardTable;
@@ -35,12 +36,17 @@ public class GameMenu extends Menu {
     HashMap<TableSection, CustomTable> allTables;
     Deck myDeck, enemyDeck;
     AssetLoader assetLoader;
+    HashMap<Card, GraphicalCard> allCardsCreated;
+    Source myHandSource, enemyHandSource;
+    DragAndDrop dnd;
 
     public GameMenu(Main game) {
         super(game);
+        GameController.setGameMenu(this);
 
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         assetLoader = game.assetLoader;
+        allCardsCreated = new HashMap<>();
 
         tableInit();
 
@@ -67,33 +73,38 @@ public class GameMenu extends Menu {
     private void loadDeck(Deck deck, Table table) {
         ArrayList<Card> cards = deck.getCards();
         for (Card card : cards) {
-            Texture texture = assetLoader.getImageFromAllCard(card.getAllCard());
-            GraphicalCard graphicalCard = new GraphicalCard(new TextureRegionDrawable(new TextureRegion(texture)), card);
-
-            float SCALE = 0.01f, offset = 70;
-            graphicalCard.getImageCell().size(texture.getWidth() * SCALE + offset, texture.getHeight() * SCALE + offset);
-
-            // Add hover and click effects
-            graphicalCard.addListener(new ClickListener() {
-                @Override
-                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    graphicalCard.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
-                    selectedCard = graphicalCard;
-                }
-
-                @Override
-                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    graphicalCard.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
-                }
-
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    selectedCard = graphicalCard;
-                }
-            });
+            GraphicalCard graphicalCard = createNewGraphicalCard(card);
 
             table.add(graphicalCard);
         }
+    }
+
+    public GraphicalCard createNewGraphicalCard(Card card) {
+        Texture texture = assetLoader.getImageFromAllCard(card.getAllCard());
+        GraphicalCard graphicalCard = new GraphicalCard(new TextureRegionDrawable(new TextureRegion(texture)), card, allCardsCreated);
+
+        graphicalCard.getImageCell().size(texture.getWidth() * SCALE + offset, texture.getHeight() * SCALE + offset);
+
+        // Add hover and click effects
+        graphicalCard.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                graphicalCard.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                selectedCard = graphicalCard;
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                graphicalCard.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                selectedCard = graphicalCard;
+            }
+        });
+
+        return graphicalCard;
     }
 
     private void tableInit() {
@@ -123,9 +134,10 @@ public class GameMenu extends Menu {
                 new CustomTable(ENEMY_SPELL_SIEGE, allTables),
                 new CustomTable(ENEMY_SPELL_RANGE, allTables)};
 
-        DragAndDrop dnd = new DragAndDrop();
-        addSourceToDragAndDrop(dnd, myHandTable);
-        addSourceToDragAndDrop(dnd, enemyHandTable);
+        dnd = new DragAndDrop();
+        myHandSource = getSource(myHandTable);
+        enemyHandSource = getSource(enemyHandTable);
+        dnd.addSource(myHandSource);
 
         for (CustomTable table : allTables.values()) {
             if (!table.getTableSection().canPlaceCard()) continue;
@@ -138,7 +150,7 @@ public class GameMenu extends Menu {
                 @Override
                 public void drop(Source source, Payload payload, float x, float y, int pointer) {
                     if (GameController.placeCardController(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getTableSection())) {
-                        table.add((ImageButton) payload.getObject());
+//                        table.add((ImageButton) payload.getObject());
                         System.out.println(((CustomTable)table).getTableSection().getTitle());
                     }
                 }
@@ -190,8 +202,8 @@ public class GameMenu extends Menu {
         stage.addActor(table);
     }
 
-    private void addSourceToDragAndDrop(DragAndDrop dnd, Table table) {
-        dnd.addSource(new Source(table) {
+    private Source getSource(CustomTable table) {
+        return new Source(table) {
             final Payload payload = new Payload();
 
             @Override
@@ -209,6 +221,20 @@ public class GameMenu extends Menu {
                     table.add((ImageButton) payload.getObject());
                 }
             }
-        });
+        };
     }
+
+    public void changeTurn(boolean isMyTurn) {
+        if (isMyTurn) {
+            dnd.removeSource(enemyHandSource);
+            dnd.addSource(myHandSource);
+        } else {
+            dnd.removeSource(myHandSource);
+            dnd.addSource(enemyHandSource);
+        }
+    }
+
+    public HashMap<Card, GraphicalCard> getAllCardsCreated() { return this.allCardsCreated; }
+
+    public HashMap<TableSection, CustomTable> getAllTables() { return this.allTables; }
 }

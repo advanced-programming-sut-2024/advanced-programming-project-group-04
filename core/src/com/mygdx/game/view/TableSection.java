@@ -44,4 +44,12 @@ public enum TableSection {
     public Position getPosition() { return this.position; }
 
     public String getTitle() { return this.title; }
+
+    public static TableSection getTableSectionByPosition(Position position, boolean isEnemy) {
+        for (TableSection tableSection : TableSection.values()) {
+            if (tableSection.getPosition() != null && tableSection.getPosition().equals(position) &&
+                    tableSection.isEnemy() == isEnemy) return tableSection;
+        }
+        return null;
+    }
 }

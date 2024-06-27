@@ -1,6 +1,7 @@
 package com.mygdx.game.model;
 
 
+import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.ability.Spy;
 import com.mygdx.game.model.card.*;
 
@@ -125,12 +126,15 @@ public class GameManager {
                 flag = false;
             } else if (theCardType.equals(Type.CloseCombat)){
                 otherPlayer.addToMelee(card);
+                GameController.addCardToTableSection(card, Position.Melee, true);
                 flag = true;
             } else if (theCardType.equals(Type.RangedCombat)){
                 otherPlayer.addToRange(card);
+                GameController.addCardToTableSection(card, Position.Range, true);
                 flag = true;
             } else if (theCardType.equals(Type.Siege)) {
                 otherPlayer.addToSiege(card);
+                GameController.addCardToTableSection(card, Position.Siege, true);
                 flag = true;
             } else if (theCardType.equals(Type.Spell)) {
                 flag = false;
@@ -154,6 +158,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.addToMelee(card);
+        GameController.addCardToTableSection(card, Position.Melee, false);
         return true;
     }
     public boolean addToRange (Card card) {
@@ -161,6 +166,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.addToRange(card);
+        GameController.addCardToTableSection(card, Position.Range, false);
         return true;
     }
     public boolean addToSiege (Card card) {
@@ -168,6 +174,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.addToSiege(card);
+        GameController.addCardToTableSection(card, Position.Siege, false);
         return true;
     }
     public boolean placeToSpellMelee (Card card) {
@@ -175,6 +182,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.placeSpellMelee(card);
+        GameController.addCardToTableSection(card, Position.SpellMelee, false);
         return true;
     }
     public boolean placeToSpellRange (Card card) {
@@ -182,6 +190,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.placeSpellRange(card);
+        GameController.addCardToTableSection(card, Position.SpellRange, false);
         return true;
     }
     public boolean placeToSpellSiege (Card card) {
@@ -189,6 +198,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.placeSpellSiege(card);
+        GameController.addCardToTableSection(card, Position.SpellSiege, false);
         return true;
     }
     public boolean placeToWeather (Card card) {
@@ -196,6 +206,7 @@ public class GameManager {
             return false;
         }
         weatherCards.add(card);
+        GameController.addCardToTableSection(card, Position.WeatherPlace, false);
         return true;
     }
     
@@ -391,11 +402,10 @@ public class GameManager {
         return weatherCards;
     }
 
-    public boolean endTurn () {
+    public void endTurn () {
         runPassiveAbilities();
         calculateAllHPs();
         switchTurn();
-        return true;
     }
     
     public ArrayList<Card> getAllCards() {
@@ -437,6 +447,7 @@ public class GameManager {
         } else {
             currentPlayer = player1;
         }
+        GameController.changeTurn();
     }
 
 
