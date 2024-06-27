@@ -3,22 +3,23 @@ package com.mygdx.game.view;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CustomTable extends Table {
-    private final String id;
+    private final TableSection tableSection;
 
-    public CustomTable(String id, ArrayList<Table> allTables) {
+    public CustomTable(TableSection tableSection, HashMap<TableSection, CustomTable> allTables) {
         super();
-        this.id = id;
-        allTables.add(this);
+        this.tableSection = tableSection;
+        allTables.put(tableSection, this);
     }
 
-    public CustomTable(String id) {
+    public CustomTable(TableSection tableSection) {
         super();
-        this.id = id;
+        this.tableSection = tableSection;
     }
 
-    public String getId() {
-        return this.id;
+    public TableSection getTableSection() {
+        return this.tableSection;
     }
 }

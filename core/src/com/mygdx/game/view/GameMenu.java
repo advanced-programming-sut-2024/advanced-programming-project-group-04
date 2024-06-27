@@ -15,30 +15,59 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
 import com.mygdx.game.controller.GameController;
+import com.mygdx.game.model.Deck;
+import com.mygdx.game.model.Player;
 import com.mygdx.game.model.card.AllCards;
-import com.mygdx.game.model.faction.Faction;
+import com.mygdx.game.model.card.Card;
+import com.mygdx.game.model.faction.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static com.mygdx.game.view.TableSection.*;
 
 public class GameMenu extends Menu {
     public static ImageButton selectedCard;
 
     Table table, upperSectionTable, middleSectionTable, lowerSectionTable;
-    CustomTable weatherTable, myHandTable, myLeaderTable, enemyLeaderTable, myGraveyardTable;
+    CustomTable weatherTable, myHandTable, myLeaderTable, enemyLeaderTable, myGraveyardTable, enemyHandTable, enemyGraveyardTable;
     CustomTable[] myRowsTables, enemyRowsTables;
-    ArrayList<Table> allTables;
+    HashMap<TableSection, CustomTable> allTables;
+    Deck myDeck, enemyDeck;
+    AssetLoader assetLoader;
 
     public GameMenu(Main game) {
         super(game);
 
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        assetLoader = game.assetLoader;
+
         tableInit();
 
-        // Load leader images using AssetLoader
-        AssetLoader assetLoader = game.assetLoader;
-        ArrayList<AllCards> cards = Faction.getNeutralCards();
-        for (AllCards card : cards) {
-            Texture texture = assetLoader.getImageFromAllCard(card);
+        myDeck = new Deck();
+        for (AllCards allCard : Nilfgaard.getCards()) {
+            myDeck.addCard(new Card(allCard));
+        }
+        enemyDeck = new Deck();
+        for (AllCards allCard : Monsters.getCards()) {
+            enemyDeck.addCard(new Card(allCard));
+        }
+
+        Player matin = new Player("Matin", "cDnak@(#&>CAxm09218", "matin@giga.com", "GigaChad");
+        Player arvin = new Player("Arvin", "1234", "arvin@gay.com", "Simp");
+        arvin.loadDeck(enemyDeck);
+        matin.loadDeck(myDeck);
+        GameController.startNewGame(matin, arvin);
+
+        loadDeck(myDeck, myHandTable);
+        loadDeck(enemyDeck, enemyHandTable);
+
+    }
+
+    private void loadDeck(Deck deck, Table table) {
+        ArrayList<Card> cards = deck.getCards();
+        for (Card card : cards) {
+            Texture texture = assetLoader.getImageFromAllCard(card.getAllCard());
             GraphicalCard graphicalCard = new GraphicalCard(new TextureRegionDrawable(new TextureRegion(texture)), card);
 
             float SCALE = 0.01f, offset = 70;
@@ -63,73 +92,62 @@ public class GameMenu extends Menu {
                 }
             });
 
-            myHandTable.add(graphicalCard);
+            table.add(graphicalCard);
         }
-
     }
 
     private void tableInit() {
         table = new Table();
         table.setFillParent(true);
         table.setDebug(true);
-        allTables = new ArrayList<>();
-        weatherTable = new CustomTable("Weather", allTables);
-        myHandTable = new CustomTable("My Hand");
-        myLeaderTable = new CustomTable("My Leader");
-        enemyLeaderTable = new CustomTable("Enemy Leader");
-        myGraveyardTable = new CustomTable("My Graveyard");
+        allTables = new HashMap<>();
+        weatherTable = new CustomTable(WEATHER, allTables);
+        myHandTable = new CustomTable(MY_HAND, allTables);
+        enemyHandTable = new CustomTable(ENEMY_HAND, allTables);
+        myLeaderTable = new CustomTable(MY_LEADER, allTables);
+        enemyLeaderTable = new CustomTable(ENEMY_LEADER, allTables);
+        myGraveyardTable = new CustomTable(MY_GRAVEYARD, allTables);
+        enemyGraveyardTable = new CustomTable(ENEMY_GRAVEYARD, allTables);
         myRowsTables = new CustomTable[]{
-                new CustomTable("My Melee", allTables),
-                new CustomTable("My Siege", allTables),
-                new CustomTable("My Range", allTables),
-                new CustomTable("My Melee Special", allTables),
-                new CustomTable("My Siege Special", allTables),
-                new CustomTable("My Range Special", allTables)};
+                new CustomTable(MY_MELEE, allTables),
+                new CustomTable(MY_SIEGE, allTables),
+                new CustomTable(MY_RANGE, allTables),
+                new CustomTable(MY_SPELL_MELEE, allTables),
+                new CustomTable(MY_SPELL_SIEGE, allTables),
+                new CustomTable(MY_SPELL_RANGE, allTables)};
         enemyRowsTables = new CustomTable[]{
-                new CustomTable("Enemy Melee", allTables),
-                new CustomTable("Enemy Siege", allTables),
-                new CustomTable("Enemy Range", allTables),
-                new CustomTable("Enemy Melee Special", allTables),
-                new CustomTable("Enemy Siege Special", allTables),
-                new CustomTable("Enemy Range Special", allTables)};
-//        myHandTable.setDebug(true);
+                new CustomTable(ENEMY_MELEE, allTables),
+                new CustomTable(ENEMY_SIEGE, allTables),
+                new CustomTable(ENEMY_RANGE, allTables),
+                new CustomTable(ENEMY_SPELL_MELEE, allTables),
+                new CustomTable(ENEMY_SPELL_SIEGE, allTables),
+                new CustomTable(ENEMY_SPELL_RANGE, allTables)};
 
         DragAndDrop dnd = new DragAndDrop();
-        dnd.addSource(new Source(myHandTable) {
-            final Payload payload = new Payload();
+        addSourceToDragAndDrop(dnd, myHandTable);
+        addSourceToDragAndDrop(dnd, enemyHandTable);
 
-            @Override
-            public Payload dragStart(InputEvent event, float x, float y, int pointer) {
-                payload.setObject(selectedCard);
-                payload.setDragActor(selectedCard);
-                myHandTable.removeActor(selectedCard);
-
-                return payload;
-            }
-
-            @Override
-            public void dragStop(InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
-                if (target == null) {
-                    myHandTable.add((ImageButton) payload.getObject());
-                }
-            }
-        });
-
-        for (Table table : allTables) {
+        for (CustomTable table : allTables.values()) {
+            if (!table.getTableSection().canPlaceCard()) continue;
             dnd.addTarget(new Target(table) {
                 @Override
                 public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
-                    return GameController.placeCardController(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getId());
+                    return true;
                 }
 
                 @Override
                 public void drop(Source source, Payload payload, float x, float y, int pointer) {
-                    table.add((ImageButton) payload.getObject());
-                    System.out.println(((CustomTable)table).getId());
+                    if (GameController.placeCardController(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getTableSection())) {
+                        table.add((ImageButton) payload.getObject());
+                        System.out.println(((CustomTable)table).getTableSection().getTitle());
+                    }
                 }
             });
         }
 
+        table.add(enemyGraveyardTable).height(100).width(100);
+        table.add(enemyHandTable);
+        table.row();
         table.add(enemyLeaderTable).height(200).width(100);
 
         upperSectionTable = new Table();
@@ -170,5 +188,27 @@ public class GameMenu extends Menu {
         table.add(myHandTable);
 
         stage.addActor(table);
+    }
+
+    private void addSourceToDragAndDrop(DragAndDrop dnd, Table table) {
+        dnd.addSource(new Source(table) {
+            final Payload payload = new Payload();
+
+            @Override
+            public Payload dragStart(InputEvent event, float x, float y, int pointer) {
+                payload.setObject(selectedCard);
+                payload.setDragActor(selectedCard);
+                table.removeActor(selectedCard);
+
+                return payload;
+            }
+
+            @Override
+            public void dragStop(InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
+                if (target == null) {
+                    table.add((ImageButton) payload.getObject());
+                }
+            }
+        });
     }
 }

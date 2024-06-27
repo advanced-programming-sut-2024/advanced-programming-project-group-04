@@ -62,7 +62,7 @@ public class GameManager {
                 throw new RuntimeException();
             }
         } else {
-            throw new RuntimeException();
+            return false;
         }
     } 
 
@@ -97,7 +97,7 @@ public class GameManager {
                 throw new RuntimeException();
             }
         } else {
-            throw new RuntimeException();
+            return false;
         }
     }
 
@@ -306,7 +306,7 @@ public class GameManager {
         return otherPlayer.findCardInGame(card);    
     }
 
-    // Comander's horn related functions
+    // Commander's horn related functions
     public void meleeCurrentHpTimesInt (int number) {
         currentPlayer.meleeCurrentHpTimesInt(number);
     }

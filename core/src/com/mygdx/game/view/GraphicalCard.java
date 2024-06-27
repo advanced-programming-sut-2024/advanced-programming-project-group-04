@@ -13,5 +13,10 @@ public class GraphicalCard extends ImageButton {
         this.card = new Card(card);
     }
 
+    public GraphicalCard(Drawable drawable, Card card) {
+        super(drawable);
+        this.card = card;
+    }
+
     public Card getCard() { return this.card; }
 }
