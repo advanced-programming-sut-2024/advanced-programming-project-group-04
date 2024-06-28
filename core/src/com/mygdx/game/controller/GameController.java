@@ -46,7 +46,7 @@ public class GameController {
     public static boolean canPlaceCardToPosition(Card card, TableSection tableSection) {
         Position position = tableSection.getPosition();
         if (tableSection.isEnemy() ^ !isMyTurn) return gameManager.canPlaceCardEnemy(card, position);
-        else return gameManager.canPlaceCard(card, tableSection.getPosition());
+        else return gameManager.canPlaceCard(card, position);
     }
 
     public static void addCardToHand(Card card, PlayerInGame player) {
@@ -107,6 +107,9 @@ public class GameController {
         TableSection tableSection = table.getTableSection();
         Card card = graphicalCard.getCard();
         Position position = tableSection.getPosition();
+
+        // TODO: check the bug where your cards can go to the enemy's hand
+
         if (tableSection == TableSection.MY_HAND) gameManager.getPlayer1().addToHand(card);
         else if (tableSection == TableSection.ENEMY_HAND) gameManager.getPlayer2().addToHand(card);
         else if (position != null){

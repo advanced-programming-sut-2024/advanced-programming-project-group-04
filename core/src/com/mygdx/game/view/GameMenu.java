@@ -147,18 +147,20 @@ public class GameMenu extends Menu {
         enemyGraveyardTable = new CustomTable(ENEMY_GRAVEYARD, allTables);
         myRowsTables = new CustomTable[]{
                 new CustomTable(MY_MELEE, allTables),
-                new CustomTable(MY_SIEGE, allTables),
                 new CustomTable(MY_RANGE, allTables),
+                new CustomTable(MY_SIEGE, allTables),
                 new CustomTable(MY_SPELL_MELEE, allTables),
+                new CustomTable(MY_SPELL_RANGE, allTables),
                 new CustomTable(MY_SPELL_SIEGE, allTables),
-                new CustomTable(MY_SPELL_RANGE, allTables)};
+        };
         enemyRowsTables = new CustomTable[]{
                 new CustomTable(ENEMY_MELEE, allTables),
-                new CustomTable(ENEMY_SIEGE, allTables),
                 new CustomTable(ENEMY_RANGE, allTables),
+                new CustomTable(ENEMY_SIEGE, allTables),
                 new CustomTable(ENEMY_SPELL_MELEE, allTables),
+                new CustomTable(ENEMY_SPELL_RANGE, allTables),
                 new CustomTable(ENEMY_SPELL_SIEGE, allTables),
-                new CustomTable(ENEMY_SPELL_RANGE, allTables)};
+        };
 
         dnd = new DragAndDrop();
         //dnd.setButton(Input.Buttons.RIGHT);
