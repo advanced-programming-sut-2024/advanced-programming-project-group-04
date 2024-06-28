@@ -380,7 +380,7 @@ public class FactionAndLeaderMenu extends Menu {
         statsTable.add(heroCountLabel).pad(10).row();
         statsTable.add(unitCountLabel).pad(10).row();
         statsTable.add(spellCountLabel).pad(10).row();
-        mainTable.add(statsTable).width(dialogWidth * 0.2f).height(dialogHeight).pad(10);
+        mainTable.add(statsTable).width(dialogWidth * 0.15f).height(dialogHeight).pad(10);
 
         // Right section for selected cards
 
