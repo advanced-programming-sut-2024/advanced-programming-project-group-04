@@ -12,12 +12,14 @@ import java.util.ArrayList;
 public class GameManager {
 
     private PlayerInGame player1, player2, currentPlayer;
+    private GameController gameController;
 
     private ArrayList<Card> weatherCards = new ArrayList<>();
 
-    public GameManager(Player player1, Player player2) {
+    public GameManager(Player player1, Player player2, GameController gameController) {
         this.player1 = new PlayerInGame(player1);
         this.player2 = new PlayerInGame(player2);
+        this.gameController = gameController;
         this.currentPlayer = this.player1;
     }
 
@@ -134,15 +136,15 @@ public class GameManager {
                 flag = false;
             } else if (theCardType.equals(Type.CloseCombat)) {
                 otherPlayer.addToMelee(card);
-                GameController.addCardToTableSection(card, Position.Melee, true);
+                gameController.addCardToTableSection(card, Position.Melee, true);
                 flag = true;
             } else if (theCardType.equals(Type.RangedCombat)) {
                 otherPlayer.addToRange(card);
-                GameController.addCardToTableSection(card, Position.Range, true);
+                gameController.addCardToTableSection(card, Position.Range, true);
                 flag = true;
             } else if (theCardType.equals(Type.Siege)) {
                 otherPlayer.addToSiege(card);
-                GameController.addCardToTableSection(card, Position.Siege, true);
+                gameController.addCardToTableSection(card, Position.Siege, true);
                 flag = true;
             } else if (theCardType.equals(Type.Spell)) {
                 flag = false;
@@ -166,7 +168,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.addToMelee(card);
-        GameController.addCardToTableSection(card, Position.Melee, false);
+        gameController.addCardToTableSection(card, Position.Melee, false);
         return true;
     }
 
@@ -175,7 +177,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.addToRange(card);
-        GameController.addCardToTableSection(card, Position.Range, false);
+        gameController.addCardToTableSection(card, Position.Range, false);
         return true;
     }
 
@@ -184,7 +186,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.addToSiege(card);
-        GameController.addCardToTableSection(card, Position.Siege, false);
+        gameController.addCardToTableSection(card, Position.Siege, false);
         return true;
     }
 
@@ -193,7 +195,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.placeSpellMelee(card);
-        GameController.addCardToTableSection(card, Position.SpellMelee, false);
+        gameController.addCardToTableSection(card, Position.SpellMelee, false);
         return true;
     }
 
@@ -202,7 +204,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.placeSpellRange(card);
-        GameController.addCardToTableSection(card, Position.SpellRange, false);
+        gameController.addCardToTableSection(card, Position.SpellRange, false);
         return true;
     }
 
@@ -211,7 +213,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.placeSpellSiege(card);
-        GameController.addCardToTableSection(card, Position.SpellSiege, false);
+        gameController.addCardToTableSection(card, Position.SpellSiege, false);
         return true;
     }
 
@@ -220,7 +222,7 @@ public class GameManager {
             return false;
         }
         weatherCards.add(card);
-        GameController.addCardToTableSection(card, Position.WeatherPlace, false);
+        gameController.addCardToTableSection(card, Position.WeatherPlace, false);
         return true;
     }
 
@@ -239,11 +241,11 @@ public class GameManager {
 
         if (forCurrentPlayer != null && forOtherPlayer == null) {
             currentPlayer.removeCard(card, forCurrentPlayer);
-            GameController.removeCardFromView(card);
+            gameController.removeCardFromView(card);
             return true;
         } else if (forCurrentPlayer == null && forOtherPlayer != null) {
             otherPlayer.removeCard(card, forOtherPlayer);
-            GameController.removeCardFromView(card);
+            gameController.removeCardFromView(card);
             return true;
         } else {
             return false;
@@ -264,7 +266,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromMelee(card);
-        GameController.removeCardFromView(card);
+        gameController.removeCardFromView(card);
         return true;
     }
 
@@ -273,7 +275,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromRange(card);
-        GameController.removeCardFromView(card);
+        gameController.removeCardFromView(card);
         return true;
     }
 
@@ -282,7 +284,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromSiege(card);
-        GameController.removeCardFromView(card);
+        gameController.removeCardFromView(card);
         return true;
     }
 
@@ -291,7 +293,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellMelee(card);
-        GameController.removeCardFromView(card);
+        gameController.removeCardFromView(card);
         return true;
     }
 
@@ -300,7 +302,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellRange(card);
-        GameController.removeCardFromView(card);
+        gameController.removeCardFromView(card);
         return true;
     }
 
@@ -309,13 +311,13 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellSiege(card);
-        GameController.removeCardFromView(card);
+        gameController.removeCardFromView(card);
         return true;
     }
 
     public boolean removeFromWeather(Card card) {
         weatherCards.remove(card);
-        GameController.removeCardFromView(card);
+        gameController.removeCardFromView(card);
         return true;
     }
 
@@ -505,7 +507,7 @@ public class GameManager {
         } else {
             currentPlayer = player1;
         }
-        GameController.changeTurn();
+        gameController.changeTurn();
     }
 
 
@@ -595,6 +597,36 @@ public class GameManager {
             return player2;
         } else {
             return player1;
+        }
+    }
+
+    public void addToHand(Card card) {
+        currentPlayer.addToHand(card);
+        gameController.addCardToHand(card, currentPlayer);
+    }
+
+    public void addToHand(Card card, boolean isCurrentPlayer) {
+        if (isCurrentPlayer) {
+            addToHand(card);
+        } else {
+            PlayerInGame otherPlayer = getOtherPlayer();
+            otherPlayer.addToHand(card);
+            gameController.addCardToHand(card, otherPlayer);
+        }
+    }
+
+    public void removeFromHand(Card card) {
+        currentPlayer.removeFromHand(card);
+        gameController.removeCardFromView(card);
+    }
+
+    public void removeFromHand(Card card, boolean isCurrentPlayer) {
+        if (isCurrentPlayer) {
+            removeFromHand(card);
+        } else {
+            PlayerInGame otherPlayer = getOtherPlayer();
+            otherPlayer.removeFromHand(card);
+            gameController.removeCardFromView(card);
         }
     }
 
