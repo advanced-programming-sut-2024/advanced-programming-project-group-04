@@ -73,7 +73,7 @@ public class Card {
         this.howManyMoralBoostAffected = 0;
         this.isCommandersHornAffected = false;
         this.isWeathered = false;
-        this.howManyMoralBoostAffected = 1;
+        this.howManyTightBond = 1;
     }
 
     public String getName () {
@@ -118,6 +118,7 @@ public class Card {
     }
 
     public int calculateCurrentHP() {
+        System.out.println("sirk");
         int calculatedHP = getPower();
         if (isHero()) {
             return calculatedHP;
@@ -126,7 +127,9 @@ public class Card {
             calculatedHP = 1;
         }
         int commandersAffect = isCommandersHornAffected ? 2 : 1;
-        return ((calculatedHP + howManyMoralBoostAffected) * howManyTightBond) * commandersAffect;
+        calculatedHP = ((calculatedHP + howManyMoralBoostAffected) * howManyTightBond) * commandersAffect;
+        System.out.println(calculatedHP);
+        return calculatedHP;
     }
 
 }

@@ -126,7 +126,7 @@ public enum AllCards {
 
         Draug("Draug", 10, 1, CloseCombat, new NoAbility(), true, ""),
         Imlerith("Imlerith", 10, 1, CloseCombat, new NoAbility(), true, ""),
-        Leshen("Leshen", 10, 1, CloseCombat, new NoAbility(), true, ""),
+        Leshen("Leshen", 10, 1, RangedCombat, new NoAbility(), true, ""),
         Kayran("Kayran", 8, 1, Agile, new MoralBoost(), true, ""),
         Toad("Toad", 7, 1, RangedCombat, new Scorch(), false, "kills the opponent's card(s) with most power in enemy's Ranged combat row if the sum of powers of none-hero cards in this row is 10 or more"),
         ArachasBehemoth("Arachas Behemoth", 6, 1, Siege, new Muster(), false, ""),

@@ -30,8 +30,14 @@ public class GameController {
 
     public static boolean placeCard(Card card, TableSection tableSection) {
         boolean result;
-        if (tableSection.isEnemy() ^ !isMyTurn) result = gameManager.placeCardEnemy(card);
-        else result = gameManager.placeCard(card, tableSection.getPosition());
+        if (tableSection.isEnemy() ^ !isMyTurn) {
+            result = gameManager.placeCardEnemy(card);
+        }
+        else {
+
+            result = gameManager.placeCard(card, tableSection.getPosition());
+            System.out.println(tableSection.getTitle());
+        }
         System.out.println(isMyTurn);
         if (result) gameManager.endTurn();
         return result;
