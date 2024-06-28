@@ -58,11 +58,13 @@ public class GameMenu extends Menu {
 
         myDeck = new Deck();
         for (AllCards allCard : Nilfgaard.getCards()) {
-            myDeck.addCard(new Card(allCard));
+            for (int i = 0; i < allCard.getNumber(); i++)
+                myDeck.addCard(new Card(allCard));
         }
         enemyDeck = new Deck();
-        for (AllCards allCard : Monsters.getCards()) {
-            enemyDeck.addCard(new Card(allCard));
+        for (AllCards allCard : Skellige.getCards()) {
+            for (int i = 0; i < allCard.getNumber(); i++)
+                enemyDeck.addCard(new Card(allCard));
         }
 
         Player matin = new Player("Matin", "cDnak@(#&>CAxm09218", "matin@giga.com", "GigaChad");
@@ -159,7 +161,7 @@ public class GameMenu extends Menu {
                 new CustomTable(ENEMY_SPELL_RANGE, allTables)};
 
         dnd = new DragAndDrop();
-        dnd.setButton(Input.Buttons.RIGHT);
+        //dnd.setButton(Input.Buttons.RIGHT);
         myHandSource = getSource(myHandTable);
         enemyHandSource = getSource(enemyHandTable);
         dnd.addSource(myHandSource);

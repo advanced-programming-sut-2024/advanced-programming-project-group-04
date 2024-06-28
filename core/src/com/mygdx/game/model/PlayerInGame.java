@@ -387,9 +387,10 @@ public class PlayerInGame {
         allOfTheCards.addAll(melee);
         allOfTheCards.addAll(range);
         allOfTheCards.addAll(siege);
-        allOfTheCards.add(meleeSpell);
-        allOfTheCards.add(rangeSpell);
-        allOfTheCards.add(siegeSpell);
+        if (meleeSpell != null) allOfTheCards.add(meleeSpell);
+
+        if (rangeSpell != null) allOfTheCards.add(rangeSpell);
+        if (siegeSpell != null) allOfTheCards.add(siegeSpell);
         return allOfTheCards;
     }
 

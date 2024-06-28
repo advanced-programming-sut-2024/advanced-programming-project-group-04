@@ -14,6 +14,7 @@ public class Muster implements Ability {
                 gameManager.placeCard(sampleCard);
             }
         }
+
         for (Card sampleCard : currentPlayer.getDeckInGame()) {
             if (callerCard.musterEquality(sampleCard)) {
                 currentPlayer.removeFromDeckInGame(sampleCard);
