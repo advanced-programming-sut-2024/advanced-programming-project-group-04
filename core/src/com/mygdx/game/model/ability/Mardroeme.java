@@ -11,8 +11,11 @@ public class Mardroeme implements Ability {
     public void run(GameManager gameManager, Card callerCard) {
         Position callerCardPosition = gameManager.findCardInGameForCurrentPlayer(callerCard);
         ArrayList<Card> row = gameManager.getCardRowFromPosition(callerCardPosition);
-        for (Card card : row) {
+        System.out.println("len: " + row.size());
+        for (int i = row.size() - 1; i >= 0; i--) {
+            Card card = row.get(i);
             if (card.isBerserker()){
+                System.out.println("dalghakas");
                 card.getAbility().run(gameManager, card);
             }
         }
