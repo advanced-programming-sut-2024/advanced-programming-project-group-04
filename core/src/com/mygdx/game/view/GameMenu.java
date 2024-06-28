@@ -31,8 +31,10 @@ import java.util.HashMap;
 import static com.mygdx.game.view.TableSection.*;
 
 public class GameMenu extends Menu {
-    public static GraphicalCard selectedCard;
+    public GraphicalCard selectedCard;
     public static float SCALE = 0.15f, offset = 30;
+
+    GameController gameController;
 
     Table table, upperSectionTable, middleSectionTable, lowerSectionTable;
     CustomTable weatherTable, myHandTable, myLeaderTable, enemyLeaderTable, myGraveyardTable, enemyHandTable, enemyGraveyardTable;
@@ -47,7 +49,8 @@ public class GameMenu extends Menu {
 
     public GameMenu(Main game) {
         super(game);
-        GameController.setGameMenu(this);
+        this.gameController = new GameController(this);
+        gameController.setGameMenu(this);
 
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         assetLoader = game.assetLoader;
@@ -72,7 +75,7 @@ public class GameMenu extends Menu {
         Player arvin = new Player("Arvin", "1234", "arvin@gay.com", "Simp");
         arvin.loadDeck(enemyDeck);
         matin.loadDeck(myDeck);
-        GameController.startNewGame(matin, arvin);
+        gameController.startNewGame(matin, arvin);
 
         loadDeck(myDeck, myHandTable);
         loadDeck(enemyDeck, enemyHandTable);
@@ -147,20 +150,18 @@ public class GameMenu extends Menu {
         enemyGraveyardTable = new CustomTable(ENEMY_GRAVEYARD, allTables);
         myRowsTables = new CustomTable[]{
                 new CustomTable(MY_MELEE, allTables),
-                new CustomTable(MY_RANGE, allTables),
                 new CustomTable(MY_SIEGE, allTables),
+                new CustomTable(MY_RANGE, allTables),
                 new CustomTable(MY_SPELL_MELEE, allTables),
-                new CustomTable(MY_SPELL_RANGE, allTables),
                 new CustomTable(MY_SPELL_SIEGE, allTables),
-        };
+                new CustomTable(MY_SPELL_RANGE, allTables)};
         enemyRowsTables = new CustomTable[]{
                 new CustomTable(ENEMY_MELEE, allTables),
-                new CustomTable(ENEMY_RANGE, allTables),
                 new CustomTable(ENEMY_SIEGE, allTables),
+                new CustomTable(ENEMY_RANGE, allTables),
                 new CustomTable(ENEMY_SPELL_MELEE, allTables),
-                new CustomTable(ENEMY_SPELL_RANGE, allTables),
                 new CustomTable(ENEMY_SPELL_SIEGE, allTables),
-        };
+                new CustomTable(ENEMY_SPELL_RANGE, allTables)};
 
         dnd = new DragAndDrop();
         //dnd.setButton(Input.Buttons.RIGHT);
@@ -170,15 +171,15 @@ public class GameMenu extends Menu {
 
         for (CustomTable table : allTables.values()) {
             if (!table.getTableSection().canPlaceCard()) continue;
-            dnd.addTarget(new Target(table) {
+            dnd.addTarget(new CustomTarget(table, this) {
                 @Override
                 public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
-                    return GameController.canPlaceCardToPosition(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getTableSection());
+                    return getGameMenu().getGameController().canPlaceCardToPosition(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getTableSection());
                 }
 
                 @Override
                 public void drop(Source source, Payload payload, float x, float y, int pointer) {
-                    if (GameController.placeCard(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getTableSection())) {
+                    if (getGameMenu().getGameController().placeCard(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getTableSection())) {
                         System.out.println(((CustomTable)table).getTableSection().getTitle());
                     }
                 }
@@ -238,7 +239,7 @@ public class GameMenu extends Menu {
             public Payload dragStart(InputEvent event, float x, float y, int pointer) {
                 payload.setObject(selectedCard);
                 payload.setDragActor(selectedCard);
-                GameController.removeGraphicalCardFromTable(selectedCard, table);
+                getGameController().removeGraphicalCardFromTable(selectedCard, table);
 
                 return payload;
             }
@@ -246,7 +247,7 @@ public class GameMenu extends Menu {
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
                 if (target == null) {
-                    GameController.addGraphicalCardToTable((GraphicalCard) payload.getObject(), table);
+                    getGameController().addGraphicalCardToTable((GraphicalCard) payload.getObject(), table);
                 }
             }
         };
@@ -271,6 +272,8 @@ public class GameMenu extends Menu {
     public HashMap<Card, GraphicalCard> getAllCardsCreated() { return this.allCardsCreated; }
 
     public HashMap<TableSection, CustomTable> getAllTables() { return this.allTables; }
+
+    public GameController getGameController() { return this.gameController; }
 
     @Override
     public void render(float v) {

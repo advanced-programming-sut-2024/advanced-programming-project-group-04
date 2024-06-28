@@ -11,7 +11,11 @@ public class Muster implements Ability {
         for (int i = currentPlayer.getHand().size() - 1; i >= 0; i--) {
             Card sampleCard = currentPlayer.getHand().get(i);
             if (callerCard.musterEquality(sampleCard)) {
-                currentPlayer.removeFromHand(sampleCard);
+
+                // TODO: fix this part where remove is from game manager
+
+                gameManager.removeFromHand(sampleCard);
+//                currentPlayer.removeFromHand(sampleCard);
                 gameManager.placeCard(sampleCard);
             }
         }

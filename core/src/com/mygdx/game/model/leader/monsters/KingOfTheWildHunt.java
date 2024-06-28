@@ -31,8 +31,11 @@ public class KingOfTheWildHunt extends Leader {
         if (noneHeroFromGrave.size() > 0) {
             int index = (int) (Math.random() * noneHeroFromGrave.size());
             Card card = noneHeroFromGrave.get(index);
+
+            // TODO: fix this part for adding card to hand
             currentPlayer.removeFromGraveyard(card);
-            currentPlayer.addToHand(card);
+            gameManager.addToHand(card);
+//            currentPlayer.addToHand(card);
         }
 
         
