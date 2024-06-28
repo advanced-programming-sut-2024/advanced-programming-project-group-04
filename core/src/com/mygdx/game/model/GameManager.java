@@ -7,22 +7,27 @@ import com.mygdx.game.model.card.*;
 
 import java.util.ArrayList;
 
-import javax.management.RuntimeErrorException;
+
 
 public class GameManager {
-    
+
     private PlayerInGame player1, player2, currentPlayer;
 
     private ArrayList<Card> weatherCards = new ArrayList<>();
 
-    public GameManager (Player player1, Player player2){
+    public GameManager(Player player1, Player player2) {
         this.player1 = new PlayerInGame(player1);
         this.player2 = new PlayerInGame(player2);
         this.currentPlayer = this.player1;
     }
 
-    public PlayerInGame getPlayer1() { return this.player1; }
-    public PlayerInGame getPlayer2() { return this.player2; }
+    public PlayerInGame getPlayer1() {
+        return this.player1;
+    }
+
+    public PlayerInGame getPlayer2() {
+        return this.player2;
+    }
 
     public boolean canPlaceCard(Card card, Position position) {
         if (card.getAbility() instanceof Spy) return false;
@@ -55,7 +60,7 @@ public class GameManager {
     }
 
     /// Functions for Placing the Cards with position
-    public boolean placeCard (Card card, Position position) {
+    public boolean placeCard(Card card, Position position) {
         boolean flag;
         if (position.equals(Position.Melee)) {
             flag = addToMelee(card);
@@ -90,19 +95,19 @@ public class GameManager {
         //Kartaii ke faghat ye ja mitoonan place beshan ro place kon
         Type theCardType = card.getType();
         boolean flag;
-        if (!(card.getAbility() instanceof Spy)){
+        if (!(card.getAbility() instanceof Spy)) {
             if (theCardType.equals(Type.Agile)) {
                 flag = false;
-            } else if (theCardType.equals(Type.CloseCombat)){
+            } else if (theCardType.equals(Type.CloseCombat)) {
                 flag = placeCard(card, Position.Melee);
-            } else if (theCardType.equals(Type.RangedCombat)){
-                flag = placeCard(card , Position.Range);
+            } else if (theCardType.equals(Type.RangedCombat)) {
+                flag = placeCard(card, Position.Range);
             } else if (theCardType.equals(Type.Siege)) {
-                flag = placeCard(card , Position.Siege);
+                flag = placeCard(card, Position.Siege);
             } else if (theCardType.equals(Type.Spell)) {
                 flag = false;
             } else if (theCardType.equals(Type.Weather)) {
-                flag = placeCard(card , Position.WeatherPlace);
+                flag = placeCard(card, Position.WeatherPlace);
             } else {
                 throw new RuntimeException();
             }
@@ -116,7 +121,7 @@ public class GameManager {
             card.getAbility().run(this, card);
         }
         return true;
-    } 
+    }
 
     public boolean placeCardEnemy(Card card) {
         //Kartaii ke faghat ye ja mitoonan place beshan ro place kon faghat baraye spy
@@ -124,14 +129,14 @@ public class GameManager {
 
         PlayerInGame otherPlayer = getOtherPlayer();
         boolean flag;
-        if ((card.getAbility() instanceof Spy)){
+        if ((card.getAbility() instanceof Spy)) {
             if (theCardType.equals(Type.Agile)) {
                 flag = false;
-            } else if (theCardType.equals(Type.CloseCombat)){
+            } else if (theCardType.equals(Type.CloseCombat)) {
                 otherPlayer.addToMelee(card);
                 GameController.addCardToTableSection(card, Position.Melee, true);
                 flag = true;
-            } else if (theCardType.equals(Type.RangedCombat)){
+            } else if (theCardType.equals(Type.RangedCombat)) {
                 otherPlayer.addToRange(card);
                 GameController.addCardToTableSection(card, Position.Range, true);
                 flag = true;
@@ -152,11 +157,11 @@ public class GameManager {
 
         if (!flag) return false;
 
-        card.getAbility().run(this, card);    
+        card.getAbility().run(this, card);
         return true;
     }
 
-    public boolean addToMelee (Card card) {
+    public boolean addToMelee(Card card) {
         if (!canBeAddedToMelee(card)) {
             return false;
         }
@@ -164,7 +169,8 @@ public class GameManager {
         GameController.addCardToTableSection(card, Position.Melee, false);
         return true;
     }
-    public boolean addToRange (Card card) {
+
+    public boolean addToRange(Card card) {
         if (!canBeAddedToRange(card)) {
             return false;
         }
@@ -172,7 +178,8 @@ public class GameManager {
         GameController.addCardToTableSection(card, Position.Range, false);
         return true;
     }
-    public boolean addToSiege (Card card) {
+
+    public boolean addToSiege(Card card) {
         if (!canBeAddedToSiege(card)) {
             return false;
         }
@@ -180,7 +187,8 @@ public class GameManager {
         GameController.addCardToTableSection(card, Position.Siege, false);
         return true;
     }
-    public boolean placeToSpellMelee (Card card) {
+
+    public boolean placeToSpellMelee(Card card) {
         if (!canBePlacedToSpellMelee(card)) {
             return false;
         }
@@ -188,7 +196,8 @@ public class GameManager {
         GameController.addCardToTableSection(card, Position.SpellMelee, false);
         return true;
     }
-    public boolean placeToSpellRange (Card card) {
+
+    public boolean placeToSpellRange(Card card) {
         if (!canBePlacedToSpellRange(card)) {
             return false;
         }
@@ -196,7 +205,8 @@ public class GameManager {
         GameController.addCardToTableSection(card, Position.SpellRange, false);
         return true;
     }
-    public boolean placeToSpellSiege (Card card) {
+
+    public boolean placeToSpellSiege(Card card) {
         if (!canBePlacedToSpellSiege(card)) {
             return false;
         }
@@ -204,7 +214,8 @@ public class GameManager {
         GameController.addCardToTableSection(card, Position.SpellSiege, false);
         return true;
     }
-    public boolean placeToWeather (Card card) {
+
+    public boolean placeToWeather(Card card) {
         if (!canBePlacedToWeather(card)) {
             return false;
         }
@@ -212,9 +223,9 @@ public class GameManager {
         GameController.addCardToTableSection(card, Position.WeatherPlace, false);
         return true;
     }
-    
 
-    public boolean removeCard (Card card) {
+
+    public boolean removeCard(Card card) {
         for (Card sampleCard : weatherCards) {
             if (card.equals(sampleCard)) {
                 return removeFromWeather(card);
@@ -222,7 +233,7 @@ public class GameManager {
         }
 
         PlayerInGame otherPlayer = getOtherPlayer();
-        
+
         Position forCurrentPlayer = findCardInGameForCurrentPlayer(card);
         Position forOtherPlayer = findCardInGameForOtherPlayer(card);
 
@@ -248,7 +259,7 @@ public class GameManager {
     }
     /* */
 
-    public boolean removeFromMelee (Card card) {
+    public boolean removeFromMelee(Card card) {
         if (!canBeAddedToMelee(card)) {
             return false;
         }
@@ -256,7 +267,8 @@ public class GameManager {
         GameController.removeCardFromView(card);
         return true;
     }
-    public boolean removeFromRange (Card card) {
+
+    public boolean removeFromRange(Card card) {
         if (!canBeAddedToRange(card)) {
             return false;
         }
@@ -264,7 +276,8 @@ public class GameManager {
         GameController.removeCardFromView(card);
         return true;
     }
-    public boolean removeFromSiege (Card card) {
+
+    public boolean removeFromSiege(Card card) {
         if (!canBeAddedToSiege(card)) {
             return false;
         }
@@ -272,7 +285,8 @@ public class GameManager {
         GameController.removeCardFromView(card);
         return true;
     }
-    public boolean removeSpellMelee (Card card) {
+
+    public boolean removeSpellMelee(Card card) {
         if (!canBePlacedToSpellMelee(card)) {
             return false;
         }
@@ -280,7 +294,8 @@ public class GameManager {
         GameController.removeCardFromView(card);
         return true;
     }
-    public boolean removeSpellRange (Card card) {
+
+    public boolean removeSpellRange(Card card) {
         if (!canBePlacedToSpellRange(card)) {
             return false;
         }
@@ -288,7 +303,8 @@ public class GameManager {
         GameController.removeCardFromView(card);
         return true;
     }
-    public boolean removeSpellSiege (Card card) {
+
+    public boolean removeSpellSiege(Card card) {
         if (!canBePlacedToSpellSiege(card)) {
             return false;
         }
@@ -297,7 +313,7 @@ public class GameManager {
         return true;
     }
 
-    public boolean removeFromWeather (Card card) {
+    public boolean removeFromWeather(Card card) {
         weatherCards.remove(card);
         GameController.removeCardFromView(card);
         return true;
@@ -305,50 +321,56 @@ public class GameManager {
 
 
     /// Functions for checking if we can place that Card
-    public boolean canBeAddedToMelee (Card card) {
-        if(card.getType().equals(Type.CloseCombat) || card.getType().equals(Type.Agile)){
+    public boolean canBeAddedToMelee(Card card) {
+        if (card.getType().equals(Type.CloseCombat) || card.getType().equals(Type.Agile)) {
             return true;
         }
         return false;
     }
-    public boolean canBeAddedToRange (Card card) {
-        if(card.getType().equals(Type.RangedCombat) || card.getType().equals(Type.Agile)){
+
+    public boolean canBeAddedToRange(Card card) {
+        if (card.getType().equals(Type.RangedCombat) || card.getType().equals(Type.Agile)) {
             return true;
         }
         return false;
     }
-    public boolean canBeAddedToSiege (Card card) {
-        if(card.getType().equals(Type.Siege)){
+
+    public boolean canBeAddedToSiege(Card card) {
+        if (card.getType().equals(Type.Siege)) {
             return true;
         }
         return false;
     }
-    public boolean canBePlacedToSpellMelee (Card card) {
-        if(card.getType().equals(Type.Spell) && currentPlayer.getMeleeSpell().equals(null)){
+
+    public boolean canBePlacedToSpellMelee(Card card) {
+        if (card.getType().equals(Type.Spell) && currentPlayer.getMeleeSpell() == null){
             return true;
         }
         return false;
     }
-    public boolean canBePlacedToSpellRange (Card card) {
-        if(card.getType().equals(Type.Spell) && currentPlayer.getRangeSpell().equals(null)){
+
+    public boolean canBePlacedToSpellRange(Card card) {
+        if (card.getType().equals(Type.Spell) && currentPlayer.getRangeSpell() == (null)) {
             return true;
         }
-        return true;
+        return false;
     }
-    public boolean canBePlacedToSpellSiege (Card card) {
-        if(card.getType().equals(Type.Spell) && currentPlayer.getSiegeSpell().equals(null)){
+
+    public boolean canBePlacedToSpellSiege(Card card) {
+        if (card.getType().equals(Type.Spell) && currentPlayer.getSiegeSpell() == null) {
             return true;
         }
-        return true;
+        return false;
     }
-    public boolean canBePlacedToWeather (Card card) {
+
+    public boolean canBePlacedToWeather(Card card) {
         if (card.getType().equals(Type.Weather)) {
             return true;
         }
         return false;
     }
 
-    public Position findCardInGameForCurrentPlayer(Card card){
+    public Position findCardInGameForCurrentPlayer(Card card) {
         for (Card sampleCard : weatherCards) {
             if (card.equals(sampleCard)) {
                 return Position.WeatherPlace;
@@ -356,7 +378,8 @@ public class GameManager {
         }
         return currentPlayer.findCardInGame(card);
     }
-    public Position findCardInGameForOtherPlayer(Card card){
+
+    public Position findCardInGameForOtherPlayer(Card card) {
         PlayerInGame otherPlayer = getOtherPlayer();
 
         for (Card sampleCard : weatherCards) {
@@ -364,62 +387,85 @@ public class GameManager {
                 return Position.WeatherPlace;
             }
         }
-        return otherPlayer.findCardInGame(card);    
+        return otherPlayer.findCardInGame(card);
+    }
+
+
+    public ArrayList<Card> getRowFromCard(Card card) {
+        PlayerInGame otherPlayer = getOtherPlayer();
+        ArrayList<Card> row = new ArrayList<>();
+        if (currentPlayer.findCardInGame(card) == null) {
+            return otherPlayer.getCardRowFromPosition(findCardInGameForOtherPlayer(card));
+        }
+        return currentPlayer.getCardRowFromPosition(findCardInGameForCurrentPlayer(card));
+
     }
 
     // Commander's horn related functions
-    public void meleeCurrentHpTimesInt (int number) {
+    public void meleeCurrentHpTimesInt(int number) {
         currentPlayer.meleeCurrentHpTimesInt(number);
     }
-    public void rangeCurrentHpTimesInt (int number) {
+
+    public void rangeCurrentHpTimesInt(int number) {
         currentPlayer.rangeCurrentHpTimesInt(number);
     }
-    public void siegeCurrentHpTimesInt (int number) {
+
+    public void siegeCurrentHpTimesInt(int number) {
         currentPlayer.siegeCurrentHpTimesInt(number);
     }
-    public void someCardsCurrentHpTimesInt (int number , ArrayList<Card> someCards) {
+
+    public void someCardsCurrentHpTimesInt(int number, ArrayList<Card> someCards) {
         currentPlayer.someCardsCurrentHpTimesInt(number, someCards);
     }
 
     // Muster related functions // TODO : what the hell is wrong with muster ability
-    public ArrayList<Card> getCardsWithSameNameFromHand (Card card) {
+    public ArrayList<Card> getCardsWithSameNameFromHand(Card card) {
         return currentPlayer.getCardsWithSameNameFromHand(card);
     }
-    public ArrayList<Card> getCardsWithSameNameFromDeckInGame (Card card) {
+
+    public ArrayList<Card> getCardsWithSameNameFromDeckInGame(Card card) {
         return currentPlayer.getCardsWithSameNameFromDeckInGame(card);
     }
-    public ArrayList<Card> getCardsWithSameNameFromGraveyard (Card card) {
+
+    public ArrayList<Card> getCardsWithSameNameFromGraveyard(Card card) {
         return currentPlayer.getCardsWithSameNameFromGraveyard(card);
     }
-    public ArrayList<Card> getCardsWithSameNameFromMelee (Card card) {
+
+    public ArrayList<Card> getCardsWithSameNameFromMelee(Card card) {
         return currentPlayer.getCardsWithSameNameFromMelee(card);
     }
-    public ArrayList<Card> getCardsWithSameNameFromRange (Card card) {
+
+    public ArrayList<Card> getCardsWithSameNameFromRange(Card card) {
         return currentPlayer.getCardsWithSameNameFromRange(card);
     }
-    public ArrayList<Card> getCardsWithSameNameFromSiege (Card card) {
+
+    public ArrayList<Card> getCardsWithSameNameFromSiege(Card card) {
         return currentPlayer.getCardsWithSameNameFromSiege(card);
     }
 
-    public int getDeckInGameCount () {
+    public int getDeckInGameCount() {
         return currentPlayer.getDeckInGameCount();
     }
-    public int getGraveyardCount () {
+
+    public int getGraveyardCount() {
         return currentPlayer.getGraveyardCount();
     }
-    public int getHandCount () {
+
+    public int getHandCount() {
         return currentPlayer.getHandCount();
-    } 
-    public ArrayList<Card> getWeatherCards () {
+    }
+
+    public ArrayList<Card> getWeatherCards() {
         return weatherCards;
     }
 
-    public void endTurn () {
+    public void endTurn() {
+        System.out.println(currentPlayer.getMelee().size());
         runPassiveAbilities();
         calculateAllHPs();
         switchTurn();
     }
-    
+
     public ArrayList<Card> getAllCards() {
         ArrayList<Card> allOfTheCards = new ArrayList<>();
         allOfTheCards.addAll(currentPlayer.getAllCards());
@@ -427,14 +473,14 @@ public class GameManager {
         allOfTheCards.addAll(weatherCards);
         return allOfTheCards;
     }
-    
+
     public void runPassiveAbilities() {
         for (Card sampleCard : getAllCards()) {
             sampleCard.resetCard();
         }
         for (Card sampleCard : getAllCards()) {
             if (sampleCard.isCardsAbilityPassive()) {
-                sampleCard.getAbility().run(this , sampleCard);
+                sampleCard.getAbility().run(this, sampleCard);
             }
         }
     }
@@ -444,7 +490,7 @@ public class GameManager {
             sampleCard.setCurrentHP(sampleCard.calculateCurrentHP());
         }
     }
-    
+
     public ArrayList<Card> getCardRowFromPosition(Position position) {
         if (position.equals(Position.WeatherPlace)) {
             return getWeatherCards();
@@ -453,8 +499,8 @@ public class GameManager {
         }
     }
 
-    public void switchTurn () {
-        if(currentPlayer.equals(player1)){
+    public void switchTurn() {
+        if (currentPlayer.equals(player1)) {
             currentPlayer = player2;
         } else {
             currentPlayer = player1;
@@ -468,13 +514,8 @@ public class GameManager {
         // BAYAD MAJMOO GHODRAT CARD HAYE GHEIR HERO TOYE OON RADIF OTHER PLAYER HESAB BEHSE
         // AGE IN ADDAD KAMTAR AZ 10 bood return null
         // AGE BISHTAR MOSAVI 10 BOOD TAMAM CARD HA BA BISHTARIN GHODRAT BE YE ARRAYLIST EZAFE VA RETURN SHAN
-        PlayerInGame otherPlayer;
-        if (currentPlayer.equals(player1)) {
-            otherPlayer = player2;
-        } else {
-            otherPlayer = player1;
-        }
-        
+        PlayerInGame otherPlayer = getOtherPlayer();
+
         int sumOfNoneHeroPowers = 0;
         int maxOfCurrentHP = 0;
         ArrayList<Card> cardInRow = otherPlayer.getCardRowFromPosition(position);
@@ -489,7 +530,7 @@ public class GameManager {
         if (sumOfNoneHeroPowers < 10) {
             return null;
         }
-        
+
         ArrayList<Card> theStrongests = new ArrayList<>();
         for (Card card : cardInRow) {
             if (!card.isHero()) {

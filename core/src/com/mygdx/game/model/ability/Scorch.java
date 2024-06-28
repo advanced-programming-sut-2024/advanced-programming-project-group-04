@@ -13,29 +13,37 @@ public class Scorch implements Ability {
     public void run(GameManager gameManager , Card callerCard){
         if (callerCard.getAllCard().equals(AllCards.Toad)) {
             ArrayList<Card> cards = gameManager.getMaximumPowerInRow(Position.Range);
-            for (Card card : cards) {
-                gameManager.removeCard(card); 
+            if (cards != null) {
+                for (Card card : cards) {
+                    gameManager.removeCard(card);
+                }
             }
         }
 
         if (callerCard.getAllCard().equals(AllCards.Schirru)) {
             ArrayList<Card> cards = gameManager.getMaximumPowerInRow(Position.Siege);
-            for (Card card : cards) {
-                gameManager.removeCard(card); 
+            if (cards != null) {
+                for (Card card : cards) {
+                    gameManager.removeCard(card);
+                }
             }
         }
 
         if (callerCard.getAllCard().equals(AllCards.Villentretenmerth)) {
             ArrayList<Card> cards = gameManager.getMaximumPowerInRow(Position.Melee);
-            for (Card card : cards) {
-                gameManager.removeCard(card); 
+            if (cards != null) {
+                for (Card card : cards) {
+                    gameManager.removeCard(card);
+                }
             }
         }
 
         if (callerCard.getAllCard().equals(AllCards.Scorch) || callerCard.getAllCard().equals(AllCards.ClanDimunPirate)) {
             ArrayList<Card> cards = gameManager.getMaximumPowerInField();
-            for (Card card : cards) {
-                gameManager.removeCard(card); 
+            if (cards != null) {
+                for (Card card : cards) {
+                    gameManager.removeCard(card);
+                }
             }
         }
     }
