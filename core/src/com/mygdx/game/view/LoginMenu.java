@@ -22,6 +22,8 @@ public class LoginMenu extends Menu {
     public LoginMenu(Main game) {
         super(game);
 
+        Player.loadAllPlayers();
+
         // Load assets
         Skin skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
         Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
