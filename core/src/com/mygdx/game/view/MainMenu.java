@@ -46,30 +46,21 @@ public class MainMenu extends Menu {
         table.setFillParent(true);
         stage.addActor(table);
 
-        // Start new game button
-        TextButton.TextButtonStyle startNewGameStyle = new TextButton.TextButtonStyle();
-        startNewGameStyle.font = font;
-        startNewGameStyle.fontColor = Color.WHITE;
-        startNewGameStyle.up = skin.getDrawable("button-c");
-        startNewGameStyle.down = skin.getDrawable("button-pressed-c");
-        startNewGameStyle.over = skin.getDrawable("button-over-c");
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = font;
+        textButtonStyle.fontColor = Color.WHITE;
+        textButtonStyle.up = skin.getDrawable("button-c");
+        textButtonStyle.down = skin.getDrawable("button-pressed-c");
+        textButtonStyle.over = skin.getDrawable("button-over-c");
 
-        TextButton startNewGameButton = new TextButton("Start New Game", startNewGameStyle);
+        TextButton startNewGameButton = new TextButton("Start New Game", textButtonStyle);
         startNewGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
             }
         });
 
-        // select deck button
-        TextButton.TextButtonStyle setUpDeckStyle = new TextButton.TextButtonStyle();
-        setUpDeckStyle.font = font;
-        setUpDeckStyle.fontColor = Color.WHITE;
-        setUpDeckStyle.up = skin.getDrawable("button-c");
-        setUpDeckStyle.down = skin.getDrawable("button-pressed-c");
-        setUpDeckStyle.over = skin.getDrawable("button-over-c");
-
-        TextButton setUpDeckButton = new TextButton("Set Up Your Deck", setUpDeckStyle);
+        TextButton setUpDeckButton = new TextButton("Set Up Your Deck", textButtonStyle);
         setUpDeckButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -77,19 +68,19 @@ public class MainMenu extends Menu {
             }
         });
 
-        // Profile
-        TextButton.TextButtonStyle profileStyle = new TextButton.TextButtonStyle();
-        profileStyle.font = font;
-        profileStyle.fontColor = Color.WHITE;
-        profileStyle.up = skin.getDrawable("button-c");
-        profileStyle.down = skin.getDrawable("button-pressed-c");
-        profileStyle.over = skin.getDrawable("button-over-c");
-
-        TextButton profileButton = new TextButton("Profile", profileStyle);
+        TextButton profileButton = new TextButton("Profile", textButtonStyle);
         profileButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setScreen(new ProfileMenu(game));
+            }
+        });
+
+        TextButton logoutButton = new TextButton("Logout", textButtonStyle);
+        logoutButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
             }
         });
 
@@ -99,6 +90,8 @@ public class MainMenu extends Menu {
         table.add(setUpDeckButton).width(400).height(120).pad(10);
         table.row().pad(10, 0, 10, 0);
         table.add(profileButton).width(400).height(120).pad(10);
+        table.row().pad(10, 0, 10, 0);
+        table.add(logoutButton).width(400).height(120).pad(10);
     }
 
 }
