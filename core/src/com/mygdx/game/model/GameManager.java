@@ -86,7 +86,7 @@ public class GameManager {
             return false;
         }
 
-        if (!(card.isBerserker() || card.isCardsAbilityPassive())) {
+        if (!card.isBerserker() && !card.isCardsAbilityPassive() && !card.isTransformer()) {
             card.getAbility().run(this, card);
         }
         return true;
@@ -119,7 +119,7 @@ public class GameManager {
 
         if (!flag) return false;
 
-        if (!(card.isBerserker() || card.isCardsAbilityPassive())) {
+        if (!card.isBerserker() && !card.isCardsAbilityPassive() && !card.isTransformer()) {
             card.getAbility().run(this, card);
         }
         return true;
@@ -465,7 +465,24 @@ public class GameManager {
         System.out.println(currentPlayer.getMelee().size());
         runPassiveAbilities();
         calculateAllHPs();
+        if (areBothPlayersPassed()) {
+            // TODO end of the round
+            return;
+        }
+        System.out.println("Arman:" + isOtherPlayerPassed());
+        if (isOtherPlayerPassed()) {
+            return;
+        }
         switchTurn();
+
+    }
+
+    public boolean isOtherPlayerPassed() {
+        return getOtherPlayer().isPassed();
+    }
+
+    public boolean areBothPlayersPassed() {
+        return getOtherPlayer().isPassed() && currentPlayer.isPassed();
     }
 
     public ArrayList<Card> getAllCards() {
@@ -513,9 +530,6 @@ public class GameManager {
 
     // Functions Related To Scorch
     public ArrayList<Card> getMaximumPowerInRow(Position position) {
-        // BAYAD MAJMOO GHODRAT CARD HAYE GHEIR HERO TOYE OON RADIF OTHER PLAYER HESAB BEHSE
-        // AGE IN ADDAD KAMTAR AZ 10 bood return null
-        // AGE BISHTAR MOSAVI 10 BOOD TAMAM CARD HA BA BISHTARIN GHODRAT BE YE ARRAYLIST EZAFE VA RETURN SHAN
         PlayerInGame otherPlayer = getOtherPlayer();
 
         int sumOfNoneHeroPowers = 0;
@@ -545,43 +559,30 @@ public class GameManager {
     }
 
     public ArrayList<Card> getMaximumPowerInField() {
-        //TODO @Arvin
-        // TOYE IN MAJMOO GHORAT MOHEM NIST VALI HERO HA HAMCHENAN REMOVE NEMITOONAN BESHAN
-        // AGE BISHTAR MOSAVI 10 BOOD TAMAM CARD HA BA BISHTARIN GHODRAT BE YE ARRAYLIST EZAFE VA RETURN SHAN
 
-        // ARVIN IS WORKING HERE
-        /* *
-        PlayerInGame otherPlayer;
-        if (currentPlayer.equals(player1)) {
-            otherPlayer = player2;
-        } else {
-            otherPlayer = player1;
-        }
+        PlayerInGame otherPlayer = getOtherPlayer();
 
         int maxOfCurrentHP = 0;
-        ArrayList<Card> cardInRow = otherPlayer.getCardRowFromPosition(position);
-        for (Card card : cardInRow) {
-            if (!card.isHero()) {
-                sumOfNoneHeroPowers += card.getCurrentHP();
-                if (card.getCurrentHP() > maxOfCurrentHP) {
-                    maxOfCurrentHP = card.getCurrentHP();
-                }
+        ArrayList<Card> enemyCards = otherPlayer.getAllCards();
+        for (Card card : enemyCards) {
+            if (card.getCurrentHP() > maxOfCurrentHP) {
+                maxOfCurrentHP = card.getCurrentHP();
             }
         }
-        
+
+
         
         ArrayList<Card> theStrongests = new ArrayList<>();
-        for (Card card : cardInRow) {
+
+        for (Card card : enemyCards) {
             if (!card.isHero()) {
-                if (card.getCurrentHP() == maxOfCurrentHP) {
+                if (card.getCurrentHP() == maxOfCurrentHP && card.getType() != Type.Spell) {
                     theStrongests.add(card);
                 }
             }
         }
-        return theStrongests;
-        /* */
 
-        return null;
+        return theStrongests;
     }
 
     public void drawRandomCardFromDeck() {

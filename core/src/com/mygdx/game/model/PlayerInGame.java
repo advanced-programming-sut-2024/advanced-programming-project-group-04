@@ -2,7 +2,6 @@ package com.mygdx.game.model;
 
 import java.util.ArrayList;
 
-import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.card.Card;
 
 public class PlayerInGame {
@@ -390,6 +389,14 @@ public class PlayerInGame {
         if (rangeSpell != null) allOfTheCards.add(rangeSpell);
         if (siegeSpell != null) allOfTheCards.add(siegeSpell);
         return allOfTheCards;
+    }
+
+    public int getTotalHP() {
+        int sum = 0;
+        for (Card card : getAllCards()) {
+            sum += card.getCurrentHP();
+        }
+        return sum;
     }
 
 

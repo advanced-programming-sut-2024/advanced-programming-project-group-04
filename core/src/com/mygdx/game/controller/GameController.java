@@ -12,6 +12,8 @@ import com.mygdx.game.view.GameMenu;
 import com.mygdx.game.view.GraphicalCard;
 import com.mygdx.game.view.TableSection;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameController {
@@ -23,9 +25,13 @@ public class GameController {
         this.gameMenu = gameMenu;
     }
 
-    public void startNewGame(Player p1, Player p2) {
+    public ArrayList<PlayerInGame> startNewGame(Player p1, Player p2) {
         gameManager = new GameManager(p1, p2, this);
         isMyTurn = true;
+        ArrayList<PlayerInGame> output = new ArrayList<>();
+        output.add(gameManager.getCurrentPlayer());
+        output.add(gameManager.getOtherPlayer());
+        return output;
     }
 
     public void setGameMenu(GameMenu gameMenu) {
@@ -43,7 +49,11 @@ public class GameController {
             System.out.println(tableSection.getTitle());
         }
         System.out.println(isMyTurn);
+
         if (result) gameManager.endTurn();
+        if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
+        else gameMenu.updateScores(gameManager.getOtherPlayer(), gameManager.getCurrentPlayer());
+
         return result;
     }
 
@@ -120,6 +130,10 @@ public class GameController {
             if (tableSection.isEnemy() ^ !isMyTurn) gameManager.placeCard(card, position);
             else gameManager.placeCardEnemy(card);
         }
+    }
+
+    public void passTurn() {
+        gameManager.endTurn();
     }
 
 }

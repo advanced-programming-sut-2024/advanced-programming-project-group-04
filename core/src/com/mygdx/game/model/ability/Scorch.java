@@ -39,6 +39,7 @@ public class Scorch implements Ability {
         }
 
         if (callerCard.getAllCard().equals(AllCards.Scorch) || callerCard.getAllCard().equals(AllCards.ClanDimunPirate)) {
+            System.out.println("arvin taheri");
             ArrayList<Card> cards = gameManager.getMaximumPowerInField();
             if (cards != null) {
                 for (Card card : cards) {

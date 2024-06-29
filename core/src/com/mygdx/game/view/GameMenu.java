@@ -2,9 +2,12 @@ package com.mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -14,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.AssetLoader;
@@ -21,6 +25,7 @@ import com.mygdx.game.Main;
 import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.Deck;
 import com.mygdx.game.model.Player;
+import com.mygdx.game.model.PlayerInGame;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.*;
@@ -46,16 +51,32 @@ public class GameMenu extends Menu {
     Source myHandSource, enemyHandSource;
     DragAndDrop dnd;
     Skin skin;
+    TextureRegionDrawable backgroundImage;
+    Label myScore, enemyScore;
+    BitmapFont font;
+    ArrayList<PlayerInGame> players;
 
     public GameMenu(Main game) {
         super(game);
         this.gameController = new GameController(this);
         gameController.setGameMenu(this);
 
+        // get the font
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 48;
+        font = generator.generateFont(parameter);
+        generator.dispose();
+
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         assetLoader = game.assetLoader;
         this.skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
         allCardsCreated = new HashMap<>();
+
+        // set Background
+        Texture boardTexture = game.assetManager.get(AssetLoader.BOARD, Texture.class);
+        backgroundImage = new TextureRegionDrawable(new TextureRegion(boardTexture));
+
 
         tableInit();
 
@@ -75,16 +96,24 @@ public class GameMenu extends Menu {
         Player arvin = new Player("Arvin", "1234", "arvin@gay.com", "Simp");
         arvin.loadDeck(enemyDeck);
         matin.loadDeck(myDeck);
-        gameController.startNewGame(matin, arvin);
+        players = gameController.startNewGame(matin, arvin);
 
-        loadDeck(myDeck, myHandTable);
-        loadDeck(enemyDeck, enemyHandTable);
+
+        loadHand(players.get(0).getHand(), myHandTable);
+        loadHand(players.get(1).getHand(), enemyHandTable);
 
     }
 
     private void loadDeck(Deck deck, Table table) {
         ArrayList<Card> cards = deck.getCards();
         for (Card card : cards) {
+            GraphicalCard graphicalCard = createNewGraphicalCard(card);
+            table.add(graphicalCard);
+        }
+    }
+
+    private void loadHand(ArrayList<Card> hand, Table table) {
+        for (Card card : hand) {
             GraphicalCard graphicalCard = createNewGraphicalCard(card);
             table.add(graphicalCard);
         }
@@ -138,6 +167,60 @@ public class GameMenu extends Menu {
 
     private void tableInit() {
         table = new Table();
+
+        myScore = new Label("0", skin);
+        enemyScore = new Label("0", skin);
+        myScore.setStyle(new Label.LabelStyle(font, Color.WHITE));
+        enemyScore.setStyle(new Label.LabelStyle(font, Color.WHITE));
+        // add the score labels
+        myScore.setPosition(200, 400);
+        enemyScore.setPosition(200, 1200);
+        stage.addActor(myScore);
+        stage.addActor(enemyScore);
+
+        // Pass button style
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.fontColor = Color.WHITE;
+        buttonStyle.up = skin.getDrawable("button-c");
+        buttonStyle.down = skin.getDrawable("button-pressed-c");
+        buttonStyle.over = skin.getDrawable("button-over-c");
+
+        // Create and position pass buttons
+        TextButton passButtonEnemy = new TextButton("PASS enemy", buttonStyle);
+        passButtonEnemy.setPosition(300, 1200);
+        passButtonEnemy.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (!gameController.isMyTurn) {
+                    players.get(1).setIsPassed(true);
+                    passButtonEnemy.setText("PASSED");
+                    gameController.passTurn();
+                }
+
+            }
+        });
+
+        TextButton passButtonSelf = new TextButton("PASS self", buttonStyle);
+        passButtonSelf.setPosition(300, 400);
+        passButtonSelf.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (gameController.isMyTurn) {
+                    players.get(0).setIsPassed(true);
+                    passButtonSelf.setText("PASSED");
+                    gameController.passTurn();
+                }
+            }
+        });
+
+        // green color
+        passButtonEnemy.setColor(0, 1, 0, 1f);
+        passButtonSelf.setColor(0, 1, 0, 1f);
+
+        stage.addActor(passButtonEnemy);
+        stage.addActor(passButtonSelf);
+
         table.setFillParent(true);
         table.setDebug(true);
         allTables = new HashMap<>();
@@ -166,7 +249,6 @@ public class GameMenu extends Menu {
         };
 
         dnd = new DragAndDrop();
-        //dnd.setButton(Input.Buttons.RIGHT);
         myHandSource = getSource(myHandTable);
         enemyHandSource = getSource(enemyHandTable);
         dnd.addSource(myHandSource);
@@ -176,13 +258,13 @@ public class GameMenu extends Menu {
             dnd.addTarget(new CustomTarget(table, this) {
                 @Override
                 public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
-                    return getGameMenu().getGameController().canPlaceCardToPosition(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getTableSection());
+                    return getGameMenu().getGameController().canPlaceCardToPosition(((GraphicalCard) payload.getObject()).getCard(), ((CustomTable) table).getTableSection());
                 }
 
                 @Override
                 public void drop(Source source, Payload payload, float x, float y, int pointer) {
-                    if (getGameMenu().getGameController().placeCard(((GraphicalCard)payload.getObject()).getCard(), ((CustomTable)table).getTableSection())) {
-                        System.out.println(((CustomTable)table).getTableSection().getTitle());
+                    if (getGameMenu().getGameController().placeCard(((GraphicalCard) payload.getObject()).getCard(), ((CustomTable) table).getTableSection())) {
+                        System.out.println(((CustomTable) table).getTableSection().getTitle());
                     }
                 }
             });
@@ -257,8 +339,8 @@ public class GameMenu extends Menu {
 
     public void changeTurn(boolean isMyTurn) {
         if (isMyTurn) {
-            dnd.removeSource(enemyHandSource);
             dnd.addSource(myHandSource);
+            dnd.removeSource(enemyHandSource);
         } else {
             dnd.removeSource(myHandSource);
             dnd.addSource(enemyHandSource);
@@ -271,11 +353,17 @@ public class GameMenu extends Menu {
         return label;
     }
 
-    public HashMap<Card, GraphicalCard> getAllCardsCreated() { return this.allCardsCreated; }
+    public HashMap<Card, GraphicalCard> getAllCardsCreated() {
+        return this.allCardsCreated;
+    }
 
-    public HashMap<TableSection, CustomTable> getAllTables() { return this.allTables; }
+    public HashMap<TableSection, CustomTable> getAllTables() {
+        return this.allTables;
+    }
 
-    public GameController getGameController() { return this.gameController; }
+    public GameController getGameController() {
+        return this.gameController;
+    }
 
     @Override
     public void render(float v) {
@@ -292,5 +380,10 @@ public class GameMenu extends Menu {
         }
         stage.act(v);
         stage.draw();
+    }
+
+    public void updateScores(PlayerInGame self, PlayerInGame enemy) {
+        myScore.setText(self.getTotalHP());
+        enemyScore.setText(enemy.getTotalHP());
     }
 }

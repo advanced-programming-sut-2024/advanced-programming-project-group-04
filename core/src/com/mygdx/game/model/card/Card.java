@@ -132,4 +132,8 @@ public class Card {
         return calculatedHP;
     }
 
+    public boolean isTransformer() {
+        return this.allCard.getAbility() instanceof Transformers;
+    }
+
 }
