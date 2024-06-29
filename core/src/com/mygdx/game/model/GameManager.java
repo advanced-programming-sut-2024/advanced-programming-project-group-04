@@ -585,8 +585,11 @@ public class GameManager {
         return theStrongests;
     }
 
-    public void drawRandomCardFromDeck() {
-        currentPlayer.drawRandomCardFromDeckInGame();
+    public void drawRandomCardFromDeck(int occurrence) {
+        for(int i = 0; i < occurrence; i++) {
+            Card card = currentPlayer.drawRandomCardFromDeckInGame();
+            gameController.addCardToHand(card, currentPlayer);
+        }
     }
 
     public PlayerInGame getCurrentPlayer() {
@@ -630,5 +633,6 @@ public class GameManager {
             gameController.removeCardFromView(card);
         }
     }
+
 
 }

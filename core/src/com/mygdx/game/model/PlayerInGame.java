@@ -74,10 +74,11 @@ public class PlayerInGame {
         return card;
     }
 
-    public void addRandomCardToHandFromDeck() {
+    public Card addRandomCardToHandFromDeck() {
         Card card = drawRandomCardFromDeckInGame();
         hand.add(card);
         deckInGame.remove(card);
+        return card;
     }
 
     public void addRandomCardToHandFromGrave() {

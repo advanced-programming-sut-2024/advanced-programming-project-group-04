@@ -7,8 +7,6 @@ import com.mygdx.game.model.card.Card;
 public class Spy implements Ability {
     @Override
     public void run(GameManager gameManager , Card callerCard){
-        PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
-        currentPlayer.addRandomCardToHandFromDeck();
-        currentPlayer.addRandomCardToHandFromDeck();
+        gameManager.drawRandomCardFromDeck(2);
     }
 }
