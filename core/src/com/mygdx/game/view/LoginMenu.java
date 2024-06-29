@@ -22,6 +22,8 @@ public class LoginMenu extends Menu {
     public LoginMenu(Main game) {
         super(game);
 
+        Player.loadAllPlayers();
+
         // Load assets
         Skin skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
         Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
@@ -68,40 +70,54 @@ public class LoginMenu extends Menu {
         passwordField.setAlignment(Align.center);
 
         // Sign in button
-        TextButton.TextButtonStyle signInStyle = new TextButton.TextButtonStyle();
-        signInStyle.font = font;
-        signInStyle.fontColor = Color.WHITE;
-        signInStyle.up = skin.getDrawable("button-c");
-        signInStyle.down = skin.getDrawable("button-pressed-c");
-        signInStyle.over = skin.getDrawable("button-over-c");
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = font;
+        textButtonStyle.fontColor = Color.WHITE;
+        textButtonStyle.up = skin.getDrawable("button-c");
+        textButtonStyle.down = skin.getDrawable("button-pressed-c");
+        textButtonStyle.over = skin.getDrawable("button-over-c");
 
-        TextButton signInButton = new TextButton("Sign In", signInStyle);
+        TextButton signInButton = new TextButton("Sign In", textButtonStyle);
         signInButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                System.out.println("Arak");
                 String username = usernameField.getText();
                 String password = passwordField.getText();
                 ControllerResponse response = LoginController.signInButtonClicked(username, password);
 
-                if (!response.isFailed()) {
-                    setScreen(new MainMenu(game));
-                    Player.loginPlayer(Player.findPlayerByUsername(username));
-                }
-                else {
+                if (response.isFailed()) {
                     errorLabel.setText(response.getError());
                     errorLabel.setColor(Color.RED);
+                }
+                else {
+                    setScreen(new MainMenu(game));
+                    // TODO
+                    Player.loginPlayer(Player.findPlayerByUsername(username));
+                }
+            }
+        });
+        signInButton.addListener(new InputListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("Arak");
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+                ControllerResponse response = LoginController.signInButtonClicked(username, password);
+
+                if (response.isFailed()) {
+                    errorLabel.setText(response.getError());
+                    errorLabel.setColor(Color.RED);
+                }
+                else {
+                    setScreen(new MainMenu(game));
+                    // TODO
+                    Player.loginPlayer(Player.findPlayerByUsername(username));
                 }
             }
         });
 
-        TextButton.TextButtonStyle createAccountStyle = new TextButton.TextButtonStyle();
-        createAccountStyle.font = font;
-        createAccountStyle.fontColor = Color.WHITE;
-        createAccountStyle.up = skin.getDrawable("button-c");
-        createAccountStyle.down = skin.getDrawable("button-pressed-c");
-        createAccountStyle.over = skin.getDrawable("button-over-c");
-
-        TextButton createAccountButton = new TextButton("Create Account", createAccountStyle);
+        TextButton createAccountButton = new TextButton("Create Account", textButtonStyle);
         createAccountButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -114,7 +130,11 @@ public class LoginMenu extends Menu {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ENTER) {
-                    signInButton.toggle(); // Trigger the sign-in button press
+                    InputEvent click = new InputEvent();
+                    click.setType(InputEvent.Type.touchDown);
+                    signInButton.fire(click);
+                    click.setType(InputEvent.Type.touchUp);
+                    signInButton.fire(click);
                 }
                 return true;
             }
@@ -124,13 +144,18 @@ public class LoginMenu extends Menu {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ENTER) {
-                    signInButton.toggle(); // Trigger the sign-in button press
+                    signInButton.toggle();
+                    InputEvent click = new InputEvent();
+                    click.setType(InputEvent.Type.touchDown);
+                    signInButton.fire(click);
+                    click.setType(InputEvent.Type.touchUp);
+                    signInButton.fire(click);
                 }
                 return true;
             }
         });
 
-        float pad = 40; // Double the padding
+        float pad = 40;
         table.add(errorLabel).pad(pad);
         table.row().pad(20, 0, 20, 0);
         table.add(usernameField).width(400).pad(pad);
