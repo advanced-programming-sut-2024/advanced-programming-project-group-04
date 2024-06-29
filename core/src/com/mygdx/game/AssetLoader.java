@@ -18,6 +18,7 @@ public class AssetLoader {
     public static final String BACKGROUND = "background.png";
     public static final String MUSIC = "track1.mp3";
     public static final String SKIN = "skins/neon/skin/default.json";
+    public static final String BOARD = "board.jpg";
 
     private AssetManager assetManager;
     private Map<String, List<String>> factionLeadersMap;
@@ -36,6 +37,7 @@ public class AssetLoader {
         assetManager.load(BACKGROUND, Texture.class);
         assetManager.load(MUSIC, Music.class);
         assetManager.load(SKIN, Skin.class);
+        assetManager.load(BOARD, Texture.class);
 
         // Load factions
         FileHandle factionDir = Gdx.files.internal("assets/images/factions/");
