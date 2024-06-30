@@ -89,7 +89,7 @@ public class PlayerInGame {
     }
 
     public void decreaseRemainingLives() {
-        remainingLives++;
+        remainingLives--;
     }
 
  
