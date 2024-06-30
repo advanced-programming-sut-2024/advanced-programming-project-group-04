@@ -4,20 +4,21 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.model.Player;
 import com.mygdx.game.view.*;
 
 public class Main extends Game {
     public AssetManager assetManager;
-    public AssetLoader assetLoader; // Add this line
+    public AssetLoader assetLoader;
+    private Player loggedInPlayer;
 
     @Override
     public void create() {
         assetManager = new AssetManager();
-        assetLoader = new AssetLoader(assetManager); // Modify this line
+        assetLoader = new AssetLoader(assetManager);
         assetLoader.loadAll();
-
-        // Wait until all assets are loaded
         assetManager.finishLoading();
+        assetLoader.initialize();
 
         // Play background music
         Music backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
@@ -27,6 +28,10 @@ public class Main extends Game {
         // Set the initial screen
         setScreen(new LoginMenu(this));
     }
+
+    public void setLoggedInPlayer(Player player) { this.loggedInPlayer = player;}
+
+    public Player getLoggedInPlayer() { return this.loggedInPlayer; }
 
     @Override
     public void render() {

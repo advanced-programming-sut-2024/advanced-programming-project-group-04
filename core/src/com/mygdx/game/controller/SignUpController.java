@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignUpController {
-    public static ControllerResponse signUpButtonPressed(String username, String password, String email, String nickname) {
+    public ControllerResponse signUpButtonPressed(String username, String password, String email, String nickname) {
         boolean isFail = true;
         String errorMessage = "";
 
@@ -28,13 +28,13 @@ public class SignUpController {
         return new ControllerResponse(isFail, errorMessage);
     }
 
-    private static boolean isValidUsername(String username) {
+    private boolean isValidUsername(String username) {
         if (!username.matches("^[a-zA-Z0-9_]+$")) return false;
         else if (username.length() > 20) return false;
         return true;
     }
 
-    private static boolean isValidPassword(String password) {
+    private boolean isValidPassword(String password) {
         if (password.contains(" ")) return false;
         else if (password.length() < 6 || password.length() > 20) return false;
         Matcher matcher;
@@ -47,11 +47,11 @@ public class SignUpController {
         return true;
     }
 
-    private static boolean isValidEmail(String email) {
+    private boolean isValidEmail(String email) {
         return email.matches("^.+@.+\\.com$");
     }
 
-    private static boolean isValidNickname(String nickname) {
+    private boolean isValidNickname(String nickname) {
         if (nickname.length() > 20) return false;
         if (nickname.contains(" ")) return false;
         return true;

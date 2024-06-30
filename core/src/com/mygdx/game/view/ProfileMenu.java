@@ -18,7 +18,6 @@ import com.mygdx.game.AssetLoader;
 
 public class ProfileMenu extends Menu {
     private final Skin skin;
-    private final BitmapFont font;
     private final Image backgroundImage;
 
     private Label changeCredentialsLabel;
@@ -27,24 +26,20 @@ public class ProfileMenu extends Menu {
     private Label backLabel;
     private Table contentTable;
 
+    Label.LabelStyle labelStyle = game.assetLoader.labelStyle;
+    TextField.TextFieldStyle textFieldStyle = game.assetLoader.textFieldStyle;
+
     public ProfileMenu(Main game) {
         super(game);
 
         // Load assets
-        this.skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
-        Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
+        this.skin = game.assetLoader.skin;
 
         // Set up background
+        Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
         this.backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
-
-        // Load the font
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
-        FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-        parameter.size = 48;
-        this.font = generator.generateFont(parameter);
-        generator.dispose();
 
         // Set up the profile menu UI
         setupProfileMenu();
@@ -60,10 +55,10 @@ public class ProfileMenu extends Menu {
         stage.addActor(tabTable);
 
         // Create tab labels
-        backLabel = createTabLabel("Back to Main Menu", Color.WHITE);
-        changeCredentialsLabel = createTabLabel("Change Credentials", Color.WHITE);
-        statisticsLabel = createTabLabel("Statistics", Color.WHITE);
-        matchHistoryLabel = createTabLabel("Match History", Color.WHITE);
+        backLabel = createTabLabel("Back to Main Menu");
+        changeCredentialsLabel = createTabLabel("Change Credentials");
+        statisticsLabel = createTabLabel("Statistics");
+        matchHistoryLabel = createTabLabel("Match History");
 
         // Add listeners to switch tabs
         backLabel.addListener(new ChangeTabListener(backLabel, "back"));
@@ -87,11 +82,8 @@ public class ProfileMenu extends Menu {
         showTabContent("changeCredentials");
     }
 
-    private Label createTabLabel(String text, Color color) {
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
-        labelStyle.fontColor = color;
-        return new Label(text, labelStyle);
+    private Label createTabLabel(String text) {
+        return new Label(text, game.assetLoader.labelStyle);
     }
 
     private void showTabContent(String tabName) {
@@ -106,11 +98,11 @@ public class ProfileMenu extends Menu {
                 break;
             case "statistics":
                 // Add Statistics content
-                contentTable.add(new Label("Statistics Content", new Label.LabelStyle(font, Color.WHITE))).pad(20);
+                contentTable.add(new Label("Statistics Content", game.assetLoader.labelStyle)).pad(20);
                 break;
             case "matchHistory":
                 // Add Match History content
-                contentTable.add(new Label("Match History Content", new Label.LabelStyle(font, Color.WHITE))).pad(20);
+                contentTable.add(new Label("Match History Content", game.assetLoader.labelStyle)).pad(20);
                 break;
         }
     }
@@ -129,7 +121,6 @@ public class ProfileMenu extends Menu {
         buttonStyle.up = skin.getDrawable("button-c");
         buttonStyle.down = skin.getDrawable("button-pressed-c");
         buttonStyle.over = skin.getDrawable("button-over-c");
-
 
         TextButton changeUsernameButton = new TextButton("Change Username", buttonStyle);
         changeUsernameButton.addListener(new ChangeCredentialsClickListener("Username"));
@@ -150,7 +141,6 @@ public class ProfileMenu extends Menu {
         contentTable.add(changeEmailButton).width(400).height(120).pad(10).center();
         contentTable.row().pad(10, 0, 10, 0);
         contentTable.add(setUpForgetPasswordQuestionButton).width(400).height(120).pad(10).center();
-
     }
 
     private class ChangeTabListener extends ClickListener {
@@ -184,39 +174,7 @@ public class ProfileMenu extends Menu {
         public void clicked(InputEvent event, float x, float y) {
             Dialog dialog = new Dialog("Change " + fieldType, skin) {
                 {
-                    // Dark blue background
-                    Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-                    pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f));
-                    pixmap.fill();
-                    Texture texture = new Texture(pixmap);
-                    pixmap.dispose();
-                    setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
-
-                    // Custom label style
-                    Label.LabelStyle labelStyle = new Label.LabelStyle();
-                    labelStyle.font = font;
-                    labelStyle.fontColor = Color.WHITE;
-
-                    // Create pixmap for cursor and selection if not present in skin
-                    Pixmap cursorPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-                    cursorPixmap.setColor(Color.WHITE);
-                    cursorPixmap.fill();
-                    Texture cursorTexture = new Texture(cursorPixmap);
-                    cursorPixmap.dispose();
-
-                    Pixmap selectionPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-                    selectionPixmap.setColor(new Color(0.5f, 0.5f, 1f, 0.5f));
-                    selectionPixmap.fill();
-                    Texture selectionTexture = new Texture(selectionPixmap);
-                    selectionPixmap.dispose();
-
-                    // Custom text field style
-                    TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-                    textFieldStyle.font = font;
-                    textFieldStyle.fontColor = Color.WHITE;
-                    textFieldStyle.background = skin.getDrawable("textfield");
-                    textFieldStyle.cursor = new TextureRegionDrawable(new TextureRegion(cursorTexture));
-                    textFieldStyle.selection = new TextureRegionDrawable(new TextureRegion(selectionTexture));
+                    setBackground(createNewBackground());
 
                     getContentTable().add(new Label("New " + fieldType + ":", labelStyle)).pad(20);
 
@@ -227,15 +185,7 @@ public class ProfileMenu extends Menu {
                     }
                     getContentTable().add(textField).width(300).pad(20);
 
-                    // Custom button style
-                    TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-                    buttonStyle.font = font;
-                    buttonStyle.fontColor = Color.WHITE;
-                    buttonStyle.up = skin.getDrawable("button-c");
-                    buttonStyle.down = skin.getDrawable("button-pressed-c");
-                    buttonStyle.over = skin.getDrawable("button-over-c");
-
-                    button(new TextButton("Confirm", buttonStyle), true);
+                    button(new TextButton("Confirm", game.assetLoader.textButtonStyle), true);
                 }
 
 
@@ -256,39 +206,7 @@ public class ProfileMenu extends Menu {
         public void clicked(InputEvent event, float x, float y) {
             Dialog dialog = new Dialog("Password Recovery", skin) {
                 {
-                    // Dark blue background
-                    Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-                    pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f));
-                    pixmap.fill();
-                    Texture texture = new Texture(pixmap);
-                    pixmap.dispose();
-                    setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
-
-                    // Custom label style
-                    Label.LabelStyle labelStyle = new Label.LabelStyle();
-                    labelStyle.font = font;
-                    labelStyle.fontColor = Color.WHITE;
-
-                    // Create pixmap for cursor and selection if not present in skin
-                    Pixmap cursorPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-                    cursorPixmap.setColor(Color.WHITE);
-                    cursorPixmap.fill();
-                    Texture cursorTexture = new Texture(cursorPixmap);
-                    cursorPixmap.dispose();
-
-                    Pixmap selectionPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-                    selectionPixmap.setColor(new Color(0.5f, 0.5f, 1f, 0.5f));
-                    selectionPixmap.fill();
-                    Texture selectionTexture = new Texture(selectionPixmap);
-                    selectionPixmap.dispose();
-
-                    // Custom text field style
-                    TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-                    textFieldStyle.font = font;
-                    textFieldStyle.fontColor = Color.WHITE;
-                    textFieldStyle.background = skin.getDrawable("textfield");
-                    textFieldStyle.cursor = new TextureRegionDrawable(new TextureRegion(cursorTexture));
-                    textFieldStyle.selection = new TextureRegionDrawable(new TextureRegion(selectionTexture));
+                    setBackground(createNewBackground());
 
                     getContentTable().add(new Label("Question:", labelStyle)).pad(20);
 
@@ -303,15 +221,7 @@ public class ProfileMenu extends Menu {
                     answerField.setPasswordCharacter('*');
                     getContentTable().add(answerField).width(300).pad(20);
 
-                    // Custom button style
-                    TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-                    buttonStyle.font = font;
-                    buttonStyle.fontColor = Color.WHITE;
-                    buttonStyle.up = skin.getDrawable("button-c");
-                    buttonStyle.down = skin.getDrawable("button-pressed-c");
-                    buttonStyle.over = skin.getDrawable("button-over-c");
-
-                    button(new TextButton("Confirm", buttonStyle), true);
+                    button(new TextButton("Confirm", game.assetLoader.textButtonStyle), true);
                 }
 
                 @Override
@@ -326,6 +236,14 @@ public class ProfileMenu extends Menu {
         }
     }
 
+    private TextureRegionDrawable createNewBackground() {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f));
+        pixmap.fill();
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+        return new TextureRegionDrawable(new TextureRegion(texture));
+    }
 
     @Override
     public void show() {

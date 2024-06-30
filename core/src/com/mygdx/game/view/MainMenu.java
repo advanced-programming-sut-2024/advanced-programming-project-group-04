@@ -18,45 +18,37 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
+import com.mygdx.game.controller.ControllerResponse;
+import com.mygdx.game.controller.MainMenuController;
 
 
 public class MainMenu extends Menu {
+    private final MainMenuController mainMenuController;
+
+    Label errorLabel;
+
     public MainMenu(Main game) {
         super(game);
+        this.mainMenuController = new MainMenuController(game);
 
-        // Load assets
-        Skin skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
-        Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
+        stage.addActor(game.assetLoader.backgroundImage);
 
-        // Set up background
-        Image backgroundImage = new Image(backgroundTexture);
-        backgroundImage.setFillParent(true);
-        stage.addActor(backgroundImage);
-
-        // get the font
-        BitmapFont font;
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 48;
-        font = generator.generateFont(parameter);
-        generator.dispose();
+        this.errorLabel = new Label("", game.assetLoader.labelStyle);
 
         // Set up table for UI layout
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
 
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = font;
-        textButtonStyle.fontColor = Color.WHITE;
-        textButtonStyle.up = skin.getDrawable("button-c");
-        textButtonStyle.down = skin.getDrawable("button-pressed-c");
-        textButtonStyle.over = skin.getDrawable("button-over-c");
+        TextButton.TextButtonStyle textButtonStyle = game.assetLoader.textButtonStyle;
 
         TextButton startNewGameButton = new TextButton("Start New Game", textButtonStyle);
         startNewGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                ControllerResponse response = mainMenuController.startNewGame();
+                errorLabel.setText(response.getError());
+                errorLabel.setColor(Color.RED);
             }
         });
 
@@ -80,11 +72,13 @@ public class MainMenu extends Menu {
         logoutButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                mainMenuController.logout();
+                setScreen(new LoginMenu(game));
             }
         });
 
-        // Add buttons to table with updated sizes
+        table.add(errorLabel);
+        table.row().pad(10, 0, 10, 0);
         table.add(startNewGameButton).width(400).height(120).pad(10);
         table.row().pad(10, 0, 10, 0);
         table.add(setUpDeckButton).width(400).height(120).pad(10);

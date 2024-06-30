@@ -1,11 +1,24 @@
 package com.mygdx.game.controller;
 
-import com.mygdx.game.model.Player;
+import com.mygdx.game.Main;
 
 public class MainMenuController {
-    private static Player currentPlayer;
+    private final Main game;
 
-    public static void setCurrentPlayer(Player player) { currentPlayer = player; }
+    public MainMenuController(Main game) {
+        this.game = game;
+    }
 
-    public static Player getCurrentPlayer() { return currentPlayer; }
+    public void logout() {
+        game.setLoggedInPlayer(null);
+    }
+
+    public ControllerResponse startNewGame() {
+        String errorMessage = "You're not supposed to press this yet";
+        boolean isFail = true;
+
+        // TODO: @Arman
+
+        return new ControllerResponse(isFail, errorMessage);
+    }
 }

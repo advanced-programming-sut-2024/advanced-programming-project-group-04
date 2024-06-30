@@ -17,26 +17,13 @@ import com.mygdx.game.controller.ControllerResponse;
 import com.mygdx.game.controller.SignUpController;
 
 public class SignUpMenu extends Menu {
+    private final SignUpController signUpController;
 
     public SignUpMenu(Main game) {
         super(game);
+        this.signUpController = new SignUpController();
 
-        // Load assets
-        Skin skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
-        Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
-
-        // Set up background
-        Image backgroundImage = new Image(backgroundTexture);
-        backgroundImage.setFillParent(true);
-        stage.addActor(backgroundImage);
-
-        // get the font
-        BitmapFont font;
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 48;
-        font = generator.generateFont(parameter);
-        generator.dispose();
+        stage.addActor(game.assetLoader.backgroundImage);
 
         // Set up table for UI layout
         Table table = new Table();
@@ -44,21 +31,20 @@ public class SignUpMenu extends Menu {
         stage.addActor(table);
 
         // Error label
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
-
-        Label errorLabel = new Label("", labelStyle);
+        Label errorLabel = new Label("", game.assetLoader.labelStyle);
 
         // Username, email and Password fields
-        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = font;
-        textFieldStyle.fontColor = Color.CHARTREUSE;
-        textFieldStyle.background = skin.getDrawable("textfield");
-        textFieldStyle.messageFontColor = Color.CYAN;
+        TextField.TextFieldStyle textFieldStyle = game.assetLoader.textFieldStyle;
 
         TextField usernameField = new TextField("", textFieldStyle);
         usernameField.setMessageText("Username");
         usernameField.setAlignment(Align.center);
+
+        TextField passwordField = new TextField("", textFieldStyle);
+        passwordField.setMessageText("Password");
+        passwordField.setPasswordMode(true);
+        passwordField.setPasswordCharacter('*');
+        passwordField.setAlignment(Align.center);
 
         TextField emailField = new TextField("", textFieldStyle);
         emailField.setMessageText("Email");
@@ -68,21 +54,10 @@ public class SignUpMenu extends Menu {
         nicknameField.setMessageText("Nickname");
         nicknameField.setAlignment(Align.center);
 
-        TextField passwordField = new TextField("", textFieldStyle);
-        passwordField.setMessageText("Password");
-        passwordField.setPasswordMode(true);
-        passwordField.setPasswordCharacter('*');
-        passwordField.setAlignment(Align.center);
-
         // Sign Up button
-        TextButton.TextButtonStyle signUpStyle = new TextButton.TextButtonStyle();
-        signUpStyle.font = font;
-        signUpStyle.fontColor = Color.WHITE;
-        signUpStyle.up = skin.getDrawable("button-c");
-        signUpStyle.down = skin.getDrawable("button-pressed-c");
-        signUpStyle.over = skin.getDrawable("button-over-c");
+        TextButton.TextButtonStyle textButtonStyle = game.assetLoader.textButtonStyle;
 
-        TextButton signUpButton = new TextButton("Sign Up", signUpStyle);
+        TextButton signUpButton = new TextButton("Sign Up", textButtonStyle);
         signUpButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -90,14 +65,14 @@ public class SignUpMenu extends Menu {
                 String password = passwordField.getText();
                 String email = emailField.getText();
                 String nickname = nicknameField.getText();
-                ControllerResponse response = SignUpController.signUpButtonPressed(username, password, email, nickname);
+                ControllerResponse response = signUpController.signUpButtonPressed(username, password, email, nickname);
                 errorLabel.setText(response.getError());
                 if (response.isFailed()) errorLabel.setColor(Color.RED);
                 else errorLabel.setColor(Color.GREEN);
             }
         });
 
-        TextButton backButton = new TextButton("Back", signUpStyle);
+        TextButton backButton = new TextButton("Back", textButtonStyle);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -106,39 +81,33 @@ public class SignUpMenu extends Menu {
         });
 
         // Add input listener for Enter key
-        usernameField.addListener(new InputListener() {
+        nicknameField.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ENTER) {
-                    signUpButton.toggle(); // Trigger the sign-in button press
+                    InputEvent click = new InputEvent();
+                    click.setType(InputEvent.Type.touchDown);
+                    signUpButton.fire(click);
+                    click.setType(InputEvent.Type.touchUp);
+                    signUpButton.fire(click);
                 }
                 return true;
             }
         });
 
-        passwordField.addListener(new InputListener() {
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.ENTER) {
-                    signUpButton.toggle(); // Trigger the sign-in button press
-                }
-                return true;
-            }
-        });
-
-        float pad = 40; // Double the padding
+        float pad = 30;
         table.add(errorLabel).pad(pad);
         table.row().pad(20, 0, 20, 0);
         table.add(usernameField).width(400).pad(pad);
-        table.row().pad(20, 0, 20, 0); // Double the row padding
+        table.row().pad(20, 0, 20, 0);
         table.add(passwordField).width(400).pad(pad);
         table.row().pad(20, 0, 20, 0);
         table.add(emailField).width(400).pad(pad);
         table.row().pad(20, 0, 20, 0);
         table.add(nicknameField).width(400).pad(pad);
-        table.row().pad(20, 0, 20, 0);
+        table.row().pad(10, 0, 10, 0);
         table.add(signUpButton).pad(pad).width(400).height(120);
-        table.row().pad(20, 0, 20, 0);
+        table.row().pad(10, 0, 10, 0);
         table.add(backButton).pad(pad).width(400).height(120);
     }
 }

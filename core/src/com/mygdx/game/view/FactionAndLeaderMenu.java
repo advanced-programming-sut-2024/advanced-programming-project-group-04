@@ -1,6 +1,7 @@
 package com.mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,6 +30,10 @@ import java.util.HashMap;
 
 public class FactionAndLeaderMenu extends Menu {
 
+    Skin skin;
+
+    float buttonSize = 300;
+
     private String selectedFaction = "";
     private String selectedLeader = "";
     private ImageButton selectedFactionButton = null;
@@ -44,97 +49,61 @@ public class FactionAndLeaderMenu extends Menu {
     Label unitCountLabel;
     Label spellCountLabel;
 
-    private HashMap<String, AllCards> cardLookupMap = new HashMap<>();
+    ScrollPane availableCardsScrollPane;
+    ScrollPane selectedCardsScrollPane;
+
+    private final HashMap<String, AllCards> cardLookupMap = new HashMap<>();
 
     public FactionAndLeaderMenu(Main game) {
         super(game);
 
-        // Load assets
-        Skin skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
+        skin = game.assetLoader.skin;
         Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
-
-        // Set up background
         Image backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
+
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
 
         faction = Player.getLoggedInPlayer().getSelectedFaction();
         if (faction == null) selectedFaction = "";
         else selectedFaction = Player.getLoggedInPlayer().getSelectedFaction().getImageURL();
 
-        // get the font
-        BitmapFont font;
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 48;
-        font = generator.generateFont(parameter);
-        generator.dispose();
-
-        // Set up table for UI layout
-        Table table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
-
-        // Choose Faction Button
-        TextButton.TextButtonStyle chooseFactionStyle = new TextButton.TextButtonStyle();
-        chooseFactionStyle.font = font;
-        chooseFactionStyle.fontColor = Color.WHITE;
-        chooseFactionStyle.up = skin.getDrawable("button-c");
-        chooseFactionStyle.down = skin.getDrawable("button-pressed-c");
-        chooseFactionStyle.over = skin.getDrawable("button-over-c");
-
-        LabelStyle labelStyle = new LabelStyle();
-        labelStyle.font = font;
-        explanationLabel = new Label("", skin);
-        explanationLabel.setStyle(labelStyle);
+        Label.LabelStyle labelStyle = game.assetLoader.labelStyle;
+        explanationLabel = new Label("", labelStyle);
         explanationLabel.setAlignment(Align.center);
-        float labelWidth = 2560 - 2 * 500;
         explanationLabel.setWrap(true);
-        float labelHeight = explanationLabel.getPrefHeight();
-
-        // Set the size of the label
-        explanationLabel.setSize(labelWidth, labelHeight);
-
-        // Position at bottom middle of the screen
+        float labelWidth = 2560 - 2 * 500;
+        explanationLabel.setSize(labelWidth, explanationLabel.getPrefHeight());
         explanationLabel.setPosition(500, 200);
 
-        // Add label to stage (assuming 'stage' is your Stage object)
         stage.addActor(explanationLabel);
 
-
-        TextButton chooseFactionButton = new TextButton("Choose Faction", chooseFactionStyle);
+        TextButton.TextButtonStyle textButtonStyle = game.assetLoader.textButtonStyle;
+        TextButton chooseFactionButton = new TextButton("Choose Faction", textButtonStyle);
+        TextButton chooseLeaderButton = new TextButton("Choose Leader", textButtonStyle);
+        TextButton selectDeckButton = new TextButton("Select Deck", textButtonStyle);
+        TextButton backButton = new TextButton("Back", textButtonStyle);
         chooseFactionButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 showFactionSelection();
             }
         });
-
-        // Choose Leader Button
-        TextButton.TextButtonStyle chooseLeaderStyle = new TextButton.TextButtonStyle();
-        chooseLeaderStyle.font = font;
-        chooseLeaderStyle.fontColor = Color.WHITE;
-        chooseLeaderStyle.up = skin.getDrawable("button-c");
-        chooseLeaderStyle.down = skin.getDrawable("button-pressed-c");
-        chooseLeaderStyle.over = skin.getDrawable("button-over-c");
-
-        TextButton chooseLeaderButton = new TextButton("Choose Leader", chooseLeaderStyle);
         chooseLeaderButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 showLeaderSelection();
             }
         });
-
-        TextButton selectDeckButton = new TextButton("Select Deck", chooseLeaderStyle);
         selectDeckButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 showDeckSelection();
             }
         });
-
-        TextButton backButton = new TextButton("Back", chooseLeaderStyle);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -142,7 +111,6 @@ public class FactionAndLeaderMenu extends Menu {
             }
         });
 
-        // Add buttons to table with updated sizes
         table.add(chooseFactionButton).width(400).height(120).pad(10);
         table.row().pad(10, 0, 10, 0);
         table.add(chooseLeaderButton).width(400).height(120).pad(10);
@@ -151,47 +119,21 @@ public class FactionAndLeaderMenu extends Menu {
         table.row().pad(20, 0, 20, 0);
         table.add(backButton).pad(40).width(400).height(120);
 
-
-        heroCountLabel = new Label("Number of Hero Cards: 0", skin);
-        unitCountLabel = new Label("Number of Unit Cards: 0", skin);
-        spellCountLabel = new Label("Number of Spell Cards: 0", skin);
-        heroCountLabel.setStyle(new Label.LabelStyle(font, Color.WHITE));
-        unitCountLabel.setStyle(new Label.LabelStyle(font, Color.WHITE));
-        spellCountLabel.setStyle(new Label.LabelStyle(font, Color.WHITE));
-
-
+        heroCountLabel = new Label("Number of Hero Cards: 0", labelStyle);
+        unitCountLabel = new Label("Number of Unit Cards: 0", labelStyle);
+        spellCountLabel = new Label("Number of Spell Cards: 0", labelStyle);
     }
 
     private void showFactionSelection() {
-        Skin skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
-        Dialog dialog = new Dialog("Select Faction", skin);
-
-        // Set dialog size
-        float dialogWidth = Gdx.graphics.getWidth() * 0.8f;
-        float dialogHeight = Gdx.graphics.getHeight() * 0.8f;
-        dialog.setSize(dialogWidth, dialogHeight);
-
-        // Set dark blue background
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f)); // Dark blue color
-        pixmap.fill();
-
-        // Create a texture from the pixmap
-        Texture texture = new Texture(pixmap);
-        pixmap.dispose();
-
-        // Set the texture as the dialog's background
-        dialog.setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
+        Dialog dialog = createNewDialog("Select Faction");
 
         Table factionTable = new Table();
         factionTable.center();
 
-
-
         // Load faction images using AssetLoader
         AssetLoader assetLoader = game.assetLoader;
         for (String factionPath : assetLoader.getFactions()) {
-            Texture factionTexture = assetLoader.getAssetManager().get(factionPath, Texture.class);
+            Texture factionTexture = game.assetManager.get(factionPath, Texture.class);
             ImageButton factionButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(factionTexture)));
             String factionName = factionPath.substring(factionPath.lastIndexOf("/") + 1, factionPath.lastIndexOf("."));
 
@@ -224,14 +166,17 @@ public class FactionAndLeaderMenu extends Menu {
                     if (factionName.contains("monsters")) faction = new Monsters();
                     Player.getLoggedInPlayer().setFaction(faction);
                     //TODO @arman Player.getLoggedInPlayer.setFaction() ro ye joori ezafe kon;
-                    highlightSelectedFaction(factionButton);
+                    highlightSelectedButton(factionButton);
+                    selectedFactionButton = factionButton;
+                    updateAvailableCards();
                     dialog.hide();
                     System.out.println("Selected Faction: " + selectedFaction);
                 }
             });
 
             if (factionName.equals(selectedFaction)) {
-                highlightSelectedFaction(factionButton);
+                highlightSelectedButton(factionButton);
+                selectedFactionButton = factionButton;
             }
 
             factionTable.add(factionButton).pad(20);
@@ -242,40 +187,13 @@ public class FactionAndLeaderMenu extends Menu {
         dialog.show(stage);
     }
 
-    private void highlightSelectedFaction(ImageButton selectedButton) {
-        // Highlight the selected button
-        selectedButton.getImage().addAction(Actions.forever(Actions.sequence(
-                Actions.color(new Color(1f, 1f, 0f, 1f), 0.5f),
-                Actions.color(new Color(1f, 1f, 0f, 0.5f), 0.5f)
-        )));
-        selectedFactionButton = selectedButton;
-    }
-
     private void showLeaderSelection() {
         if (faction == null) {
             System.out.println("Please select a faction first.");
             return;
         }
 
-        Skin skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
-        Dialog dialog = new Dialog("Select Faction", skin);
-
-        // Set dialog size
-        float dialogWidth = Gdx.graphics.getWidth() * 0.8f;
-        float dialogHeight = Gdx.graphics.getHeight() * 0.8f;
-        dialog.setSize(dialogWidth, dialogHeight);
-
-        // Set dark blue background
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f)); // Dark blue color
-        pixmap.fill();
-
-        // Create a texture from the pixmap
-        Texture texture = new Texture(pixmap);
-        pixmap.dispose();
-
-        // Set the texture as the dialog's background
-        dialog.setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
+        Dialog dialog = createNewDialog("Select Leader");
 
         Table leaderTable = new Table();
         leaderTable.center();
@@ -283,7 +201,7 @@ public class FactionAndLeaderMenu extends Menu {
         // Load leader images using AssetLoader
         AssetLoader assetLoader = game.assetLoader;
         for (String leaderPath : assetLoader.getLeaders(selectedFaction)) {
-            Texture leaderTexture = assetLoader.getAssetManager().get(leaderPath, Texture.class);
+            Texture leaderTexture = game.assetManager.get(leaderPath, Texture.class);
             ImageButton leaderButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(leaderTexture)));
             String leaderName = leaderPath.substring(leaderPath.lastIndexOf("/") + 1, leaderPath.lastIndexOf("."));
 
@@ -311,46 +229,33 @@ public class FactionAndLeaderMenu extends Menu {
                 public void clicked(InputEvent event, float x, float y) {
                     selectedLeader = leaderName;
 
-                    highlightSelectedLeader(leaderButton);
+                    highlightSelectedButton(leaderButton);
+                    selectedLeaderButton = leaderButton;
                     dialog.hide();
                     System.out.println("Selected Leader: " + selectedLeader);
                 }
             });
 
             if (leaderName.equals(selectedLeader)) {
-                highlightSelectedLeader(leaderButton);
+                highlightSelectedButton(leaderButton);
+                selectedLeaderButton = leaderButton;
             }
 
             leaderTable.add(leaderButton).pad(20);
         }
 
         dialog.getContentTable().add(leaderTable).pad(50);
-        dialog.button("Cancel").pad(20); // Update padding for Cancel button
+        dialog.button("Cancel").pad(20);
         dialog.show(stage);
     }
 
-    private void highlightSelectedLeader(ImageButton selectedButton) {
-        // Highlight the selected button
-        selectedButton.getImage().addAction(Actions.forever(Actions.sequence(
-                Actions.color(new Color(1f, 1f, 0f, 1f), 0.5f),
-                Actions.color(new Color(1f, 1f, 0f, 0.5f), 0.5f)
-        )));
-        selectedLeaderButton = selectedButton;
-    }
+    private Dialog createNewDialog(String title) {
+        Dialog dialog = new Dialog(title, skin);
 
-    private void showDeckSelection() {
-        Skin skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
-        Dialog dialog = new Dialog("Select Deck", skin);
-
-        if (faction == null) {
-            System.out.println("Error: No faction selected!");
-            return;
-        }
-
-        float dialogWidth = Gdx.graphics.getWidth();
-        float dialogHeight = Gdx.graphics.getHeight() * 0.8f; // 80% of the screen height
+        // Set dialog size
+        float dialogWidth = Gdx.graphics.getWidth() * 0.8f;
+        float dialogHeight = Gdx.graphics.getHeight() * 0.8f;
         dialog.setSize(dialogWidth, dialogHeight);
-        dialog.setPosition(0, Gdx.graphics.getHeight() * 0.05f);
 
         // Set dark blue background
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -364,32 +269,18 @@ public class FactionAndLeaderMenu extends Menu {
         // Set the texture as the dialog's background
         dialog.setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
 
-        Table mainTable = new Table();
-        mainTable.setFillParent(true);
+        return dialog;
+    }
 
-        // Left section for available cards
+    private void highlightSelectedButton(ImageButton selectedButton) {
+        // Highlight the selected button
+        selectedButton.getImage().addAction(Actions.forever(Actions.sequence(
+                Actions.color(new Color(1f, 1f, 0f, 1f), 0.5f),
+                Actions.color(new Color(1f, 1f, 0f, 0.5f), 0.5f)
+        )));
+    }
 
-        availableCardsTable.top();
-        ScrollPane availableCardsScrollPane = new ScrollPane(availableCardsTable, skin);
-        availableCardsScrollPane.setScrollingDisabled(true, false); // Enable vertical scrolling only
-        mainTable.add(availableCardsScrollPane).width(dialogWidth * 0.4f).height(dialogHeight).pad(10);
-
-        // Middle section for stats
-
-
-        statsTable.add(heroCountLabel).pad(10).row();
-        statsTable.add(unitCountLabel).pad(10).row();
-        statsTable.add(spellCountLabel).pad(10).row();
-        mainTable.add(statsTable).width(dialogWidth * 0.15f).height(dialogHeight).pad(10);
-
-        // Right section for selected cards
-
-        selectedCardsTable.top();
-        ScrollPane selectedCardsScrollPane = new ScrollPane(selectedCardsTable, skin);
-        selectedCardsScrollPane.setScrollingDisabled(true, false); // Enable vertical scrolling only
-        mainTable.add(selectedCardsScrollPane).width(dialogWidth * 0.4f).height(dialogHeight).pad(10);
-
-        AssetLoader assetLoader = game.assetLoader;
+    private void updateAvailableCards() {
         ArrayList<AllCards> neutralCards = Faction.getNeutralCards();
         ArrayList<AllCards> factionCards = new ArrayList<>();
 
@@ -405,26 +296,59 @@ public class FactionAndLeaderMenu extends Menu {
             factionCards = Nilfgaard.getCards();
         }
 
-        addCardsToTable(neutralCards, availableCardsTable, assetLoader);
-        addCardsToTable(factionCards, availableCardsTable, assetLoader);
+        availableCardsTable.clear();
+        selectedCardsTable.clear();
+        addCardsToTable(factionCards, availableCardsTable);
+        addCardsToTable(neutralCards, availableCardsTable);
+    }
+
+    private void showDeckSelection() {
+        if (faction == null) {
+            System.out.println("Error: No faction selected!");
+            return;
+        }
+
+        Dialog dialog = createNewDialog("Select Deck");
+        dialog.setWidth(Gdx.graphics.getWidth());
+        dialog.setHeight(Gdx.graphics.getHeight() * 0.9f);
+
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+
+        // Left section for available cards
+        availableCardsTable.top();
+        availableCardsScrollPane = new ScrollPane(availableCardsTable, skin);
+        availableCardsScrollPane.setScrollingDisabled(true, false);
+        mainTable.add(availableCardsScrollPane).width(dialog.getWidth() * 0.4f).height(dialog.getHeight()).pad(10);
+
+        // Middle section for stats
+        statsTable.add(heroCountLabel).pad(10).row();
+        statsTable.add(unitCountLabel).pad(10).row();
+        statsTable.add(spellCountLabel).pad(10).row();
+        mainTable.add(statsTable).width(dialog.getWidth() * 0.15f).height(dialog.getHeight()).pad(10);
+
+        // Right section for selected cards
+        selectedCardsTable.top();
+        selectedCardsScrollPane = new ScrollPane(selectedCardsTable, skin);
+        selectedCardsScrollPane.setScrollingDisabled(true, false);
+        mainTable.add(selectedCardsScrollPane).width(dialog.getWidth() * 0.4f).height(dialog.getHeight()).pad(10);
 
         dialog.getContentTable().add(mainTable).pad(10);
-        dialog.button("Cancel").pad(20); // Update padding for Cancel button
+        dialog.button("Cancel").pad(20);
         dialog.show(stage);
     }
 
-    private void addCardsToTable(ArrayList<AllCards> cards, Table table, AssetLoader assetLoader) {
+    private void addCardsToTable(ArrayList<AllCards> cards, Table table) {
         for (AllCards card : cards) {
             cardLookupMap.put(card.getImageURL(), card);
             if (card.getNumber() > 0) {
                 for (int i = 0; i < card.getNumber(); i++) {
                     String cardImagePath = card.getImageURL();
-                    Texture cardTexture = assetLoader.getAssetManager().get(cardImagePath, Texture.class);
+                    Texture cardTexture = game.assetManager.get(cardImagePath, Texture.class);
                     ImageButton cardButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(cardTexture)));
 
                     cardButton.setUserObject(cardImagePath);
 
-                    float buttonSize = 300;
                     cardButton.getImageCell().size(buttonSize, buttonSize);
 
                     // Add hover and click effects
@@ -450,7 +374,7 @@ public class FactionAndLeaderMenu extends Menu {
                             } else if (parentTable != null && parentTable.equals(selectedCardsTable)) {
                                 moveCardToTable(cardButton, selectedCardsTable, availableCardsTable, buttonSize);
                             }
-                            updateStats(selectedCardsTable, heroCountLabel, unitCountLabel, spellCountLabel);
+                            updateStats();
                         }
                     });
 
@@ -478,7 +402,8 @@ public class FactionAndLeaderMenu extends Menu {
 
     private void rebuildTableGrid(Table table, float buttonSize) {
         Array<Actor> children = new Array<>(table.getChildren());
-        table.clearChildren();
+//        table.clearChildren();
+        table.clear();
 
         for (int i = 0; i < children.size; i++) {
             table.add(children.get(i)).pad(10).width(buttonSize).height(buttonSize);
@@ -488,7 +413,7 @@ public class FactionAndLeaderMenu extends Menu {
         }
     }
 
-    private void updateStats(Table selectedCardsTable, Label heroCountLabel, Label unitCountLabel, Label spellCountLabel) {
+    private void updateStats() {
         int heroCount = 0;
         int unitCount = 0;
         int spellCount = 0;
