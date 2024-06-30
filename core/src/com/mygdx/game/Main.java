@@ -26,7 +26,7 @@ public class Main extends Game {
         backgroundMusic.play();
 
         // Set the initial screen
-        setScreen(new LoginMenu(this));
+        setScreen(new GameMenu(this));
     }
 
     public void setLoggedInPlayer(Player player) { this.loggedInPlayer = player;}

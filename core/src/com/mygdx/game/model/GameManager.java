@@ -4,7 +4,10 @@ package com.mygdx.game.model;
 import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.ability.Spy;
 import com.mygdx.game.model.card.*;
+import com.mygdx.game.model.faction.Faction;
+import com.mygdx.game.model.faction.Nilfgaard;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -241,10 +244,12 @@ public class GameManager {
 
         if (forCurrentPlayer != null && forOtherPlayer == null) {
             currentPlayer.removeCard(card, forCurrentPlayer);
+            currentPlayer.addToGraveyard(card);
             gameController.removeCardFromView(card);
             return true;
         } else if (forCurrentPlayer == null && forOtherPlayer != null) {
             otherPlayer.removeCard(card, forOtherPlayer);
+            otherPlayer.addToGraveyard(card);
             gameController.removeCardFromView(card);
             return true;
         } else {
@@ -266,6 +271,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromMelee(card);
+        currentPlayer.addToGraveyard(card);
         gameController.removeCardFromView(card);
         return true;
     }
@@ -275,6 +281,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromRange(card);
+        currentPlayer.addToGraveyard(card);
         gameController.removeCardFromView(card);
         return true;
     }
@@ -284,6 +291,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeFromSiege(card);
+        currentPlayer.addToGraveyard(card);
         gameController.removeCardFromView(card);
         return true;
     }
@@ -293,6 +301,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellMelee(card);
+        currentPlayer.addToGraveyard(card);
         gameController.removeCardFromView(card);
         return true;
     }
@@ -302,6 +311,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellRange(card);
+        currentPlayer.addToGraveyard(card);
         gameController.removeCardFromView(card);
         return true;
     }
@@ -311,6 +321,7 @@ public class GameManager {
             return false;
         }
         currentPlayer.removeSpellSiege(card);
+        currentPlayer.addToGraveyard(card);
         gameController.removeCardFromView(card);
         return true;
     }
@@ -467,6 +478,49 @@ public class GameManager {
         calculateAllHPs();
         if (areBothPlayersPassed()) {
             // TODO end of the round
+            // Adding Point to winner
+            if (currentPlayer.getTotalHP() > getOtherPlayer().getTotalHP()) {
+                getOtherPlayer().decreaseRemainingLives();
+            } else if (currentPlayer.getTotalHP() == getOtherPlayer().getTotalHP()) {
+                if (!(getOtherPlayer().getPlayer().getFaction() instanceof Nilfgaard)) {
+                    getOtherPlayer().decreaseRemainingLives();
+                }
+                if (!(currentPlayer.getPlayer().getFaction() instanceof Nilfgaard)) {
+                    currentPlayer.decreaseRemainingLives();
+                }
+            } else {
+                currentPlayer.decreaseRemainingLives();
+            }
+
+            if (currentPlayer.getRemainingLives() == 0 && getOtherPlayer().getRemainingLives() == 0) {
+                System.out.println("TIED");
+                return;
+            } else if (currentPlayer.getRemainingLives() == 0) {
+                System.out.println(getOtherPlayer().getPlayer().getUsername() + "VICTORY");
+                return;
+            } else if (getOtherPlayer().getRemainingLives() == 0) {
+                System.out.println(currentPlayer.getPlayer().getUsername() + "VICTORY");
+                return;
+            }
+
+            ArrayList<Card> currentPlayerAllCards = new ArrayList<>();
+            ArrayList<Card> otherPlayerAllCards = new ArrayList<>();
+            currentPlayerAllCards.addAll(currentPlayer.getAllCards());
+            otherPlayerAllCards.addAll(getOtherPlayer().getAllCards());
+            for (Card sampleCard : currentPlayerAllCards) {
+                removeCard(sampleCard);
+                gameController.removeCardFromView(sampleCard);
+            }
+            for (Card sampleCard : otherPlayerAllCards) {
+                removeCard(sampleCard);
+                gameController.removeCardFromView(sampleCard);
+            }
+            for (int i = weatherCards.size() - 1; i >= 0; i--) {
+                gameController.removeCardFromView(weatherCards.get(i));
+                removeCard(weatherCards.get(i));
+            }
+            // delete the Cards
+            // Transformer Cards
             return;
         }
         System.out.println("Arman:" + isOtherPlayerPassed());

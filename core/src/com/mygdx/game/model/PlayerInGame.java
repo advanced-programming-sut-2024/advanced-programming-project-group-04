@@ -8,7 +8,7 @@ public class PlayerInGame {
 
     private Player player;
 
-    private int roundsWon;
+    private int remainingLives;
     private int point;
 
     private boolean isPassed;
@@ -30,7 +30,7 @@ public class PlayerInGame {
     public PlayerInGame(Player player) {
         this.player = player;
         this.deckInGame = player.getDeck().getCards();
-        this.roundsWon = 0;
+        this.remainingLives = 2;
         isPassed = false;
         drawInitialCards();
     }
@@ -50,22 +50,17 @@ public class PlayerInGame {
         deckInGame.remove(newCard);
     }
 
-    public int getRoundsWon() {
-        return roundsWon;
+    public int getRemainingLives() {
+        return remainingLives;
     }
-    public void setRoundsWon(int number) {
-        roundsWon = number;
+    public void setRemainingLives(int number) {
+        remainingLives = number;
     }
     public int getPoint() {
         return point;
     }
     public void setPoint(int number) {
         point = number;
-    }
-
-    public int calculatePoint() {
-        // TODO
-        return 0;
     }
 
     public Card drawRandomCardFromDeckInGame() {
@@ -93,8 +88,8 @@ public class PlayerInGame {
         return card;
     }
 
-    public void incrementRoundsWon() {
-        roundsWon++;
+    public void decreaseRemainingLives() {
+        remainingLives++;
     }
 
  
