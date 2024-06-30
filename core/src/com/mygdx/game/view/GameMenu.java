@@ -55,6 +55,7 @@ public class GameMenu extends Menu {
     Label myScore, enemyScore;
     ArrayList<PlayerInGame> players;
 
+    TextButton passButtonEnemy , passButtonSelf;
     public GameMenu(Main game) {
         super(game);
         this.gameController = new GameController(this);
@@ -166,11 +167,12 @@ public class GameMenu extends Menu {
         stage.addActor(myScore);
         stage.addActor(enemyScore);
 
+
         // Pass button style
         TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
 
         // Create and position pass buttons
-        TextButton passButtonEnemy = new TextButton("PASS enemy", buttonStyle);
+        passButtonEnemy = new TextButton("PASS enemy", buttonStyle);
         passButtonEnemy.setPosition(300, 1200);
         passButtonEnemy.addListener(new ClickListener() {
             @Override
@@ -184,7 +186,7 @@ public class GameMenu extends Menu {
             }
         });
 
-        TextButton passButtonSelf = new TextButton("PASS self", buttonStyle);
+        passButtonSelf = new TextButton("PASS self", buttonStyle);
         passButtonSelf.setPosition(300, 400);
         passButtonSelf.addListener(new ClickListener() {
             @Override
@@ -368,5 +370,10 @@ public class GameMenu extends Menu {
     public void updateScores(PlayerInGame self, PlayerInGame enemy) {
         myScore.setText(self.getTotalHP());
         enemyScore.setText(enemy.getTotalHP());
+    }
+
+    public void resetPassedButtons() {
+        passButtonEnemy.setText("PASS enemy");
+        passButtonSelf.setText("PASS self");
     }
 }
