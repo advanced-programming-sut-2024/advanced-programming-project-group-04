@@ -53,7 +53,6 @@ public class GameMenu extends Menu {
     Skin skin;
     TextureRegionDrawable backgroundImage;
     Label myScore, enemyScore;
-    BitmapFont font;
     ArrayList<PlayerInGame> players;
 
     public GameMenu(Main game) {
@@ -61,22 +60,14 @@ public class GameMenu extends Menu {
         this.gameController = new GameController(this);
         gameController.setGameMenu(this);
 
-        // get the font
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 48;
-        font = generator.generateFont(parameter);
-        generator.dispose();
-
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         assetLoader = game.assetLoader;
-        this.skin = game.assetManager.get(AssetLoader.SKIN, Skin.class);
+        this.skin = game.assetLoader.skin;
         allCardsCreated = new HashMap<>();
 
         // set Background
         Texture boardTexture = game.assetManager.get(AssetLoader.BOARD, Texture.class);
         backgroundImage = new TextureRegionDrawable(new TextureRegion(boardTexture));
-
 
         tableInit();
 
@@ -168,23 +159,15 @@ public class GameMenu extends Menu {
     private void tableInit() {
         table = new Table();
 
-        myScore = new Label("0", skin);
-        enemyScore = new Label("0", skin);
-        myScore.setStyle(new Label.LabelStyle(font, Color.WHITE));
-        enemyScore.setStyle(new Label.LabelStyle(font, Color.WHITE));
-        // add the score labels
+        myScore = new Label("0", game.assetLoader.labelStyle);
+        enemyScore = new Label("0", game.assetLoader.labelStyle);
         myScore.setPosition(200, 400);
         enemyScore.setPosition(200, 1200);
         stage.addActor(myScore);
         stage.addActor(enemyScore);
 
         // Pass button style
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
-        buttonStyle.fontColor = Color.WHITE;
-        buttonStyle.up = skin.getDrawable("button-c");
-        buttonStyle.down = skin.getDrawable("button-pressed-c");
-        buttonStyle.over = skin.getDrawable("button-over-c");
+        TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
 
         // Create and position pass buttons
         TextButton passButtonEnemy = new TextButton("PASS enemy", buttonStyle);

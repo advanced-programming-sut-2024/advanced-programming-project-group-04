@@ -2,10 +2,16 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.model.card.AllCards;
 
 
@@ -26,6 +32,12 @@ public class AssetLoader {
     private Map<String, String> factionExplanations = new HashMap<>();
     private Map<String, String> leaderExplanations = new HashMap<>();
 
+    public Skin skin;
+    public Image backgroundImage;
+    public BitmapFont font;
+    public TextButton.TextButtonStyle textButtonStyle;
+    public Label.LabelStyle labelStyle;
+    public TextField.TextFieldStyle textFieldStyle;
 
     public AssetLoader(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -88,8 +100,47 @@ public class AssetLoader {
         }
     }
 
-    public AssetManager getAssetManager() {
-        return assetManager;
+    public void initialize() {
+        skin = assetManager.get(AssetLoader.SKIN, Skin.class);
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 48;
+        font = generator.generateFont(parameter);
+        generator.dispose();
+
+        textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = font;
+        textButtonStyle.fontColor = Color.WHITE;
+        textButtonStyle.up = skin.getDrawable("button-c");
+        textButtonStyle.down = skin.getDrawable("button-pressed-c");
+        textButtonStyle.over = skin.getDrawable("button-over-c");
+
+        Pixmap cursorPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        cursorPixmap.setColor(Color.WHITE);
+        cursorPixmap.fill();
+        Texture cursorTexture = new Texture(cursorPixmap);
+        cursorPixmap.dispose();
+
+        Pixmap selectionPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        selectionPixmap.setColor(new Color(0.5f, 0.5f, 1f, 0.5f));
+        selectionPixmap.fill();
+        Texture selectionTexture = new Texture(selectionPixmap);
+        selectionPixmap.dispose();
+
+        textFieldStyle = new TextField.TextFieldStyle();
+        textFieldStyle.font = font;
+        textFieldStyle.fontColor = Color.CHARTREUSE;
+        textFieldStyle.background = skin.getDrawable("textfield");
+        textFieldStyle.messageFontColor = Color.CYAN;
+        textFieldStyle.cursor = new TextureRegionDrawable(new TextureRegion(cursorTexture));
+        textFieldStyle.selection = new TextureRegionDrawable(new TextureRegion(selectionTexture));
+
+        labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+
+        backgroundImage = new Image(assetManager.get(AssetLoader.BACKGROUND, Texture.class));
+        backgroundImage.setFillParent(true);
     }
 
     public List<String> getFactions() {
