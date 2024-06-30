@@ -38,6 +38,14 @@ public class GameController {
         this.gameMenu = gameMenu;
     }
 
+    public void updateScores(PlayerInGame p1 , PlayerInGame p2) {
+        gameMenu.updateScores(p1 , p2);
+    }
+
+    public void resetPassButtons() {
+        gameMenu.resetPassedButtons();
+    }
+
     public boolean placeCard(Card card, TableSection tableSection) {
         boolean result;
         if (tableSection.isEnemy() ^ !isMyTurn) {

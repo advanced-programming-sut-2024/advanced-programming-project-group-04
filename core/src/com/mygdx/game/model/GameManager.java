@@ -229,7 +229,20 @@ public class GameManager {
         return true;
     }
 
+    public Position findCardInGame(Card card) {
+        PlayerInGame otherPlayer = getOtherPlayer();
 
+        Position forCurrentPlayer = findCardInGameForCurrentPlayer(card);
+        Position forOtherPlayer = findCardInGameForOtherPlayer(card);
+
+        if (forCurrentPlayer != null && forOtherPlayer == null) {
+            return forCurrentPlayer;
+        } else if (forCurrentPlayer == null && forOtherPlayer != null) {
+            return forOtherPlayer;
+        } else {
+            throw new RuntimeException("Can't find card in game");
+        }
+    }
     public boolean removeCard(Card card) {
         for (Card sampleCard : weatherCards) {
             if (card.equals(sampleCard)) {
@@ -519,6 +532,13 @@ public class GameManager {
                 gameController.removeCardFromView(weatherCards.get(i));
                 removeCard(weatherCards.get(i));
             }
+
+            gameController.updateScores(player1 , player2);
+
+            currentPlayer.setIsPassed(false);
+            getOtherPlayer().setIsPassed(false);
+
+            gameController.resetPassButtons();
             // delete the Cards
             // Transformer Cards
             return;
