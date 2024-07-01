@@ -505,13 +505,13 @@ public class GameManager {
                 currentPlayer.decreaseRemainingLives();
             }
 
-            if (currentPlayer.getRemainingLives() == 0 && getOtherPlayer().getRemainingLives() == 0) {
+            if (currentPlayer.getRemainingLives() <= 0 && getOtherPlayer().getRemainingLives() <= 0) {
                 System.out.println("TIED");
                 return;
-            } else if (currentPlayer.getRemainingLives() == 0) {
+            } else if (currentPlayer.getRemainingLives() <= 0) {
                 System.out.println(getOtherPlayer().getPlayer().getUsername() + "VICTORY");
                 return;
-            } else if (getOtherPlayer().getRemainingLives() == 0) {
+            } else if (getOtherPlayer().getRemainingLives() <= 0) {
                 System.out.println(currentPlayer.getPlayer().getUsername() + "VICTORY");
                 return;
             }
