@@ -11,6 +11,7 @@ public class Main extends Game {
     public AssetManager assetManager;
     public AssetLoader assetLoader;
     private Player loggedInPlayer;
+    private Music backgroundMusic;
 
     @Override
     public void create() {
@@ -20,10 +21,12 @@ public class Main extends Game {
         assetManager.finishLoading();
         assetLoader.initialize();
 
+
         // Play background music
-        Music backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
+        backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
+
 
         // Set the initial screen
         setScreen(new GameMenu(this));
@@ -41,5 +44,12 @@ public class Main extends Game {
     @Override
     public void dispose() {
         assetManager.dispose();
+    }
+
+    public void cheraBenzinTamoomShod() {
+        backgroundMusic.stop();
+        Music mohandesMusic = backgroundMusic = this.assetManager.get(AssetLoader.MOHANDES, Music.class);
+        mohandesMusic.setLooping(true);
+        mohandesMusic.play();
     }
 }

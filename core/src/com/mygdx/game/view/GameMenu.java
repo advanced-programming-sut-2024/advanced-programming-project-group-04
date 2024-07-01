@@ -2,6 +2,8 @@ package com.mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +24,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
+import com.mygdx.game.controller.CheatController;
+import com.mygdx.game.controller.CheatProcessor;
 import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.Deck;
 import com.mygdx.game.model.Player;
@@ -35,7 +39,7 @@ import java.util.HashMap;
 
 import static com.mygdx.game.view.TableSection.*;
 
-public class GameMenu extends Menu {
+public class GameMenu extends Menu implements CheatProcessor {
     public GraphicalCard selectedCard;
     public static float SCALE = 0.15f, offset = 30;
 
@@ -54,10 +58,14 @@ public class GameMenu extends Menu {
     TextureRegionDrawable backgroundImage;
     Label myScore, enemyScore;
     ArrayList<PlayerInGame> players;
+    private CheatConsoleWindow cheatConsole;
+    private boolean cheatConsoleVisible = false;
+    private Main game;
 
     TextButton passButtonEnemy , passButtonSelf;
     public GameMenu(Main game) {
         super(game);
+        this.game = game;
         this.gameController = new GameController(this);
         gameController.setGameMenu(this);
 
@@ -73,7 +81,7 @@ public class GameMenu extends Menu {
         tableInit();
 
         myDeck = new Deck();
-        for (AllCards allCard : Skellige.getCards()) {
+        for (AllCards allCard : Monsters.getCards()) {
             for (int i = 0; i < allCard.getNumber(); i++)
                 myDeck.addCard(new Card(allCard));
         }
@@ -93,6 +101,21 @@ public class GameMenu extends Menu {
 
         loadHand(players.get(0).getHand(), myHandTable);
         loadHand(players.get(1).getHand(), enemyHandTable);
+
+
+        cheatConsole = new CheatConsoleWindow("Cheat Console", skin, new CheatProcessor() {
+            @Override
+            public void processCheat(String cheatCode) {
+                gameController.handleCheat(cheatCode);
+            }
+        });
+        cheatConsole.setVisible(false);
+        stage.addActor(cheatConsole);
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(new CheatController(this));
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
     }
 
@@ -143,7 +166,7 @@ public class GameMenu extends Menu {
                 table.row();
                 table.add(getLabelFromString("Description " + card.getDescription()));
                 table.row();
-                table.add(getLabelFromString("CurrentHP " + Integer.toString(card.getCurrentHP())));
+                table.add(getLabelFromString("CurrentHP " + card.getCurrentHP()));
                 table.row();
                 table.setFillParent(true);
                 table.setX(0);
@@ -375,5 +398,29 @@ public class GameMenu extends Menu {
     public void resetPassedButtons() {
         passButtonEnemy.setText("PASS enemy");
         passButtonSelf.setText("PASS self");
+    }
+
+
+    @Override
+    public void processCheat(String cheatCode) {
+        gameController.handleCheat(cheatCode);
+    }
+
+
+    public void toggleCheatConsole() {
+        cheatConsoleVisible = !cheatConsoleVisible;
+        cheatConsole.setVisible(cheatConsoleVisible);
+        if (cheatConsoleVisible) {
+            cheatConsole.setWidth(stage.getWidth());
+            cheatConsole.setHeight(150);
+            cheatConsole.setPosition(0, stage.getHeight() / 2 - cheatConsole.getHeight() / 2);
+            stage.setKeyboardFocus(cheatConsole.findActor("cheatInputField"));
+        } else {
+            stage.setKeyboardFocus(null);
+        }
+    }
+
+    public Main getMainInstance() {
+        return game;
     }
 }

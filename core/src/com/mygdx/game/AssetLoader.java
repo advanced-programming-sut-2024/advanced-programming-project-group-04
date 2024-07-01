@@ -25,6 +25,8 @@ public class AssetLoader {
     public static final String MUSIC = "track1.mp3";
     public static final String SKIN = "skins/neon/skin/default.json";
     public static final String BOARD = "board.jpg";
+    public static final String MOHANDES = "mohandes.mp3";
+    public static BitmapFont font;
 
     private AssetManager assetManager;
     private Map<String, List<String>> factionLeadersMap;
@@ -34,7 +36,6 @@ public class AssetLoader {
 
     public Skin skin;
     public Image backgroundImage;
-    public BitmapFont font;
     public TextButton.TextButtonStyle textButtonStyle;
     public Label.LabelStyle labelStyle;
     public TextField.TextFieldStyle textFieldStyle;
@@ -50,6 +51,7 @@ public class AssetLoader {
         assetManager.load(MUSIC, Music.class);
         assetManager.load(SKIN, Skin.class);
         assetManager.load(BOARD, Texture.class);
+        assetManager.load(MOHANDES, Music.class);
 
         // Load factions
         FileHandle factionDir = Gdx.files.internal("assets/images/factions/");
@@ -162,5 +164,9 @@ public class AssetLoader {
     public Texture getImageFromAllCard(AllCards allCard) {
         String path = "images/cards/" + allCard.name() + ".jpg";
         return assetManager.get(path, Texture.class);
+    }
+
+    public BitmapFont getFont() {
+        return font;
     }
 }
