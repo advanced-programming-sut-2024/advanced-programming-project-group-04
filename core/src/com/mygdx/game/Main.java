@@ -3,7 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.controller.Client;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.view.*;
 
@@ -12,6 +12,7 @@ public class Main extends Game {
     public AssetLoader assetLoader;
     private Player loggedInPlayer;
     private Music backgroundMusic;
+    private Client client;
 
     @Override
     public void create() {
@@ -27,6 +28,7 @@ public class Main extends Game {
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
 
+        this.client = new Client();
 
         // Set the initial screen
         setScreen(new GameMenu(this));
@@ -35,6 +37,8 @@ public class Main extends Game {
     public void setLoggedInPlayer(Player player) { this.loggedInPlayer = player;}
 
     public Player getLoggedInPlayer() { return this.loggedInPlayer; }
+
+    public Client getClient() { return this.client; }
 
     @Override
     public void render() {

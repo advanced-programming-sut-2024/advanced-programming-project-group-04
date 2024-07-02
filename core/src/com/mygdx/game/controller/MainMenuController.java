@@ -1,6 +1,7 @@
 package com.mygdx.game.controller;
 
 import com.mygdx.game.Main;
+import com.mygdx.game.model.Player;
 
 public class MainMenuController {
     private final Main game;
@@ -14,10 +15,15 @@ public class MainMenuController {
     }
 
     public ControllerResponse startNewGame() {
-        String errorMessage = "You're not supposed to press this yet";
+        String errorMessage = "";
         boolean isFail = true;
 
-        // TODO: @Arman
+        Player player = game.getLoggedInPlayer();
+        if (player.canStartGame()) {
+            errorMessage = "Please complete your deck first";
+        } else {
+            isFail = false;
+        }
 
         return new ControllerResponse(isFail, errorMessage);
     }

@@ -60,4 +60,9 @@ public class Deck {
     public Leader getLeader() {
         return this.leader;
     }
+
+    public boolean isValid() {
+        if (leader == null) return false;
+        else return isNumberOfCardsValid();
+    }
 }

@@ -12,9 +12,6 @@ import com.mygdx.game.model.faction.Faction;
 
 
 public class Player {
-    private static ArrayList<Player> allPlayers = new ArrayList<>();
-
-    private static Player loggedInPlayer = null;
     private final int id;
     private String username;
     private String password;
@@ -49,18 +46,9 @@ public class Player {
         this.drawCount = 0;
         this.lossCount = 0;
 
-        allPlayers.add(this);
-        this.save();
     }
 
-    public static Player findPlayerByUsername (String username) {
-        for (Player player : allPlayers) {
-            if (player.getUsername().equals(username)) {
-                return player;
-            }
-        }
-        return null;
-    }
+    public int getId() { return this.id; }
 
     public String getUsername() { return this.username; }
     
@@ -106,7 +94,7 @@ public class Player {
         return this.deck;
     }
 
-    public Faction getFaction() {
+    public Faction getSelectedFaction() {
         return this.selectedFaction;
     }
 
@@ -173,46 +161,12 @@ public class Player {
         return false;
     }
 
-    public static void loginPlayer(Player player) {
-        loggedInPlayer = player;
+    public boolean canStartGame() {
+        if (selectedFaction == null) return false;
+        else return deck.isValid();
     }
 
-    public static void logout() {
-        loggedInPlayer = null;
-    }
 
-    public static Player getLoggedInPlayer() {
-        return loggedInPlayer;
-    }
 
-    public Faction getSelectedFaction() {
-        return selectedFaction;
-    }
 
-    public void save() {
-        File file = new File("Data/Users/" + id + "/login-data.json");
-
-        Gson gson = new Gson();
-        try {
-            file.getParentFile().mkdirs();
-            FileWriter writer = new FileWriter(file);
-            gson.toJson(this, writer);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void loadAllPlayers() {
-        File dataDir = new File("Data/Users");
-        File[] subFiles = dataDir.listFiles();
-
-        Gson gson = new Gson();
-        for (File file : subFiles) {
-            FileHandle fileHandle = new FileHandle(file + "/login-data.json");
-            String json = fileHandle.readString();
-            Player player = gson.fromJson(json, Player.class);
-            allPlayers.add(player);
-        }
-    }
 }

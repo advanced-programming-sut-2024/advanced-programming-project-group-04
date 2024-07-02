@@ -15,7 +15,6 @@ import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
 import com.mygdx.game.controller.ControllerResponse;
 import com.mygdx.game.controller.LoginController;
-import com.mygdx.game.model.Player;
 
 public class LoginMenu extends Menu {
     private final LoginController loginController;
@@ -26,8 +25,6 @@ public class LoginMenu extends Menu {
     public LoginMenu(Main game) {
         super(game);
         this.loginController = new LoginController(game);
-
-        Player.loadAllPlayers();
 
         // Set up background
         Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
@@ -132,8 +129,6 @@ public class LoginMenu extends Menu {
             errorLabel.setColor(Color.RED);
         }
         else {
-            // TODO: WTF should I do with this line?
-            Player.loginPlayer(Player.findPlayerByUsername(username));
             setScreen(new MainMenu(game));
         }
     }

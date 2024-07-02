@@ -17,7 +17,7 @@ public class LoginController {
         if (username.isEmpty()) errorMessage = "Enter your username";
         else if (password.isEmpty()) errorMessage = "Enter your password";
         else {
-            Player player = Player.findPlayerByUsername(username);
+            Player player = game.getClient().findPlayerByUsername(username);
             if (player == null) errorMessage = "No such player exists";
             else if (!player.validatePassword(password)) errorMessage = "Wrong password";
             else {

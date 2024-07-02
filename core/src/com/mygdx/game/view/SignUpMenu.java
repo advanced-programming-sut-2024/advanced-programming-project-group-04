@@ -21,7 +21,7 @@ public class SignUpMenu extends Menu {
 
     public SignUpMenu(Main game) {
         super(game);
-        this.signUpController = new SignUpController();
+        this.signUpController = new SignUpController(game.getClient());
 
         stage.addActor(game.assetLoader.backgroundImage);
 

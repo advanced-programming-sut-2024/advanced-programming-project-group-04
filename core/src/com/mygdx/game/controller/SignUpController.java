@@ -1,11 +1,15 @@
 package com.mygdx.game.controller;
 
-import com.mygdx.game.model.Player;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignUpController {
+    private final Client client;
+
+    public SignUpController(Client client) {
+        this.client = client;
+    }
+
     public ControllerResponse signUpButtonPressed(String username, String password, String email, String nickname) {
         boolean isFail = true;
         String errorMessage = "";
@@ -15,12 +19,12 @@ public class SignUpController {
         else if (email.isEmpty()) errorMessage = "Please enter your email";
         else if (nickname.isEmpty()) errorMessage = "Please choose a nickname";
         else if (!isValidUsername(username)) errorMessage = "Invalid username";
-        else if (Player.findPlayerByUsername(username) != null) errorMessage = "Username is taken";
+        else if (client.isUsernameTaken(username)) errorMessage = "Username is taken";
         else if (!isValidPassword(password)) errorMessage = "Weak password";
         else if (!isValidEmail(email)) errorMessage = "Invalid email";
         else if (!isValidNickname(nickname)) errorMessage = "Invalid nickname";
         else {
-            new Player(username, password, email, nickname);
+            client.createNewPlayer(username, password, email, nickname);
             isFail = false;
             errorMessage = "Registered successfully";
         }

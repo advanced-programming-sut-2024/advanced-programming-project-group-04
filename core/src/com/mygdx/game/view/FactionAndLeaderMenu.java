@@ -67,9 +67,9 @@ public class FactionAndLeaderMenu extends Menu {
         table.setFillParent(true);
         stage.addActor(table);
 
-        faction = Player.getLoggedInPlayer().getSelectedFaction();
+        faction = game.getLoggedInPlayer().getSelectedFaction();
         if (faction == null) selectedFaction = "";
-        else selectedFaction = Player.getLoggedInPlayer().getSelectedFaction().getImageURL();
+        else selectedFaction = game.getLoggedInPlayer().getSelectedFaction().getImageURL();
 
         Label.LabelStyle labelStyle = game.assetLoader.labelStyle;
         explanationLabel = new Label("", labelStyle);
@@ -164,7 +164,7 @@ public class FactionAndLeaderMenu extends Menu {
                     if (factionName.contains("realms")) faction = new NorthernRealms();
                     if (factionName.contains("nilfgaard")) faction = new Nilfgaard();
                     if (factionName.contains("monsters")) faction = new Monsters();
-                    Player.getLoggedInPlayer().setFaction(faction);
+                    game.getLoggedInPlayer().setFaction(faction);
                     //TODO @arman Player.getLoggedInPlayer.setFaction() ro ye joori ezafe kon;
                     highlightSelectedButton(factionButton);
                     selectedFactionButton = factionButton;
