@@ -8,16 +8,21 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
+import sun.tools.jstat.Alignment;
 
+import javax.swing.*;
 import java.util.HashMap;
 
 public class GraphicalCard extends ImageButton {
     private final Card card;
     private final ShapeRenderer shapeRenderer;
     private BitmapFont font;
+
+
     private Label labelInsideCircle;
 
     public GraphicalCard(Drawable drawable, AllCards card, HashMap<Card, GraphicalCard> allCardsCreated) {
@@ -25,9 +30,10 @@ public class GraphicalCard extends ImageButton {
         this.card = new Card(card);
         allCardsCreated.put(this.card, this);
         shapeRenderer = new ShapeRenderer();
-        font = AssetLoader.font; // Initialize the BitmapFont
+        font = AssetLoader.getFontWithCustomSize(3); // Initialize the BitmapFont
         font.setColor(Color.BLACK); // Set font color to black
         labelInsideCircle = new Label("salam", new Label.LabelStyle(font, Color.BLACK));
+        labelInsideCircle.setFontScale(3);
     }
 
     public GraphicalCard(Drawable drawable, Card card, HashMap<Card, GraphicalCard> allCardsCreated) {
@@ -35,7 +41,7 @@ public class GraphicalCard extends ImageButton {
         this.card = card;
         allCardsCreated.put(this.card, this);
         shapeRenderer = new ShapeRenderer();
-        font = AssetLoader.font; // Initialize the BitmapFont
+        font = AssetLoader.getFontWithCustomSize(18); // Initialize the BitmapFont
         font.setColor(Color.BLACK); // Set font color to black
         labelInsideCircle = new Label("salam", new Label.LabelStyle(font, Color.BLACK));
     }
@@ -64,12 +70,20 @@ public class GraphicalCard extends ImageButton {
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.circle(centerX, centerY, radius);
         shapeRenderer.end();
-        
+
         // text
         labelInsideCircle.setText(card.getCurrentHP());
-        labelInsideCircle.setPosition(centerX, centerY);
+        float widthError = labelInsideCircle.getWidth() * (0.5f + 0.025f) ;
+        float heightError = labelInsideCircle.getHeight() * (0.5f - 0.1f);
+        labelInsideCircle.setPosition(centerX - widthError, centerY - heightError);
+        labelInsideCircle.setAlignment(Align.center);
         getStage().addActor(labelInsideCircle);
         // Restart the batch to continue drawing other elements
         batch.begin();
+    }
+
+
+    public Label getLabelInsideCircle() {
+        return labelInsideCircle;
     }
 }

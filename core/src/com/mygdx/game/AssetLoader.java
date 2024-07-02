@@ -163,4 +163,13 @@ public class AssetLoader {
         String path = "images/cards/" + allCard.name() + ".jpg";
         return assetManager.get(path, Texture.class);
     }
+
+    public static BitmapFont getFontWithCustomSize(int size) {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = size;
+        font = generator.generateFont(parameter);
+        generator.dispose();
+        return font;
+    }
 }
