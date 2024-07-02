@@ -34,7 +34,7 @@ public class AssetLoader {
 
     public Skin skin;
     public Image backgroundImage;
-    public BitmapFont font;
+    public static BitmapFont font;
     public TextButton.TextButtonStyle textButtonStyle;
     public Label.LabelStyle labelStyle;
     public TextField.TextFieldStyle textFieldStyle;
