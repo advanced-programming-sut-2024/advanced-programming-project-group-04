@@ -39,7 +39,6 @@ public class MainMenu extends Menu {
 
         this.errorLabel = new Label("", game.assetLoader.labelStyle);
 
-        // Set up table for UI layout
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
@@ -114,11 +113,10 @@ public class MainMenu extends Menu {
             }
         });
 
-        // Add buttons to a HorizontalGroup to position them side by side
         HorizontalGroup buttonGroup = new HorizontalGroup();
         buttonGroup.addActor(friendsButton);
         buttonGroup.addActor(friendRequestsButton);
-        buttonGroup.space(10); // Add space between buttons
+        buttonGroup.space(10);
 
         friendsButton.setSize(160, 160);
         friendRequestsButton.setSize(160, 160);
@@ -149,7 +147,7 @@ public class MainMenu extends Menu {
 
     private void initializePopUpScreen(Texture tabsTexture, Window friendsWindow) {
         friendsWindow.setSize(600, 1200);
-        friendsWindow.setPosition(100, Gdx.graphics.getHeight() / 2 - friendsWindow.getHeight() / 2); // Centered on the left
+        friendsWindow.setPosition(100, (float) Gdx.graphics.getHeight() / 2 - friendsWindow.getHeight() / 2); // Centered on the left
         friendsWindow.setVisible(false);
         friendsWindow.setBackground(new TextureRegionDrawable(new TextureRegion(tabsTexture)));
     }
@@ -267,7 +265,6 @@ public class MainMenu extends Menu {
         ScrollPane scrollPane = new ScrollPane(messageTable, scrollPaneStyle);
         messageDialog.getContentTable().add(scrollPane).width(760).height(400).pad(20).row();
 
-        // Add typing field and send button at the bottom
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
         textFieldStyle.font = game.assetLoader.font;
         textFieldStyle.fontColor = Color.WHITE;
@@ -297,7 +294,6 @@ public class MainMenu extends Menu {
     }
 
     private void createFriendRequestInputField(Window window) {
-        // Create text field for entering a friend's name
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
         textFieldStyle.font = game.assetLoader.font;
         textFieldStyle.fontColor = Color.BLACK;
@@ -306,7 +302,6 @@ public class MainMenu extends Menu {
         friendNameField.setMessageText("Enter friend's username");
         friendNameField.setWidth(160);
 
-        // Create send button
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         Skin skin = game.assetLoader.skin;
         textButtonStyle.font = game.assetLoader.font;
