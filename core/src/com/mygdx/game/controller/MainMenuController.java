@@ -11,6 +11,7 @@ public class MainMenuController {
     }
 
     public void logout() {
+        game.getClient().sendToServer(ServerCommand.LOGOUT_PLAYER, game.getLoggedInPlayer().getId());
         game.setLoggedInPlayer(null);
     }
 

@@ -1,14 +1,12 @@
 package com.mygdx.game.controller;
 
-import com.mygdx.game.model.Player;
-
 import java.io.*;
 import java.net.Socket;
 
 public class Client {
-    private Socket socket;
-    ObjectOutputStream out;
-    ObjectInputStream in;
+    private final Socket socket;
+    private final ObjectOutputStream out;
+    private final ObjectInputStream in;
 
     public Client() {
         try {
@@ -20,28 +18,17 @@ public class Client {
         }
     }
 
-    public boolean isUsernameTaken(String username) {
-        Boolean response;
+    public <T> T sendToServer(Object... inputs) {
+        T response;
         try {
-            out.writeObject(ServerCommand.CHECK_USERNAME);
-            out.writeObject(username);
-            response = (Boolean) in.readObject();
+            for (Object obj : inputs) {
+                out.writeObject(obj);
+            }
+
+            response = (T) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
         return response;
-    }
-
-    public void createNewPlayer(String username, String password, String email, String nickname) {
-
-    }
-
-    public Player findPlayerByUsername(String username) {
-        return null;
-    }
-
-    public static void main(String[] args) {
-        Client client = new Client();
-        System.out.println(client.isUsernameTaken("mamad"));
     }
 }

@@ -92,8 +92,8 @@ public class GameMenu extends Menu implements CheatProcessor {
                 enemyDeck.addCard(new Card(allCard));
         }
 
-        Player matin = new Player("Matin", "cDnak@(#&>CAxm09218", "matin@giga.com", "GigaChad");
-        Player arvin = new Player("Arvin", "1234", "arvin@gay.com", "Simp");
+        Player matin = new Player("Matin", "matin@giga.com", "GigaChad");
+        Player arvin = new Player("Arvin", "arvin@gay.com", "Simp");
         arvin.loadDeck(enemyDeck);
         matin.loadDeck(myDeck);
         players = gameController.startNewGame(matin, arvin);

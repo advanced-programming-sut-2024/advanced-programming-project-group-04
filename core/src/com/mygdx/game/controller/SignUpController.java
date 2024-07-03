@@ -19,12 +19,12 @@ public class SignUpController {
         else if (email.isEmpty()) errorMessage = "Please enter your email";
         else if (nickname.isEmpty()) errorMessage = "Please choose a nickname";
         else if (!isValidUsername(username)) errorMessage = "Invalid username";
-        else if (client.isUsernameTaken(username)) errorMessage = "Username is taken";
+        else if (client.sendToServer(ServerCommand.DOES_USERNAME_EXIST, username)) errorMessage = "Username is taken";
         else if (!isValidPassword(password)) errorMessage = "Weak password";
         else if (!isValidEmail(email)) errorMessage = "Invalid email";
         else if (!isValidNickname(nickname)) errorMessage = "Invalid nickname";
         else {
-            client.createNewPlayer(username, password, email, nickname);
+            client.sendToServer(ServerCommand.REGISTER_USER, username, password, email, nickname);
             isFail = false;
             errorMessage = "Registered successfully";
         }

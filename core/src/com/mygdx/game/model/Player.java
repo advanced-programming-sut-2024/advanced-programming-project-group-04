@@ -1,20 +1,15 @@
 package com.mygdx.game.model;
 
-import com.badlogic.gdx.files.FileHandle;
-import com.google.gson.Gson;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
 import com.mygdx.game.model.faction.Faction;
 
 
-public class Player {
+public class Player implements Serializable {
     private final int id;
     private String username;
-    private String password;
     private String email;
     private String nickname;
     private int maxScore;
@@ -31,9 +26,8 @@ public class Player {
 
     private ArrayList<Deck> savedDecks = new ArrayList<>();
     
-    public Player (String username , String password , String email , String nickname) {
+    public Player (String username , String email , String nickname) {
         this.username = username;
-        this.password = password;
         this.email = email;
         this.nickname = nickname;
 
@@ -51,10 +45,6 @@ public class Player {
     public int getId() { return this.id; }
 
     public String getUsername() { return this.username; }
-    
-    public boolean validatePassword (String password) {
-        return this.password.equals(password);
-    }
 
     public boolean validateAnswerToQuestion (String answer) {
         return this.answerToQuestion.equals(answer);
@@ -99,10 +89,6 @@ public class Player {
     }
 
     public void setFaction(Faction faction) { this.selectedFaction = faction;}
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -165,8 +151,4 @@ public class Player {
         if (selectedFaction == null) return false;
         else return deck.isValid();
     }
-
-
-
-
 }

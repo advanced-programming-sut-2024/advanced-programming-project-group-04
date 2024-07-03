@@ -7,17 +7,24 @@ import com.mygdx.game.model.Player;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class Server {
+public class Server extends Thread {
     private static final Vector<Player> allPlayers = new Vector<>();
+    private static final ConcurrentHashMap<Player, String> passwords = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Integer> gameRequests = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Player, Server> allSessions = new ConcurrentHashMap<>();
+
+    private Socket socket;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     static {
         Server.loadAllPlayers();
     }
 
-    public static void loadAllPlayers() {
+    private static void loadAllPlayers() {
         File dataDir = new File("Data/Users");
         File[] subFiles = dataDir.listFiles();
 
@@ -27,10 +34,15 @@ public class Server {
             String json = fileHandle.readString();
             Player player = gson.fromJson(json, Player.class);
             allPlayers.add(player);
+            fileHandle = new FileHandle(file + "/password.json");
+            json = fileHandle.readString();
+            String password = gson.fromJson(json, String.class);
+            passwords.put(player, password);
+            System.out.println(password);
         }
     }
 
-    public static Player findPlayerByUsername (String username) {
+    private static Player findPlayerByUsername(String username) {
         for (Player player : allPlayers) {
             if (player.getUsername().equals(username)) {
                 return player;
@@ -39,55 +51,189 @@ public class Server {
         return null;
     }
 
-    public void createNewPlayer(String username, String password, String email, String nickname) {
-        Player player = new Player(username, password, email, nickname);
-
-        allPlayers.add(player);
-        savePlayer(player);
+    private static Player findPlayerById(int id) {
+        for (Player player : allPlayers) {
+            if (player.getId() == id) {
+                return player;
+            }
+        }
+        return null;
     }
 
-    public void savePlayer(Player player) {
-        File file = new File("Data/Users/" + player.getId() + "/login-data.json");
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                ServerCommand cmd = (ServerCommand) in.readObject();
+                System.out.println(cmd.name());
+
+                switch (cmd) {
+                    case DOES_USERNAME_EXIST:
+                        checkUsername();
+                        break;
+                    case REGISTER_USER:
+                        registerUser();
+                        break;
+                    case FETCH_USER:
+                        fetchUser();
+                        break;
+                    case FIND_USER_ACCOUNT:
+                        findUserAccount();
+                        break;
+                    case VALIDATE_PASSWORD:
+                        validatePassword();
+                        break;
+                    case HAS_ACTIVE_SESSION:
+                        hasActiveSession();
+                        break;
+                    case LOGIN_PLAYER:
+                        loginPlayer();
+                        break;
+                    case LOGOUT_PLAYER:
+                        logoutPlayer();
+                        break;
+                }
+
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void checkUsername() throws IOException, ClassNotFoundException {
+        String username = (String) in.readObject();
+        out.writeObject(Server.findPlayerByUsername(username) != null);
+    }
+
+    private void registerUser() throws IOException, ClassNotFoundException {
+        String username = (String) in.readObject();
+        String password = (String) in.readObject();
+        String email = (String) in.readObject();
+        String nickname = (String) in.readObject();
+
+        Player player = new Player(username, email, nickname);
+
+        allPlayers.add(player);
+        passwords.put(player, password);
+        savePlayerData(player, password);
+        out.writeObject(null);
+    }
+
+    private void fetchUser() throws IOException, ClassNotFoundException {
+        String username = (String) in.readObject();
+        Player player = Server.findPlayerByUsername(username);
+        out.writeObject(player);
+    }
+
+    private void findUserAccount() throws IOException, ClassNotFoundException {
+        String username = (String) in.readObject();
+        Player targetPlayer = Server.findPlayerByUsername(username);
+        if (targetPlayer == null) out.writeObject(null);
+        else {
+            out.writeObject(targetPlayer.getUsername());
+        }
+    }
+
+    private void sendGameRequest() throws IOException, ClassNotFoundException {
+        int senderId = (int) in.readObject();
+        int receiverId = (int) in.readObject();
+
+        if (gameRequests.containsKey(receiverId)) {
+            if (gameRequests.get(receiverId).equals(senderId)) {
+                gameRequests.remove(receiverId);
+                gameRequests.remove(senderId);
+
+                Player p1 = findPlayerById(senderId);
+                Player p2 = findPlayerById(receiverId);
+                if (p1 == null || p2 == null) throw new RuntimeException();
+
+                GameServer gameServer = new GameServer(allSessions.get(p1).getSocket(), allSessions.get(p1).getSocket());
+                gameServer.start();
+                out.writeObject(true);
+            }
+            else {
+                out.writeObject(false);
+            }
+        } else {
+            gameRequests.putIfAbsent(senderId, receiverId);
+            gameRequests.replace(senderId, receiverId);
+            out.writeObject(false);
+        }
+    }
+
+    private void validatePassword() throws IOException, ClassNotFoundException {
+        String username = (String) in.readObject();
+        String password = (String) in.readObject();
+        Player player = findPlayerByUsername(username);
+        if (player != null && passwords.get(player) != null && passwords.get(player).equals(password)) out.writeObject(true);
+        else out.writeObject(false);
+    }
+
+    private void hasActiveSession() throws IOException, ClassNotFoundException {
+        String username = (String) in.readObject();
+        Player player = findPlayerByUsername(username);
+        if (allSessions.containsKey(player)) out.writeObject(true);
+        else out.writeObject(false);
+    }
+
+    private void loginPlayer() throws IOException, ClassNotFoundException {
+        int id = (int) in.readObject();
+        Player player = findPlayerById(id);
+        if (player == null || allSessions.containsKey(player)) throw new RuntimeException();
+        else {
+            allSessions.put(player, this);
+            out.writeObject(null);
+        }
+    }
+
+    private void logoutPlayer() throws IOException, ClassNotFoundException {
+        int id = (int) in.readObject();
+        Player player = findPlayerById(id);
+        if (player == null || !allSessions.containsKey(player)) throw new RuntimeException();
+        else {
+            allSessions.remove(player);
+            out.writeObject(null);
+        }
+    }
+
+    private void savePlayerData(Player player, String password) {
+        File dataFile = new File("Data/Users/" + player.getId() + "/login-data.json");
+        File passwordFile = new File("Data/Users/" + player.getId() + "/password.json");
 
         Gson gson = new Gson();
         try {
-            file.getParentFile().mkdirs();
-            FileWriter writer = new FileWriter(file);
+            dataFile.getParentFile().mkdirs();
+            FileWriter writer = new FileWriter(dataFile);
             gson.toJson(player, writer);
+            writer.close();
+            writer = new FileWriter(passwordFile);
+            gson.toJson(password, writer);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Server() {
-
+    private Server(Socket socket) {
+        this.socket = socket;
+        try {
+            in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+            out = new ObjectOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static void main(String[] args) {
-        try {
-            ServerSocket serverSocket = new ServerSocket(5000);
-            Socket socket = serverSocket.accept();
-            ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            String input;
-            while (true) {
-                ServerCommand cmd = (ServerCommand) in.readObject();
-                System.out.println(cmd.name());
-                if (cmd == ServerCommand.CHECK_USERNAME) {
-                    String mmd = (String) in.readObject();
-                    System.out.println(mmd);
-                    if (Server.findPlayerByUsername(mmd) != null) {
-                        out.writeObject(Boolean.TRUE);
-                    } else out.writeObject(Boolean.FALSE);
+    public Socket getSocket() { return this.socket; }
 
-                    in.close();
-                    socket.close();
-                    serverSocket.close();
-                    break;
-                }
-            }
-        } catch (IOException | ClassNotFoundException e) {
+    public static void main(String[] args) {
+        ServerSocket serverSocket;
+        try {
+            serverSocket = new ServerSocket(5000);
+            Socket socket = serverSocket.accept();
+            Server server = new Server(socket);
+            server.start();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
