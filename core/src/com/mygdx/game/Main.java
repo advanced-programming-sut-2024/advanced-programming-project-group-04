@@ -4,11 +4,13 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.mygdx.game.controller.Client;
+import com.mygdx.game.controller.ServerCommand;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.message.Message;
 import com.mygdx.game.view.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Main extends Game {
     public AssetManager assetManager;
@@ -31,12 +33,12 @@ public class Main extends Game {
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
 
-        this.client = new Client();
+        this.client = new Client(this, "127.0.0.1");
 
-        Player arman = new Player("arman", "a@b.com", "tahmasb");
-        Player arvin2 = new Player("arvin2",  "A@B.com", "Gay");
-        Player matin = new Player("matin", "a@b.com", "tahmasb fan");
-        Player mahbod = new Player("mahbod", "M@K.com", "Khalvati");
+        Player arman = getClient().sendToServer(ServerCommand.FETCH_USER, "arman");
+        Player arvin2 = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin2");
+        Player matin = getClient().sendToServer(ServerCommand.FETCH_USER, "matin");
+        Player mahbod = getClient().sendToServer(ServerCommand.FETCH_USER, "mahbod");
         arman.sendFriendRequest(mahbod);
         matin.sendFriendRequest(mahbod);
         arvin2.sendFriendRequest(mahbod);
@@ -54,8 +56,6 @@ public class Main extends Game {
         mahbod.sendMessage(arman, "sirk");
         delay(100);
         ArrayList<Message> chatArmanVaMahbod = mahbod.getChatWithPlayer(arman);
-
-
 
         // Set the initial screen
         setScreen(new LoginMenu(this));
@@ -97,5 +97,13 @@ public class Main extends Game {
         }
         // FOR TESTING PURPOSES
         // DELETE THIS LATER
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public void startGame() {
+        setScreen(new GameMenu(this));
     }
 }

@@ -374,23 +374,23 @@ public class GameMenu extends Menu implements CheatProcessor {
     public GameController getGameController() {
         return this.gameController;
     }
-
-    @Override
-    public void render(float v) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Array<Actor> actors = new Array<>(stage.getActors());
-            stage.clear();
-            for (Actor actor : actors) {
-                if (!(actor instanceof Window)) {
-                    stage.addActor(actor);
-                }
-            }
-        }
-        stage.act(v);
-        stage.draw();
-    }
+//
+//    @Override
+//    public void render(float v) {
+//        Gdx.gl.glClearColor(0, 0, 0, 1);
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+//            Array<Actor> actors = new Array<>(stage.getActors());
+//            stage.clear();
+//            for (Actor actor : actors) {
+//                if (!(actor instanceof Window)) {
+//                    stage.addActor(actor);
+//                }
+//            }
+//        }
+//        stage.act(v);
+//        stage.draw();
+//    }
 
     public void updateScores(PlayerInGame self, PlayerInGame enemy) {
         myScore.setText(self.getTotalHP());
