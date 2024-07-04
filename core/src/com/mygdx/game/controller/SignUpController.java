@@ -11,15 +11,12 @@ public class SignUpController {
 
     private final Client client;
     private EmailSender emailSender;
-  
-    public SignUpController(Client client) {
-        this.client = client;
-    }
 
-    public SignUpController() {
+    public SignUpController(Client client) {
         String gmailAccount = "gwent.2fa@gmail.com";
         String appPassword = "kcnq fryl ofis nhdv";
         emailSender = new EmailSender(gmailAccount, appPassword);
+        this.client = client;
     }
 
     public ControllerResponse signUpButtonPressed(String username, String password, String email, String nickname) {

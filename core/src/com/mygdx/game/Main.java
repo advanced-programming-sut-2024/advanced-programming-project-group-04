@@ -33,10 +33,10 @@ public class Main extends Game {
 
         this.client = new Client();
 
-        Player arman = new Player("arman", "123", "a@b.com", "tahmasb");
-        Player arvin2 = new Player("arvin2", "123", "A@B.com", "Gay");
-        Player matin = new Player("matin", "123", "a@b.com", "tahmasb fan");
-        Player mahbod = new Player("mahbod", "123", "M@K.com", "Khalvati");
+        Player arman = new Player("arman", "a@b.com", "tahmasb");
+        Player arvin2 = new Player("arvin2",  "A@B.com", "Gay");
+        Player matin = new Player("matin", "a@b.com", "tahmasb fan");
+        Player mahbod = new Player("mahbod", "M@K.com", "Khalvati");
         arman.sendFriendRequest(mahbod);
         matin.sendFriendRequest(mahbod);
         arvin2.sendFriendRequest(mahbod);
