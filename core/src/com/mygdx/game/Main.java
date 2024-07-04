@@ -51,9 +51,7 @@ public class Main extends Game {
         mahbod.sendMessage(arman, "sirk");
         delay(100);
         ArrayList<Message> chatArmanVaMahbod = mahbod.getChatWithPlayer(arman);
-        for (Message message : chatArmanVaMahbod) {
-            System.out.println(message.getSendTime());
-        }
+
 
 
         // Set the initial screen
