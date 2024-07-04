@@ -7,7 +7,6 @@ import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.*;
 import com.mygdx.game.model.leader.Leader;
-import com.mygdx.game.model.leader.skellige.KingBran;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;

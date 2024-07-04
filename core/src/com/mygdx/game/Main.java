@@ -24,9 +24,9 @@ public class Main extends Game {
 
 
         // Play background music
-//        backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
-//        backgroundMusic.setLooping(true);
-//        backgroundMusic.play();
+        backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
 
         this.client = new Client();
 
