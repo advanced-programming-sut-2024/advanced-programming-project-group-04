@@ -1,10 +1,20 @@
 package com.mygdx.game.model;
 
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+
 import com.mygdx.game.model.faction.Faction;
+import com.mygdx.game.model.message.Message;
 
 
 public class Player implements Serializable {
@@ -19,12 +29,19 @@ public class Player implements Serializable {
     private int lossCount;
     private String forgetPasswordQuestion;
     private String answerToQuestion;
+    private HashMap<Player, ArrayList<Message>> sentMessages = new HashMap<>();
+    private HashMap<Player, ArrayList<Message>> receivedMessages = new HashMap<>();
+    private ArrayList<Player> friends = new ArrayList<>();
+
+    private ArrayList<Player> incomingFriendRequests = new ArrayList<>();
+    private ArrayList<Player> outgoingFriendRequests = new ArrayList<>();
 
     private Deck deck;
 
     private Faction selectedFaction;
 
     private ArrayList<Deck> savedDecks = new ArrayList<>();
+
     
     public Player (String username , String email , String nickname) {
         this.username = username;
@@ -46,19 +63,20 @@ public class Player implements Serializable {
 
     public String getUsername() { return this.username; }
 
-    public boolean validateAnswerToQuestion (String answer) {
+
+    public boolean validateAnswerToQuestion(String answer) {
         return this.answerToQuestion.equals(answer);
     }
 
-    public String getNickname () {
+    public String getNickname() {
         return this.nickname;
     }
 
-    public String getEmail () {
+    public String getEmail() {
         return this.email;
     }
 
-    public int getMaxScore () {
+    public int getMaxScore() {
         return this.maxScore;
     }
 
@@ -88,7 +106,9 @@ public class Player implements Serializable {
         return this.selectedFaction;
     }
 
-    public void setFaction(Faction faction) { this.selectedFaction = faction;}
+    public void setFaction(Faction faction) {
+        this.selectedFaction = faction;
+    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -152,5 +172,82 @@ public class Player implements Serializable {
     public boolean canStartGame() {
         if (selectedFaction == null) return false;
         else return deck.isValid();
+    }
+
+    public HashMap<Player, ArrayList<Message>> getSentMessages() {
+        return sentMessages;
+    }
+
+    public HashMap<Player, ArrayList<Message>> getReceivedMessages() {
+        return receivedMessages;
+    }
+
+    public void sendMessage(Player receiver, String content) {
+        Message message = new Message(this, receiver, content);
+
+        if (!this.sentMessages.containsKey(receiver)) {
+            this.sentMessages.put(receiver, new ArrayList<>());
+        }
+        this.sentMessages.get(receiver).add(message);
+
+        if (!receiver.receivedMessages.containsKey(this)) {
+            receiver.receivedMessages.put(this, new ArrayList<>());
+        }
+        receiver.receivedMessages.get(this).add(message);
+    }
+
+    public ArrayList<Player> getFriends() {
+        return friends;
+    }
+
+    public ArrayList<Player> getIncomingFriendRequests() {
+        return incomingFriendRequests;
+    }
+
+    public ArrayList<Player> getOutgoingFriendRequests() {
+        return outgoingFriendRequests;
+    }
+
+    public boolean sendFriendRequest(Player receiver) {
+        if (outgoingFriendRequests.contains(receiver)) return false;
+        this.outgoingFriendRequests.add(receiver);
+        receiver.getIncomingFriendRequests().add(this);
+        return true;
+    }
+
+    public boolean acceptFriendRequest(Player accepted) {
+        if (incomingFriendRequests.contains(accepted)) {
+            friends.add(accepted);
+            accepted.friends.add(this);
+            incomingFriendRequests.remove(accepted);
+            accepted.getOutgoingFriendRequests().remove(this);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean rejectFriendRequest(Player rejected) {
+        if (incomingFriendRequests.contains(rejected)) {
+            incomingFriendRequests.remove(rejected);
+            rejected.getOutgoingFriendRequests().remove(this);
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<Message> getChatWithPlayer(Player player) {
+        ArrayList<Message> combinedMessages = new ArrayList<>();
+
+        if (this.sentMessages.containsKey(player)) {
+            combinedMessages.addAll(this.sentMessages.get(player));
+        }
+
+        if (this.receivedMessages.containsKey(player)) {
+            combinedMessages.addAll(this.receivedMessages.get(player));
+        }
+
+        Collections.sort(combinedMessages, Comparator.comparingLong(Message::getSendTime));
+
+        return combinedMessages;
     }
 }

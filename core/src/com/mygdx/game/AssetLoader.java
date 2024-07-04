@@ -26,7 +26,11 @@ public class AssetLoader {
     public static final String SKIN = "skins/neon/skin/default.json";
     public static final String BOARD = "board.jpg";
     public static final String MOHANDES = "mohandes.mp3";
-    public static BitmapFont font;
+    public static final String FRIENDS = "friends.png";
+    public static final String FRIENDREQUESTS = "friendRequests.png";
+    public static final String TABS = "tabs.png";
+
+
 
     private AssetManager assetManager;
     private Map<String, List<String>> factionLeadersMap;
@@ -36,6 +40,7 @@ public class AssetLoader {
 
     public Skin skin;
     public Image backgroundImage;
+    public BitmapFont font;
     public TextButton.TextButtonStyle textButtonStyle;
     public Label.LabelStyle labelStyle;
     public TextField.TextFieldStyle textFieldStyle;
@@ -52,6 +57,9 @@ public class AssetLoader {
         assetManager.load(SKIN, Skin.class);
         assetManager.load(BOARD, Texture.class);
         assetManager.load(MOHANDES, Music.class);
+        assetManager.load(FRIENDS, Texture.class);
+        assetManager.load(FRIENDREQUESTS, Texture.class);
+        assetManager.load(TABS, Texture.class);
 
         // Load factions
         FileHandle factionDir = Gdx.files.internal("assets/images/factions/");
@@ -166,7 +174,12 @@ public class AssetLoader {
         return assetManager.get(path, Texture.class);
     }
 
-    public BitmapFont getFont() {
+    public static BitmapFont getFontWithCustomSize(int size) {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = size;
+        BitmapFont font = generator.generateFont(parameter);
+        generator.dispose();
         return font;
     }
 }
