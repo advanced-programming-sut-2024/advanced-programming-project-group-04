@@ -3,7 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.controller.Client;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.message.Message;
 import com.mygdx.game.view.*;
@@ -15,6 +15,7 @@ public class Main extends Game {
     public AssetLoader assetLoader;
     private Player loggedInPlayer;
     private Music backgroundMusic;
+    private Client client;
 
     @Override
     public void create() {
@@ -29,6 +30,8 @@ public class Main extends Game {
         backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
+
+        this.client = new Client();
 
         Player arman = new Player("arman", "123", "a@b.com", "tahmasb");
         Player arvin2 = new Player("arvin2", "123", "A@B.com", "Gay");
@@ -56,7 +59,6 @@ public class Main extends Game {
 
         // Set the initial screen
         setScreen(new LoginMenu(this));
-
     }
 
     public void setLoggedInPlayer(Player player) {
@@ -67,6 +69,8 @@ public class Main extends Game {
         return this.loggedInPlayer;
     }
 
+    public Client getClient() { return this.client; }
+
     @Override
     public void render() {
         super.render();
@@ -75,6 +79,7 @@ public class Main extends Game {
     @Override
     public void dispose() {
         assetManager.dispose();
+        client.closeConnection();
     }
 
     public void cheraBenzinTamoomShod() {

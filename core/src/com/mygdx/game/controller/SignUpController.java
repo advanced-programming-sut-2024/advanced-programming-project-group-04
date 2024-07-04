@@ -3,18 +3,25 @@ package com.mygdx.game.controller;
 import com.mygdx.game.model.Player;
 
 import java.util.Random;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignUpController {
-    private EmailSender emailSender;
 
+    private final Client client;
+    private EmailSender emailSender;
+  
+    public SignUpController(Client client) {
+        this.client = client;
+    }
 
     public SignUpController() {
         String gmailAccount = "gwent.2fa@gmail.com";
         String appPassword = "kcnq fryl ofis nhdv";
         emailSender = new EmailSender(gmailAccount, appPassword);
     }
+
     public ControllerResponse signUpButtonPressed(String username, String password, String email, String nickname) {
         Random random = new Random();
         int verificationCode = 100000 + random.nextInt(900000);
@@ -27,12 +34,12 @@ public class SignUpController {
         else if (email.isEmpty()) errorMessage = "Please enter your email";
         else if (nickname.isEmpty()) errorMessage = "Please choose a nickname";
         else if (!isValidUsername(username)) errorMessage = "Invalid username";
-        else if (Player.findPlayerByUsername(username) != null) errorMessage = "Username is taken";
+        else if (client.sendToServer(ServerCommand.DOES_USERNAME_EXIST, username)) errorMessage = "Username is taken";
         else if (!isValidPassword(password)) errorMessage = "Weak password";
         else if (!isValidEmail(email)) errorMessage = "Invalid email";
         else if (!isValidNickname(nickname)) errorMessage = "Invalid nickname";
         else {
-            new Player(username, password, email, nickname);
+            client.sendToServer(ServerCommand.REGISTER_USER, username, password, email, nickname);
             isFail = false;
             errorMessage = "Registered successfully";
             String subject = "Email Verification";

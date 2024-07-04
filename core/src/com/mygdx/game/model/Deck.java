@@ -2,6 +2,7 @@ package com.mygdx.game.model;
 
 import java.util.ArrayList;
 
+import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.leader.Leader;
 
@@ -37,6 +38,18 @@ public class Deck {
         }
     }
 
+    public Card removeCardFromAllCard(AllCards allCard) {
+        Card targetCard = null;
+        for (Card card : this.cards) {
+            if (card.getAllCard().equals(allCard)) {
+                targetCard = card;
+                break;
+            }
+        }
+        if (targetCard != null) removeCard(targetCard);
+        return targetCard;
+    }
+
     public boolean isNumberOfCardsValid(){
         return getNumberOfUnits() >= UNIT_MIN && getNumberOfSpecialCards() >= SPELL_MAX;
     }
@@ -57,7 +70,20 @@ public class Deck {
         return num;
     }
 
+    public int getNumberOfHeroCards() {
+        int num = 0;
+        for (Card card : this.cards) {
+            if (card.isHero()) num++;
+        }
+        return num;
+    }
+
     public Leader getLeader() {
         return this.leader;
+    }
+
+    public boolean isValid() {
+        if (leader == null) return false;
+        else return isNumberOfCardsValid();
     }
 }

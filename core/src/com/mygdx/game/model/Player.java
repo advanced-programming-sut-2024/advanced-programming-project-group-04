@@ -1,5 +1,10 @@
 package com.mygdx.game.model;
 
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Random;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
 
@@ -12,13 +17,9 @@ import com.mygdx.game.model.faction.Faction;
 import com.mygdx.game.model.message.Message;
 
 
-public class Player {
-    private static ArrayList<Player> allPlayers = new ArrayList<>();
-
-    private static Player loggedInPlayer = null;
+public class Player implements Serializable {
     private final int id;
     private String username;
-    private String password;
     private String email;
     private String nickname;
     private int maxScore;
@@ -41,9 +42,9 @@ public class Player {
 
     private ArrayList<Deck> savedDecks = new ArrayList<>();
 
-    public Player(String username, String password, String email, String nickname) {
+    
+    public Player (String username , String email , String nickname) {
         this.username = username;
-        this.password = password;
         this.email = email;
         this.nickname = nickname;
 
@@ -56,26 +57,12 @@ public class Player {
         this.drawCount = 0;
         this.lossCount = 0;
 
-        allPlayers.add(this);
-        this.save();
     }
 
-    public static Player findPlayerByUsername(String username) {
-        for (Player player : allPlayers) {
-            if (player.getUsername().equals(username)) {
-                return player;
-            }
-        }
-        return null;
-    }
+    public int getId() { return this.id; }
 
-    public String getUsername() {
-        return this.username;
-    }
+    public String getUsername() { return this.username; }
 
-    public boolean validatePassword(String password) {
-        return this.password.equals(password);
-    }
 
     public boolean validateAnswerToQuestion(String answer) {
         return this.answerToQuestion.equals(answer);
@@ -115,16 +102,12 @@ public class Player {
         return this.deck;
     }
 
-    public Faction getFaction() {
+    public Faction getSelectedFaction() {
         return this.selectedFaction;
     }
 
     public void setFaction(Faction faction) {
         this.selectedFaction = faction;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setUsername(String username) {
@@ -175,6 +158,8 @@ public class Player {
         this.deck = deck;
     }
 
+    public void createNewDeck() { this.deck = new Deck(); }
+
     public boolean isDeckSaved(Deck deck) {
         for (Deck savedDeck : savedDecks) {
             if (savedDeck.equals(deck)) {
@@ -184,47 +169,9 @@ public class Player {
         return false;
     }
 
-    public static void loginPlayer(Player player) {
-        loggedInPlayer = player;
-    }
-
-    public static void logout() {
-        loggedInPlayer = null;
-    }
-
-    public static Player getLoggedInPlayer() {
-        return loggedInPlayer;
-    }
-
-    public Faction getSelectedFaction() {
-        return selectedFaction;
-    }
-
-    public void save() {
-        File file = new File("Data/Users/" + id + "/login-data.json");
-
-        Gson gson = new Gson();
-        try {
-            file.getParentFile().mkdirs();
-            FileWriter writer = new FileWriter(file);
-            gson.toJson(this, writer);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void loadAllPlayers() {
-        File dataDir = new File("Data/Users");
-        File[] subFiles = dataDir.listFiles();
-
-        Gson gson = new Gson();
-        for (File file : subFiles) {
-            FileHandle fileHandle = new FileHandle(file + "/login-data.json");
-            String json = fileHandle.readString();
-            Player player = gson.fromJson(json, Player.class);
-            allPlayers.add(player);
-        }
+    public boolean canStartGame() {
+        if (selectedFaction == null) return false;
+        else return deck.isValid();
     }
 
     public HashMap<Player, ArrayList<Message>> getSentMessages() {

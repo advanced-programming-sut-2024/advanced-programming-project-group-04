@@ -495,10 +495,10 @@ public class GameManager {
             if (currentPlayer.getTotalHP() > getOtherPlayer().getTotalHP()) {
                 getOtherPlayer().decreaseRemainingLives();
             } else if (currentPlayer.getTotalHP() == getOtherPlayer().getTotalHP()) {
-                if (!(getOtherPlayer().getPlayer().getFaction() instanceof Nilfgaard)) {
+                if (!(getOtherPlayer().getPlayer().getSelectedFaction() instanceof Nilfgaard)) {
                     getOtherPlayer().decreaseRemainingLives();
                 }
-                if (!(currentPlayer.getPlayer().getFaction() instanceof Nilfgaard)) {
+                if (!(currentPlayer.getPlayer().getSelectedFaction() instanceof Nilfgaard)) {
                     currentPlayer.decreaseRemainingLives();
                 }
             } else {

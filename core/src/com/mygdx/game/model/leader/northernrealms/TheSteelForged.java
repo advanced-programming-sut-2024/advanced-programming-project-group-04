@@ -1,15 +1,14 @@
-package com.mygdx.game.model.leader.northern;
+package com.mygdx.game.model.leader.northernrealms;
 
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.Position;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.leader.Leader;
 
-public class KingOfTemeria extends Leader {
-    public KingOfTemeria() {
-        super("King of Temeria");
+public class TheSteelForged extends Leader {
+    public TheSteelForged() {
+        super("The Steel-Forged");
     }
 
     @Override
@@ -20,10 +19,8 @@ public class KingOfTemeria extends Leader {
             return;
         }
 
-        Card newCard = new Card(AllCards.CommandersHorn);
-        if (gameManager.canBePlacedToSpellSiege(newCard)) {
-            gameManager.placeCard(newCard , Position.SpellSiege);
-        }
+        Card newCard = new Card(AllCards.ClearWeather);
+        gameManager.placeCard(newCard);
         currentPlayer.setIsLeaderUsed(true);
     }
 
