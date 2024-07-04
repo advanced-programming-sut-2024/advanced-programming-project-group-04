@@ -145,12 +145,14 @@ public class GameMenu extends Menu implements CheatProcessor {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 graphicalCard.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                graphicalCard.getLabelInsideCircle().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
                 selectedCard = graphicalCard;
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 graphicalCard.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+                graphicalCard.getLabelInsideCircle().addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
 
             @Override
