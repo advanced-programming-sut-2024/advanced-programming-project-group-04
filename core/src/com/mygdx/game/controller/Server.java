@@ -21,6 +21,9 @@ public class Server extends Thread {
     private static final ConcurrentHashMap<Integer, Integer> gameRequests = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Player, Server> allSessions = new ConcurrentHashMap<>();
 
+    private boolean isReceived;
+    private Object obj;
+
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -65,11 +68,36 @@ public class Server extends Thread {
         return null;
     }
 
+    public void sendToClient(Object... inputs) {
+        try {
+            for (Object obj : inputs) {
+                out.writeObject(obj);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private synchronized boolean isReceived() {
+        return this.isReceived;
+    }
+
+    private synchronized void setReceived(boolean received) {
+        this.isReceived = received;
+    }
+
     @Override
     public void run() {
         try {
             while (true) {
-                ServerCommand cmd = (ServerCommand) in.readObject();
+                Object input = in.readObject();
+
+                if (!(input instanceof ServerCommand)) {
+                    this.obj = input;
+                    setReceived(true);
+                }
+                ServerCommand cmd = (ServerCommand) input;
                 System.out.println(cmd.name());
 
                 switch (cmd) {
@@ -111,6 +139,13 @@ public class Server extends Thread {
                         deSelectCard();
                         break;
 
+                    case IS_ONLINE:
+                        isOnline();
+                        break;
+                    case START_GAME_REQUEST:
+                        sendGameRequest();
+                        break;
+
                     case CLOSE_CONNECTION:
                         closeConnection();
                         return;
@@ -120,6 +155,38 @@ public class Server extends Thread {
         } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
                  InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void isOnline() throws IOException, ClassNotFoundException {
+        String username = (String) in.readObject();
+        Player player = findPlayerByUsername(username);
+        out.writeObject(allSessions.containsKey(player));
+    }
+
+    private void sendGameRequest() throws IOException, ClassNotFoundException {
+        String receiverUsername = (String) in.readObject();
+        Player receiver = findPlayerByUsername(receiverUsername);
+        Player sender = this.player;
+        int senderId = sender.getId();
+        int receiverId = receiver.getId();
+
+        if (gameRequests.containsKey(receiverId)) {
+            if (gameRequests.get(receiverId).equals(senderId)) {
+                gameRequests.remove(receiverId);
+                gameRequests.remove(senderId);
+
+                GameServer gameServer = new GameServer(this, allSessions.get(receiver));
+                gameServer.start();
+                out.writeObject(true);
+            }
+            else {
+                out.writeObject(false);
+            }
+        } else {
+            gameRequests.putIfAbsent(senderId, receiverId);
+            gameRequests.replace(senderId, receiverId);
+            out.writeObject(false);
         }
     }
 
@@ -154,33 +221,6 @@ public class Server extends Thread {
         if (targetPlayer == null) out.writeObject(null);
         else {
             out.writeObject(targetPlayer.getUsername());
-        }
-    }
-
-    private void sendGameRequest() throws IOException, ClassNotFoundException {
-        int senderId = (int) in.readObject();
-        int receiverId = (int) in.readObject();
-
-        if (gameRequests.containsKey(receiverId)) {
-            if (gameRequests.get(receiverId).equals(senderId)) {
-                gameRequests.remove(receiverId);
-                gameRequests.remove(senderId);
-
-                Player p1 = findPlayerById(senderId);
-                Player p2 = findPlayerById(receiverId);
-                if (p1 == null || p2 == null) throw new RuntimeException();
-
-                GameServer gameServer = new GameServer(allSessions.get(p1).getSocket(), allSessions.get(p1).getSocket());
-                gameServer.start();
-                out.writeObject(true);
-            }
-            else {
-                out.writeObject(false);
-            }
-        } else {
-            gameRequests.putIfAbsent(senderId, receiverId);
-            gameRequests.replace(senderId, receiverId);
-            out.writeObject(false);
         }
     }
 

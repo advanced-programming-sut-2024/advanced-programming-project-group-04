@@ -49,9 +49,10 @@ public class MainMenu extends Menu {
         startNewGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ControllerResponse response = mainMenuController.startNewGame();
-                errorLabel.setText(response.getError());
-                errorLabel.setColor(Color.RED);
+//                ControllerResponse response = mainMenuController.startNewGame();
+//                errorLabel.setText(response.getError());
+//                errorLabel.setColor(Color.RED);
+                setScreen(new StartGameMenu(game));
             }
         });
 

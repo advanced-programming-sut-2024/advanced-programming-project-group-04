@@ -1,18 +1,27 @@
 package com.mygdx.game.controller;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 
 public class GameServer extends Thread {
-    private final Socket socket1;
-    private final Socket socket2;
+    Server mySession;
+    Server enemySession;
 
-    public GameServer(Socket socket1, Socket socket2) {
-        this.socket1 = socket1;
-        this.socket2 = socket2;
+    public GameServer(Server mySession, Server enemySession) {
+        this.mySession = mySession;
+        this.enemySession = enemySession;
+        this.start();
     }
 
     @Override
     public void run() {
-
+        mySession.sendToClient(ClientCommand.START_GAME);
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        enemySession.sendToClient(ClientCommand.START_GAME);
     }
 }

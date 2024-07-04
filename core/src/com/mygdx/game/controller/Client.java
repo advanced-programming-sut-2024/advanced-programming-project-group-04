@@ -1,45 +1,98 @@
 package com.mygdx.game.controller;
 
+import com.mygdx.game.Main;
+import com.mygdx.game.view.GameMenu;
+
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class Client {
+public class Client extends Thread {
+    private final Main game;
+
     private final Socket socket;
     private final ObjectOutputStream out;
     private final ObjectInputStream in;
+    private boolean isRunning = true;
+    private boolean isReceived = false;
+    private Object obj;
 
-    public Client() {
+    public Client(Main game, String ip) {
+        this.game = game;
+
         try {
-            this.socket = new Socket("127.0.0.1", 5000);
+            System.out.println("Started");
+            this.socket = new Socket(ip, 5000);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+            this.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void closeConnection() {
+        sendToServer(ServerCommand.CLOSE_CONNECTION);
+        isRunning = false;
+        try {
+            socket.close();
+            in.close();
+            out.close();
+            this.interrupt();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public <T> T sendToServer(Object... inputs) {
-        T response;
         try {
             for (Object obj : inputs) {
                 out.writeObject(obj);
             }
 
-            response = (T) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        return response;
-    }
+            System.out.println("Sent");
+            while (!isReceived());
+            System.out.println("Returned");
 
-    public void closeConnection() {
-        sendToServer(ServerCommand.CLOSE_CONNECTION);
-        try {
-            socket.close();
-            in.close();
-            out.close();
+            T response = (T) this.obj;
+            this.obj = null;
+            setReceived(false);
+            return response;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private synchronized boolean isReceived() {
+        return this.isReceived;
+    }
+
+    private synchronized void setReceived(boolean received) {
+        this.isReceived = received;
+    }
+
+    @Override
+    public void run() {
+        while (isRunning) {
+            try {
+                this.obj = in.readObject();
+                System.out.println("Received");
+                if (!(obj instanceof ClientCommand)) setReceived(true);
+
+                else {
+                    switch ((ClientCommand)obj) {
+                        case START_GAME:
+                            startGame();
+                            break;
+                    }
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void startGame() {
+        game.startGame();
     }
 }

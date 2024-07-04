@@ -7,7 +7,6 @@ public enum ServerCommand implements Serializable {
     REGISTER_USER,
     FETCH_USER,
     FIND_USER_ACCOUNT,
-    START_GAME_REQUEST,
     HAS_ACTIVE_SESSION,
     VALIDATE_PASSWORD,
     LOGIN_PLAYER,
@@ -17,6 +16,9 @@ public enum ServerCommand implements Serializable {
     SELECT_LEADER,
     SELECT_CARD,
     DE_SELECT_CARD,
+
+    IS_ONLINE,
+    START_GAME_REQUEST,
 
     CLOSE_CONNECTION,
     ;
