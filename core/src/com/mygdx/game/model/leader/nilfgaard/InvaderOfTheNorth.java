@@ -2,6 +2,7 @@ package com.mygdx.game.model.leader.nilfgaard;
 
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.PlayerInGame;
+import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.leader.Leader;
 
 public class InvaderOfTheNorth extends Leader {
@@ -20,6 +21,19 @@ public class InvaderOfTheNorth extends Leader {
         
         currentPlayer.addRandomCardToHandFromGrave();
         otherplayer.addRandomCardToHandFromGrave();
+
+        Card card = currentPlayer.drawRandomCardFromGraveyard();
+        if (card != null) {
+            currentPlayer.addToHand(card);
+            currentPlayer.removeFromGraveyard(card);
+            gameManager.addToHand(card ,true);
+        }
+        Card anotherCard = otherplayer.drawRandomCardFromGraveyard();
+        if (anotherCard != null) {
+            otherplayer.addToHand(anotherCard);
+            otherplayer.removeFromGraveyard(anotherCard);
+            gameManager.addToHand(anotherCard,false);
+        }
         
         currentPlayer.setIsLeaderUsed(true);
     }

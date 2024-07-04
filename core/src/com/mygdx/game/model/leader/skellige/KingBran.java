@@ -12,6 +12,11 @@ public class KingBran extends Leader {
     @Override
     public void run(GameManager gameManager) {
         PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
+        if (currentPlayer.getIsLeaderUsed()) {
+            return;
+        }
+
+        // TODO : ye boolean is bran dar karta bezarim
         currentPlayer.setIsLeaderUsed(true);
     }
 }

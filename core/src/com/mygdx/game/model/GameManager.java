@@ -708,5 +708,8 @@ public class GameManager {
         }
     }
 
+    public Card showSomeCardsAndSelectOne (ArrayList<Card> cards) {
+        return gameController.showSomeCardsAndSelectOne(cards);
+    }
 
 }

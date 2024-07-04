@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.PlayerInGame;
+import com.mygdx.game.model.Position;
+import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.leader.Leader;
 
@@ -20,25 +22,10 @@ public class KingOfTheWildHunt extends Leader {
         if (currentPlayer.getIsLeaderUsed()) {
             return;
         }
-        
-        ArrayList<Card> noneHeroFromGrave = new ArrayList<>();
-        for (Card sampleCard : currentPlayer.getGraveyard()) {
-            if (!sampleCard.isHero()){
-                noneHeroFromGrave.add(sampleCard);
-            }
-        }
 
-        if (noneHeroFromGrave.size() > 0) {
-            int index = (int) (Math.random() * noneHeroFromGrave.size());
-            Card card = noneHeroFromGrave.get(index);
-
-            // TODO: fix this part for adding card to hand
-            currentPlayer.removeFromGraveyard(card);
-            gameManager.addToHand(card);
-//            currentPlayer.addToHand(card);
-        }
-
-        
+        // TODO : Like Medic
+        Card newCard = new Card(AllCards.BirnaBran);
+        newCard.getAbility().run(gameManager, newCard);
         
         currentPlayer.setIsLeaderUsed(true);
     }

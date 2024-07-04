@@ -12,6 +12,10 @@ public class HopeOfTheAenSeidhe extends Leader{
     @Override
     public void run(GameManager gameManager) {
         PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
+        if (currentPlayer.getIsLeaderUsed()) {
+            return;
+        }
+        // TODO : inam ajibe
         currentPlayer.setIsLeaderUsed(true);
     }
 }
