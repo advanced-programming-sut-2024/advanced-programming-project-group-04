@@ -138,6 +138,8 @@ public class Player implements Serializable {
         this.deck = deck;
     }
 
+    public void createNewDeck() { this.deck = new Deck(); }
+
     public boolean isDeckSaved(Deck deck) {
         for (Deck savedDeck : savedDecks) {
             if (savedDeck.equals(deck)) {

@@ -1,11 +1,13 @@
 package com.mygdx.game.model.faction;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import com.mygdx.game.model.card.AllCards;
 import static com.mygdx.game.model.card.AllCards.*;
 
-public class Faction {
+public abstract class Faction implements Serializable {
     private final String name;
 
     private final static ArrayList<AllCards> neutralCards = new ArrayList<>();
@@ -41,9 +43,12 @@ public class Faction {
         
     }
 
+    public String getAssetName() {
+        return getClass().getSimpleName();
+    }
+
     public String getImageURL() {
-        String className = getClass().getSimpleName().toLowerCase();
-        return "images/factions/" + className + ".png";
+        return "images/factions/" + getAssetName() + ".png";
     }
 
     public String getName() {
@@ -52,5 +57,9 @@ public class Faction {
 
     public static ArrayList<AllCards> getNeutralCards() {
         return neutralCards;
+    }
+
+    public static ArrayList<AllCards> getCardsFromFaction(Faction faction) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        return (ArrayList<AllCards>) faction.getClass().getMethod("getCards").invoke(null);
     }
 }

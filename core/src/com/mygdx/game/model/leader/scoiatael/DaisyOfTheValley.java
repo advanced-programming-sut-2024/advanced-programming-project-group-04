@@ -1,12 +1,12 @@
-package com.mygdx.game.model.leader.Scoiataell;
+package com.mygdx.game.model.leader.scoiatael;
 
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.PlayerInGame;
 import com.mygdx.game.model.leader.Leader;
 
-public class HopeOfTheAenSeidhe extends Leader{
-    public HopeOfTheAenSeidhe() {
-        super("Hope of the Aen Seidhe");
+public class DaisyOfTheValley extends Leader {
+    public DaisyOfTheValley() {
+        super("Daisy of the Valley");
     }
 
     @Override

@@ -3,8 +3,14 @@ package com.mygdx.game.controller;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
 import com.mygdx.game.model.Player;
+import com.mygdx.game.model.card.AllCards;
+import com.mygdx.game.model.card.Card;
+import com.mygdx.game.model.faction.*;
+import com.mygdx.game.model.leader.Leader;
+import com.mygdx.game.model.leader.skellige.KingBran;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
@@ -19,6 +25,7 @@ public class Server extends Thread {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private Player player;
 
     static {
         Server.loadAllPlayers();
@@ -92,10 +99,24 @@ public class Server extends Thread {
                     case LOGOUT_PLAYER:
                         logoutPlayer();
                         break;
+
+                    case SELECT_FACTION:
+                        selectFaction();
+                        break;
+                    case SELECT_LEADER:
+                        selectLeader();
+                        break;
+                    case SELECT_CARD:
+                        selectCard();
+                        break;
+                    case DE_SELECT_CARD:
+                        deSelectCard();
+                        break;
                 }
 
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
+                 InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -182,6 +203,7 @@ public class Server extends Thread {
         if (player == null || allSessions.containsKey(player)) throw new RuntimeException();
         else {
             allSessions.put(player, this);
+            this.player = player;
             out.writeObject(null);
         }
     }
@@ -192,8 +214,47 @@ public class Server extends Thread {
         if (player == null || !allSessions.containsKey(player)) throw new RuntimeException();
         else {
             allSessions.remove(player);
+            this.player = null;
             out.writeObject(null);
         }
+    }
+
+    private void selectFaction() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        String factionName = (String) in.readObject();
+
+        Class<?> factionClass = Class.forName("com.mygdx.game.model.faction." + factionName);
+        Object faction = factionClass.getConstructor().newInstance();
+
+        player.setFaction((Faction)faction);
+        player.createNewDeck();
+        out.writeObject(faction);
+    }
+
+    private void selectLeader() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        String leaderName = (String) in.readObject();
+
+        Faction faction = player.getSelectedFaction();
+        Class<?> leaderClass = Class.forName("com.mygdx.game.model.leader." + faction.getAssetName().toLowerCase() + "." + leaderName);
+        Leader leader = (Leader) leaderClass.getConstructor().newInstance();
+
+        System.out.println(leader.getName());
+
+        player.getDeck().setLeader(leader);
+        out.writeObject(leader);
+    }
+
+    private void selectCard() throws IOException, ClassNotFoundException {
+        AllCards allCard = (AllCards) in.readObject();
+        Card card = new Card(allCard);
+        player.getDeck().addCard(card);
+        out.writeObject(card);
+    }
+
+    private void deSelectCard() throws IOException, ClassNotFoundException {
+        AllCards allCard = (AllCards) in.readObject();
+        Card card = player.getDeck().removeCardFromAllCard(allCard);
+        if (card == null) throw new RuntimeException();
+        out.writeObject(card);
     }
 
     private void savePlayerData(Player player, String password) {

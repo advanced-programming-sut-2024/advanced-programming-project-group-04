@@ -12,5 +12,10 @@ public enum ServerCommand implements Serializable {
     VALIDATE_PASSWORD,
     LOGIN_PLAYER,
     LOGOUT_PLAYER,
+
+    SELECT_FACTION,
+    SELECT_LEADER,
+    SELECT_CARD,
+    DE_SELECT_CARD,
     ;
 }
