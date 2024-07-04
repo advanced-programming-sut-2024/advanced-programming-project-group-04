@@ -291,9 +291,12 @@ public class Server extends Thread {
         ServerSocket serverSocket;
         try {
             serverSocket = new ServerSocket(5000);
-            Socket socket = serverSocket.accept();
-            Server server = new Server(socket);
-            server.start();
+            Socket socket;
+            while (true) {
+                socket = serverSocket.accept();
+                Server server = new Server(socket);
+                server.start();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
