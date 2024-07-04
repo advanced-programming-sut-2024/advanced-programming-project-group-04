@@ -2,11 +2,23 @@ package com.mygdx.game.controller;
 
 import com.mygdx.game.model.Player;
 
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignUpController {
+    private EmailSender emailSender;
+
+
+    public SignUpController() {
+        String gmailAccount = "gwent.2fa@gmail.com";
+        String appPassword = "kcnq fryl ofis nhdv";
+        emailSender = new EmailSender(gmailAccount, appPassword);
+    }
     public ControllerResponse signUpButtonPressed(String username, String password, String email, String nickname) {
+        Random random = new Random();
+        int verificationCode = 100000 + random.nextInt(900000);
+
         boolean isFail = true;
         String errorMessage = "";
 
@@ -23,6 +35,9 @@ public class SignUpController {
             new Player(username, password, email, nickname);
             isFail = false;
             errorMessage = "Registered successfully";
+            String subject = "Email Verification";
+            String body = "Your verification code is: " + verificationCode;
+            emailSender.sendEmail(email, subject, body);
         }
 
         return new ControllerResponse(isFail, errorMessage);
