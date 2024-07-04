@@ -31,4 +31,15 @@ public class Client {
         }
         return response;
     }
+
+    public void closeConnection() {
+        sendToServer(ServerCommand.CLOSE_CONNECTION);
+        try {
+            socket.close();
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

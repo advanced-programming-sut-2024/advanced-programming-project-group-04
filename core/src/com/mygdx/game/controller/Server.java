@@ -45,7 +45,6 @@ public class Server extends Thread {
             json = fileHandle.readString();
             String password = gson.fromJson(json, String.class);
             passwords.put(player, password);
-            System.out.println(password);
         }
     }
 
@@ -112,6 +111,10 @@ public class Server extends Thread {
                     case DE_SELECT_CARD:
                         deSelectCard();
                         break;
+
+                    case CLOSE_CONNECTION:
+                        closeConnection();
+                        return;
                 }
 
             }
@@ -255,6 +258,13 @@ public class Server extends Thread {
         Card card = player.getDeck().removeCardFromAllCard(allCard);
         if (card == null) throw new RuntimeException();
         out.writeObject(card);
+    }
+
+    private void closeConnection() throws IOException {
+        out.writeObject(null);
+        in.close();
+        out.close();
+        if (player != null) allSessions.remove(player);
     }
 
     private void savePlayerData(Player player, String password) {

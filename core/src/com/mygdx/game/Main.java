@@ -48,6 +48,7 @@ public class Main extends Game {
     @Override
     public void dispose() {
         assetManager.dispose();
+        client.closeConnection();
     }
 
     public void cheraBenzinTamoomShod() {

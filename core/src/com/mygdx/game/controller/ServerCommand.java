@@ -17,5 +17,7 @@ public enum ServerCommand implements Serializable {
     SELECT_LEADER,
     SELECT_CARD,
     DE_SELECT_CARD,
+
+    CLOSE_CONNECTION,
     ;
 }
