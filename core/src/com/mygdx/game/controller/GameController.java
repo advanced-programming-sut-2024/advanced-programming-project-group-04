@@ -42,15 +42,15 @@ public class GameController {
     public boolean placeCard(Card card, TableSection tableSection) {
         boolean result;
         if (tableSection.isEnemy() ^ !isMyTurn) {
-            result = gameManager.placeCardEnemy(card);
+            result = client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
         } else {
 
-            result = gameManager.placeCard(card, tableSection.getPosition());
+            result = client.sendToServer(PLACE_CARD, card, tableSection.getPosition(), EOF);
             System.out.println(tableSection.getTitle());
         }
         System.out.println(isMyTurn);
 
-        if (result) gameManager.endTurn();
+        if (result) client.sendToServer(END_TURN, EOF);
         if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
         else gameMenu.updateScores(gameManager.getOtherPlayer(), gameManager.getCurrentPlayer());
 
@@ -111,9 +111,9 @@ public class GameController {
     public void removeGraphicalCardFromTable(GraphicalCard graphicalCard, CustomTable table) {
         TableSection tableSection = table.getTableSection();
         Card card = graphicalCard.getCard();
-        if (tableSection == TableSection.MY_HAND) gameManager.removeFromHand(card, isMyTurn);
-        else if (tableSection == TableSection.ENEMY_HAND) gameManager.removeFromHand(card, !isMyTurn);
-        else if (tableSection.getPosition() != null) gameManager.removeCard(card);
+        if (tableSection == TableSection.MY_HAND) client.sendToServer(REMOVE_FROM_HAND, card, isMyTurn, EOF);
+        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServer(REMOVE_FROM_HAND, card, !isMyTurn, EOF);
+        else if (tableSection.getPosition() != null) client.sendToServer(REMOVE_CARD, card, EOF);
     }
 
     public void addGraphicalCardToTable(GraphicalCard graphicalCard, CustomTable table) {
@@ -123,11 +123,11 @@ public class GameController {
 
         // TODO: check the bug where your cards can go to the enemy's hand
 
-        if (tableSection == TableSection.MY_HAND) gameManager.addToHand(card, isMyTurn);
-        else if (tableSection == TableSection.ENEMY_HAND) gameManager.addToHand(card, !isMyTurn);
+        if (tableSection == TableSection.MY_HAND) client.sendToServer(ADD_TO_HAND, card, isMyTurn, EOF);
+        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServer(ADD_TO_HAND, card, !isMyTurn, EOF);
         else if (position != null) {
-            if (tableSection.isEnemy() ^ !isMyTurn) gameManager.placeCard(card, position);
-            else gameManager.placeCardEnemy(card);
+            if (tableSection.isEnemy() ^ !isMyTurn) client.sendToServer(PLACE_CARD, card, position, EOF);
+            else client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
         }
     }
 
@@ -154,6 +154,7 @@ public class GameController {
         } else if (cheatCode.equals("take a life away from enemy")) {
             gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() - 1);
         } else if (cheatCode.startsWith("add card")) {
+            // TODO @Matin check if the card is null
             String[] parts = cheatCode.split(" ");
             String cardName = parts[2];
             AllCards allCard = null;
@@ -179,10 +180,10 @@ public class GameController {
             gameManager.getOtherPlayer().setRemainingLives(0);
             gameManager.getCurrentPlayer().setIsPassed(true);
             gameManager.getOtherPlayer().setIsPassed(true);
-            gameManager.endTurn();
+            client.sendToServer(END_TURN, EOF);
         } else if (cheatCode.equals("defeat")) {
             gameManager.getCurrentPlayer().setRemainingLives(0);
-            gameManager.endTurn();
+            client.sendToServer(END_TURN, EOF);
         } else if (cheatCode.startsWith("remove enemy")) {
             String[] parts = cheatCode.split(" ");
             String cardName = parts[2];
@@ -202,7 +203,7 @@ public class GameController {
         } else if (cheatCode.equals("end round")) {
             gameManager.getCurrentPlayer().setIsPassed(true);
             gameManager.getOtherPlayer().setIsPassed(true);
-            gameManager.endTurn();
+            client.sendToServer(END_TURN, EOF);
         }
 
     }
