@@ -324,10 +324,82 @@ public class GameMenu extends Menu {
         };
     }
 
-    public GraphicalCard showSomeCardsAndSelectOne(ArrayList<Card> cards) {
-        // TODO : @Matin
-        return null;
+    private int currentIndexOfDisplayedCards = 0;
+    private GraphicalCard selectedGraphicalCardByTheUser = null;
+    public void showSomeCardsAndSelectOne(ArrayList<Card> cards) {
+        currentIndexOfDisplayedCards = 0;
+        selectedGraphicalCardByTheUser = null;
+
+        // Create a window to show the cards and navigation buttons
+        Window window = new Window("Select a Card", skin);
+        window.setFillParent(true);
+
+        Table cardTable = new Table();
+        window.add(cardTable).expand().fill();
+
+        GraphicalCard[] graphicalCards = new GraphicalCard[cards.size()];
+        for (int i = 0; i < cards.size(); i++) {
+            graphicalCards[i] = createNewGraphicalCard(cards.get(i));
+        }
+
+        // Method to update the displayed card
+        final Runnable updateCardDisplay = new Runnable() {
+            @Override
+            public void run() {
+                cardTable.clear();
+                GraphicalCard cardToShow = graphicalCards[currentIndexOfDisplayedCards];
+                cardTable.add(new Image(cardToShow.getImage().getDrawable())).expand().fill();
+            }
+        };
+
+
+        // Add left and right buttons for navigation
+        TextButton leftButton = new TextButton("Left", skin);
+        leftButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (currentIndexOfDisplayedCards > 0) {
+                    currentIndexOfDisplayedCards--;
+                    updateCardDisplay(cardTable, graphicalCards);
+                }
+            }
+        });
+
+        TextButton rightButton = new TextButton("Right", skin);
+        rightButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (currentIndexOfDisplayedCards < cards.size() - 1) {
+                    currentIndexOfDisplayedCards++;
+                    updateCardDisplay(cardTable , graphicalCards);
+                }
+            }
+        });
+
+        cardTable.row();
+        cardTable.add(leftButton).left();
+        cardTable.add(rightButton).right();
+
+        // Add listener to the graphical cards to return the selected card when clicked
+        for (GraphicalCard graphicalCard : graphicalCards) {
+            graphicalCard.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    selectedGraphicalCardByTheUser = graphicalCard;
+                    window.remove();  // Close the window after selection
+                }
+            });
+        }
+
+        // Initial display of the first card
+        updateCardDisplay(cardTable, graphicalCards);
+
+        // Add the window to the stage
+        stage.addActor(window);
+
+        // Wait for selection (this is simplified, in reality you might want to handle this asynchronously)
     }
+
 
     public void changeTurn(boolean isMyTurn) {
         if (isMyTurn) {

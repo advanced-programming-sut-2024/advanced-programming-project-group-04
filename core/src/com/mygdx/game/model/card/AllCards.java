@@ -165,9 +165,10 @@ public enum AllCards {
         BitingFrost("Biting Frost", 0, 3, Weather, new BitingFrost(), false, "Sets the power of all close combat units of both sides to 1"),
         ImpenetrableFog("Impenetrable fog", 0, 3, Weather, new ImpenetrableFog(), false, "Sets the power of all ranged units of both sides to 1"),
         TorrentialRain("Torrential Rain", 0, 3, Weather, new TorrentialRain(), false, "Sets the power of all siege units of both sides to 1"),
-        SkelligeStorm("Skellige Storm", 0, 3, Weather, new SkelligeStrom(), false, "Sets the power of all siege and ranged units of both sides to 1"),
+        SkelligeStorm("Skellige Storm", 0,
+                3, Weather, new SkelligeStrom(), false, "Sets the power of all siege and ranged units of both sides to 1"),
         ClearWeather("Clear Weather", 0, 3, Weather, new ClearWeather(), false, "Cancel all the weather cards"),
-        Scorch("Scorch", 0, 3, Spell, new NoAbility(), false, "Remove card(s) with the maximum power points in the field (ignores heroes)"),
+        Scorch("Scorch", 0, 3, Spell, new Scorch(), false, "Remove card(s) with the maximum power points in the field (ignores heroes)"),
         CommandersHorn("Commanders horn", 0, 3, Spell, new CommanderHorn(), false, "Doubles the power of the cards in the row that was placed. Only one of this type can be played in a row"),
         Decoy("Decoy", 0, 3, Spell, new NoAbility(), false, "The description has been given before"), // Chenged
         Dandelion("Dandelion", 2, 1, CloseCombat, new CommanderHorn(), false, "Same power as the commander's horn"),
