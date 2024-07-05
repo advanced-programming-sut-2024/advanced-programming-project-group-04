@@ -51,8 +51,9 @@ public class GameController {
         System.out.println(isMyTurn);
 
         if (result) client.sendToServer(END_TURN, EOF);
-        if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
-        else gameMenu.updateScores(gameManager.getOtherPlayer(), gameManager.getCurrentPlayer());
+        // TODO: @Arman send back update scores signal from the server
+//        if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
+//        else gameMenu.updateScores(gameManager.getOtherPlayer(), gameManager.getCurrentPlayer());
 
         return result;
     }
@@ -111,9 +112,9 @@ public class GameController {
     public void removeGraphicalCardFromTable(GraphicalCard graphicalCard, CustomTable table) {
         TableSection tableSection = table.getTableSection();
         Card card = graphicalCard.getCard();
-        if (tableSection == TableSection.MY_HAND) client.sendToServer(REMOVE_FROM_HAND, card, isMyTurn, EOF);
-        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServer(REMOVE_FROM_HAND, card, !isMyTurn, EOF);
-        else if (tableSection.getPosition() != null) client.sendToServer(REMOVE_CARD, card, EOF);
+        if (tableSection == TableSection.MY_HAND) client.sendToServerVoid(REMOVE_FROM_HAND, card, isMyTurn, EOF);
+        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServerVoid(REMOVE_FROM_HAND, card, !isMyTurn, EOF);
+        else if (tableSection.getPosition() != null) client.sendToServerVoid(REMOVE_CARD, card, EOF);
     }
 
     public void addGraphicalCardToTable(GraphicalCard graphicalCard, CustomTable table) {
@@ -123,11 +124,11 @@ public class GameController {
 
         // TODO: check the bug where your cards can go to the enemy's hand
 
-        if (tableSection == TableSection.MY_HAND) client.sendToServer(ADD_TO_HAND, card, isMyTurn, EOF);
-        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServer(ADD_TO_HAND, card, !isMyTurn, EOF);
+        if (tableSection == TableSection.MY_HAND) client.sendToServerVoid(ADD_TO_HAND, card, isMyTurn, EOF);
+        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServerVoid(ADD_TO_HAND, card, !isMyTurn, EOF);
         else if (position != null) {
-            if (tableSection.isEnemy() ^ !isMyTurn) client.sendToServer(PLACE_CARD, card, position, EOF);
-            else client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
+            if (tableSection.isEnemy() ^ !isMyTurn) client.sendToServerVoid(PLACE_CARD, card, position, EOF);
+            else client.sendToServerVoid(PLACE_CARD_ENEMY, card, EOF);
         }
     }
 
@@ -146,13 +147,21 @@ public class GameController {
         } else if (cheatCode.equals("Mohandes?")) {
             gameMenu.getMainInstance().cheraBenzinTamoomShod();
         } else if (cheatCode.equals("give me a life")) {
-            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() + 1);
+            client.sendToServerVoid(ADD_A_LIFE_TO_ME, EOF);
+            // TODO: @Arman
+//            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() + 1);
         } else if (cheatCode.equals("give enemy a life")) {
-            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() + 1);
+            client.sendToServerVoid(ADD_A_LIFE_TO_ENEMY, EOF);
+            // TODO: @Arman
+//            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() + 1);
         } else if (cheatCode.equals("take a life away from me")) {
-            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() - 1);
+            client.sendToServerVoid(REMOVE_LIFE_FROM_ME);
+            // TODO: @Arman
+//            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() - 1);
         } else if (cheatCode.equals("take a life away from enemy")) {
-            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() - 1);
+            client.sendToServerVoid(REMOVE_LIFE_FROM_ENEMY);
+            // TODO: @Arman
+//            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() - 1);
         } else if (cheatCode.startsWith("add card")) {
             // TODO @Matin check if the card is null
             String[] parts = cheatCode.split(" ");

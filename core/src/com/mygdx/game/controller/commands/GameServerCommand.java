@@ -8,6 +8,10 @@ public enum GameServerCommand {
     REMOVE_FROM_HAND,
     REMOVE_CARD,
     ADD_TO_HAND,
+    ADD_A_LIFE_TO_ME,
+    ADD_A_LIFE_TO_ENEMY,
+    REMOVE_LIFE_FROM_ME,
+    REMOVE_LIFE_FROM_ENEMY,
 
     EOF,
     ;

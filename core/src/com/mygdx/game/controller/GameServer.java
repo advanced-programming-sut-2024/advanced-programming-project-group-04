@@ -103,7 +103,7 @@ public class GameServer extends Thread {
 
     public void changeTurn() {
         isMyTurn = !isMyTurn;
-        gameMenu.changeTurn(isMyTurn);
+//        gameMenu.changeTurn(isMyTurn);
     }
 
     public void removeCardFromView(Card card) {
