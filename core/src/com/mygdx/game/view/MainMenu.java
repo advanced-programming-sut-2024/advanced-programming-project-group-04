@@ -49,9 +49,10 @@ public class MainMenu extends Menu {
         startNewGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ControllerResponse response = mainMenuController.startNewGame();
-                errorLabel.setText(response.getError());
-                errorLabel.setColor(Color.RED);
+//                ControllerResponse response = mainMenuController.startNewGame();
+//                errorLabel.setText(response.getError());
+//                errorLabel.setColor(Color.RED);
+                setScreen(new StartGameMenu(game));
             }
         });
 
@@ -170,7 +171,7 @@ public class MainMenu extends Menu {
 
     private void loadFriendsList() {
         friendsWindow.clear();
-        ArrayList<Player> friends = Player.getLoggedInPlayer().getFriends();
+        ArrayList<Player> friends = game.getLoggedInPlayer().getFriends();
         float buttonWidth = friendsWindow.getWidth() * 0.50f;
         if (friends == null) return;
         for (Player friend : friends) {
@@ -178,7 +179,7 @@ public class MainMenu extends Menu {
             friendButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    showMessageDialog(Player.getLoggedInPlayer(), friend);
+                    showMessageDialog(game.getLoggedInPlayer(), friend);
                 }
             });
             friendsWindow.add(friendButton).width(buttonWidth).pad(5);
@@ -187,7 +188,7 @@ public class MainMenu extends Menu {
     }
     private void loadFriendRequestsList() {
         friendRequestsWindow.clear();
-        ArrayList<Player> incomingRequests = Player.getLoggedInPlayer().getIncomingFriendRequests();
+        ArrayList<Player> incomingRequests = game.getLoggedInPlayer().getIncomingFriendRequests();
         float buttonWidth = friendRequestsWindow.getWidth() * 0.5f;
         if (incomingRequests == null) return;
         for (Player request : incomingRequests) {

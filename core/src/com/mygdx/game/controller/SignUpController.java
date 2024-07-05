@@ -16,6 +16,7 @@ import com.mygdx.game.model.Player;
 import com.mygdx.game.view.SignUpMenu;
 
 import java.util.Random;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,19 +29,15 @@ public class SignUpController {
     private String nickname;
 
 
+    private final Client client;
+    private EmailSender emailSender;
 
-<<<<<<< Updated upstream
 
-    public SignUpController() {
-        String gmailAccount = "gwent.2fa@gmail.com";
-        String appPassword = "kcnq fryl ofis nhdv";
-        emailSender = new EmailSender(gmailAccount, appPassword);
-=======
     public SignUpController(Client client) {
         emailSender = new EmailSender();
         this.client = client;
->>>>>>> Stashed changes
     }
+
     public ControllerResponse signUpButtonPressed(String username, String password, String email, String nickname) {
         Random random = new Random();
         int verificationCode = 100000 + random.nextInt(900000);
@@ -53,21 +50,17 @@ public class SignUpController {
         else if (email.isEmpty()) errorMessage = "Please enter your email";
         else if (nickname.isEmpty()) errorMessage = "Please choose a nickname";
         else if (!isValidUsername(username)) errorMessage = "Invalid username";
-        else if (Player.findPlayerByUsername(username) != null) errorMessage = "Username is taken";
+        else if (client.sendToServer(ServerCommand.DOES_USERNAME_EXIST, username)) errorMessage = "Username is taken";
         else if (!isValidPassword(password)) errorMessage = "Weak password";
         else if (!isValidEmail(email)) errorMessage = "Invalid email";
         else if (!isValidNickname(nickname)) errorMessage = "Invalid nickname";
         else {
-<<<<<<< Updated upstream
-            new Player(username, password, email, nickname);
-            isFail = false;
-            errorMessage = "Registered successfully";
-=======
+
+
             this.username = username;
             this.nickname = nickname;
             this.password = password;
             this.email = email;
->>>>>>> Stashed changes
             String subject = "Email Verification";
             String body = "Your verification code is: " + verificationCode;
             emailSender.sendEmail(email, subject, body);

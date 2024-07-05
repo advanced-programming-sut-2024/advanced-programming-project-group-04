@@ -18,7 +18,6 @@ import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
 import com.mygdx.game.controller.ControllerResponse;
 import com.mygdx.game.controller.LoginController;
-import com.mygdx.game.model.Player;
 
 public class LoginMenu extends Menu {
     private final LoginController loginController;
@@ -30,8 +29,6 @@ public class LoginMenu extends Menu {
         super(game);
         this.loginController = new LoginController(game);
         loginController.setLoginMenu(this);
-
-        Player.loadAllPlayers();
 
         // Set up background
         Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
@@ -134,14 +131,7 @@ public class LoginMenu extends Menu {
         if (response.isFailed()) {
             errorLabel.setText(response.getError());
             errorLabel.setColor(Color.RED);
-<<<<<<< Updated upstream
-        }
-        else {
-            // TODO: WTF should I do with this line?
-            Player.loginPlayer(Player.findPlayerByUsername(username));
-=======
         } else {
->>>>>>> Stashed changes
             setScreen(new MainMenu(game));
         }
     }

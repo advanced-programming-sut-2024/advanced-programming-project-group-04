@@ -27,14 +27,15 @@ public class LoginController {
         if (username.isEmpty()) errorMessage = "Enter your username";
         else if (password.isEmpty()) errorMessage = "Enter your password";
         else {
-            Player player = Player.findPlayerByUsername(username);
-            if (player == null) errorMessage = "No such player exists";
-            else if (!player.validatePassword(password)) errorMessage = "Wrong password";
+            Client client = game.getClient();
+            if (client.sendToServer(ServerCommand.DOES_USERNAME_EXIST, username).equals(false)) errorMessage = "No such player exists";
+            else if (client.sendToServer(ServerCommand.HAS_ACTIVE_SESSION, username)) errorMessage = "Player logged in another device";
+            else if (client.sendToServer(ServerCommand.VALIDATE_PASSWORD, username, password).equals(false)) errorMessage = "Wrong password";
             else {
-<<<<<<< Updated upstream
-                game.setLoggedInPlayer(player);
-                isFail = false;
-=======
+
+                Player player = client.sendToServer(ServerCommand.FETCH_USER, username);
+                client.sendToServer(ServerCommand.LOGIN_PLAYER, player.getId());
+
                 this.username = username;
                 this.password = password;
                 Player player = client.sendToServer(ServerCommand.FETCH_USER, username);
@@ -51,7 +52,6 @@ public class LoginController {
                     emailSender.sendEmail(player.getEmail(), subject, body);
                     loginMenu.verifyVerificationCode(Integer.toString(verificationCode));
                 }
->>>>>>> Stashed changes
             }
         }
 

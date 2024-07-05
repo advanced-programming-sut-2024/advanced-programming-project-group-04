@@ -1,4 +1,4 @@
-package com.mygdx.game.model.leader.northern;
+package com.mygdx.game.model.leader.northernrealms;
 
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.PlayerInGame;

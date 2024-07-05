@@ -2,9 +2,11 @@ package com.mygdx.game.model.card;
 
 import com.mygdx.game.model.ability.*;
 
+import java.io.Serializable;
+
 import static com.mygdx.game.model.card.Type.*;
 
-public enum AllCards {
+public enum AllCards implements Serializable {
     // Skellige
 
     Mardroeme("Mardroeme", 0, 3, Spell, new Mardroeme(), false, "This Spell card has Mardroeme Ability and can be placed in the commmander's Horn spot . it effects the row that it was placed in"),

@@ -31,7 +31,6 @@ public class AssetLoader {
     public static final String TABS = "tabs.png";
 
 
-    public static BitmapFont font;
 
     private AssetManager assetManager;
     private Map<String, List<String>> factionLeadersMap;
@@ -41,6 +40,7 @@ public class AssetLoader {
 
     public Skin skin;
     public Image backgroundImage;
+    public BitmapFont font;
     public TextButton.TextButtonStyle textButtonStyle;
     public Label.LabelStyle labelStyle;
     public TextField.TextFieldStyle textFieldStyle;
@@ -174,7 +174,12 @@ public class AssetLoader {
         return assetManager.get(path, Texture.class);
     }
 
-    public BitmapFont getFont() {
+    public static BitmapFont getFontWithCustomSize(int size) {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = size;
+        BitmapFont font = generator.generateFont(parameter);
+        generator.dispose();
         return font;
     }
 }

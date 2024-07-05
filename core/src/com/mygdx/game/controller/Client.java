@@ -52,6 +52,7 @@ public class Client extends Thread {
 
             while (!isReceived());
 
+
             T response = (T) this.obj;
             this.obj = null;
             setReceived(false);

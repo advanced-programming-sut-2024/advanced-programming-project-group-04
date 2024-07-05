@@ -1,13 +1,10 @@
 package com.mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -16,35 +13,26 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
-import com.mygdx.game.model.Player;
+import com.mygdx.game.controller.FactionAndLeaderController;
 import com.mygdx.game.model.card.AllCards;
-import com.mygdx.game.model.faction.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class FactionAndLeaderMenu extends Menu {
-
+    private final FactionAndLeaderController controller;
     Skin skin;
 
     float buttonSize = 300;
-
-    private String selectedFaction = "";
-    private String selectedLeader = "";
-    private ImageButton selectedFactionButton = null;
-    private ImageButton selectedLeaderButton = null;
-    private Label explanationLabel = null;
-    private Faction faction;
 
     Table availableCardsTable = new Table();
     Table selectedCardsTable = new Table();
     Table statsTable = new Table();
 
+    Label explanationLabel;
     Label heroCountLabel;
     Label unitCountLabel;
     Label spellCountLabel;
@@ -52,24 +40,16 @@ public class FactionAndLeaderMenu extends Menu {
     ScrollPane availableCardsScrollPane;
     ScrollPane selectedCardsScrollPane;
 
-    private final HashMap<String, AllCards> cardLookupMap = new HashMap<>();
-
     public FactionAndLeaderMenu(Main game) {
         super(game);
+        this.controller = new FactionAndLeaderController(game, this);
 
         skin = game.assetLoader.skin;
-        Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
-        Image backgroundImage = new Image(backgroundTexture);
-        backgroundImage.setFillParent(true);
-        stage.addActor(backgroundImage);
+        stage.addActor(game.assetLoader.backgroundImage);
 
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
-
-        faction = Player.getLoggedInPlayer().getSelectedFaction();
-        if (faction == null) selectedFaction = "";
-        else selectedFaction = Player.getLoggedInPlayer().getSelectedFaction().getImageURL();
 
         Label.LabelStyle labelStyle = game.assetLoader.labelStyle;
         explanationLabel = new Label("", labelStyle);
@@ -158,37 +138,26 @@ public class FactionAndLeaderMenu extends Menu {
 
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    selectedFaction = factionName;
-                    if (factionName.contains("skellige")) faction = new Skellige();
-                    if (factionName.contains("scoiatael")) faction = new Scoiatael();
-                    if (factionName.contains("realms")) faction = new NorthernRealms();
-                    if (factionName.contains("nilfgaard")) faction = new Nilfgaard();
-                    if (factionName.contains("monsters")) faction = new Monsters();
-                    Player.getLoggedInPlayer().setFaction(faction);
-                    //TODO @arman Player.getLoggedInPlayer.setFaction() ro ye joori ezafe kon;
+                    controller.factionButtonClicked(factionName);
                     highlightSelectedButton(factionButton);
-                    selectedFactionButton = factionButton;
-                    updateAvailableCards();
                     dialog.hide();
-                    System.out.println("Selected Faction: " + selectedFaction);
                 }
             });
 
-            if (factionName.equals(selectedFaction)) {
+            if (controller.isThisFactionSelected(factionName)) {
                 highlightSelectedButton(factionButton);
-                selectedFactionButton = factionButton;
             }
 
             factionTable.add(factionButton).pad(20);
         }
 
         dialog.getContentTable().add(factionTable).pad(50);
-        dialog.button("Cancel").pad(20); // Update padding for Cancel button
+        dialog.button("Cancel").pad(20);
         dialog.show(stage);
     }
 
     private void showLeaderSelection() {
-        if (faction == null) {
+        if (controller.noFactionSelected()) {
             System.out.println("Please select a faction first.");
             return;
         }
@@ -200,7 +169,7 @@ public class FactionAndLeaderMenu extends Menu {
 
         // Load leader images using AssetLoader
         AssetLoader assetLoader = game.assetLoader;
-        for (String leaderPath : assetLoader.getLeaders(selectedFaction)) {
+        for (String leaderPath : assetLoader.getLeaders(controller.getFactionAssetName())) {
             Texture leaderTexture = game.assetManager.get(leaderPath, Texture.class);
             ImageButton leaderButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(leaderTexture)));
             String leaderName = leaderPath.substring(leaderPath.lastIndexOf("/") + 1, leaderPath.lastIndexOf("."));
@@ -213,7 +182,6 @@ public class FactionAndLeaderMenu extends Menu {
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                     leaderButton.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
-                    System.out.println(leaderPath);
                     String explanation = assetLoader.getLeaderExplanation(leaderPath);
                     explanationLabel.setText(explanation);
                 }
@@ -222,23 +190,18 @@ public class FactionAndLeaderMenu extends Menu {
                 public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                     leaderButton.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
                     explanationLabel.setText("");
-
                 }
 
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    selectedLeader = leaderName;
-
+                    controller.leaderButtonClicked(leaderName);
                     highlightSelectedButton(leaderButton);
-                    selectedLeaderButton = leaderButton;
                     dialog.hide();
-                    System.out.println("Selected Leader: " + selectedLeader);
                 }
             });
 
-            if (leaderName.equals(selectedLeader)) {
+            if (controller.isThisLeaderSelected(leaderName)) {
                 highlightSelectedButton(leaderButton);
-                selectedLeaderButton = leaderButton;
             }
 
             leaderTable.add(leaderButton).pad(20);
@@ -273,37 +236,21 @@ public class FactionAndLeaderMenu extends Menu {
     }
 
     private void highlightSelectedButton(ImageButton selectedButton) {
-        // Highlight the selected button
         selectedButton.getImage().addAction(Actions.forever(Actions.sequence(
                 Actions.color(new Color(1f, 1f, 0f, 1f), 0.5f),
                 Actions.color(new Color(1f, 1f, 0f, 0.5f), 0.5f)
         )));
     }
 
-    private void updateAvailableCards() {
-        ArrayList<AllCards> neutralCards = Faction.getNeutralCards();
-        ArrayList<AllCards> factionCards = new ArrayList<>();
-
-        if (faction instanceof Skellige) {
-            factionCards = Skellige.getCards();
-        } else if (faction instanceof Scoiatael) {
-            factionCards = Scoiatael.getCards();
-        } else if (faction instanceof NorthernRealms) {
-            factionCards = NorthernRealms.getCards();
-        } else if (faction instanceof Monsters) {
-            factionCards = Monsters.getCards();
-        } else if (faction instanceof Nilfgaard) {
-            factionCards = Nilfgaard.getCards();
-        }
-
+    public void updateCards() {
+        ArrayList<AllCards> cards = controller.getFactionCards();
         availableCardsTable.clear();
         selectedCardsTable.clear();
-        addCardsToTable(factionCards, availableCardsTable);
-        addCardsToTable(neutralCards, availableCardsTable);
+        addCardsToTable(cards, availableCardsTable);
     }
 
     private void showDeckSelection() {
-        if (faction == null) {
+        if (controller.noFactionSelected()) {
             System.out.println("Error: No faction selected!");
             return;
         }
@@ -340,7 +287,6 @@ public class FactionAndLeaderMenu extends Menu {
 
     private void addCardsToTable(ArrayList<AllCards> cards, Table table) {
         for (AllCards card : cards) {
-            cardLookupMap.put(card.getImageURL(), card);
             if (card.getNumber() > 0) {
                 for (int i = 0; i < card.getNumber(); i++) {
                     String cardImagePath = card.getImageURL();
@@ -370,8 +316,10 @@ public class FactionAndLeaderMenu extends Menu {
                             Table parentTable = cardButton.getParent() instanceof Table ? (Table) cardButton.getParent() : null;
 
                             if (parentTable != null && parentTable.equals(availableCardsTable)) {
+                                controller.selectCard(card);
                                 moveCardToTable(cardButton, availableCardsTable, selectedCardsTable, buttonSize);
                             } else if (parentTable != null && parentTable.equals(selectedCardsTable)) {
+                                controller.deSelectCard(card);
                                 moveCardToTable(cardButton, selectedCardsTable, availableCardsTable, buttonSize);
                             }
                             updateStats();
@@ -402,7 +350,6 @@ public class FactionAndLeaderMenu extends Menu {
 
     private void rebuildTableGrid(Table table, float buttonSize) {
         Array<Actor> children = new Array<>(table.getChildren());
-//        table.clearChildren();
         table.clear();
 
         for (int i = 0; i < children.size; i++) {
@@ -414,34 +361,8 @@ public class FactionAndLeaderMenu extends Menu {
     }
 
     private void updateStats() {
-        int heroCount = 0;
-        int unitCount = 0;
-        int spellCount = 0;
-
-        for (Actor actor : selectedCardsTable.getChildren()) {
-            if (actor instanceof ImageButton) {
-                ImageButton cardButton = (ImageButton) actor;
-                String cardName = (String) cardButton.getUserObject();
-                AllCards card = cardLookupMap.get(cardName);
-                System.out.println(cardName);
-                if (card != null) {
-                    if (card.isHero()) {
-                        heroCount++;
-                    }
-                    if (card.isUnitCard()) {
-                        unitCount++;
-                    } else {
-                        spellCount++;
-                    }
-                } else {
-                    System.out.println("Error: Card is null for button: " + cardButton);
-                }
-            }
-        }
-
-        heroCountLabel.setText("Number of Hero Cards: " + heroCount);
-        unitCountLabel.setText("Number of Unit Cards: " + unitCount);
-        spellCountLabel.setText("Number of Spell Cards: " + spellCount);
+        heroCountLabel.setText("Number of Hero Cards: " + controller.getHeroCount());
+        unitCountLabel.setText("Number of Unit Cards: " + controller.getUnitCount());
+        spellCountLabel.setText("Number of Spell Cards: " + controller.getSpellCount());
     }
-
 }

@@ -106,8 +106,8 @@ public class GameMenu extends Menu implements CheatProcessor {
                 enemyDeck.addCard(new Card(allCard));
         }
 
-        Player matin = new Player("Matin", "cDnak@(#&>CAxm09218", "matin@giga.com", "GigaChad");
-        Player arvin = new Player("Arvin", "1234", "arvin@gay.com", "Simp");
+        Player matin = new Player("Matin", "matin@giga.com", "GigaChad");
+        Player arvin = new Player("Arvin", "arvin@gay.com", "Simp");
         arvin.loadDeck(enemyDeck);
         matin.loadDeck(myDeck);
         players = gameController.startNewGame(matin, arvin);
@@ -159,12 +159,14 @@ public class GameMenu extends Menu implements CheatProcessor {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 graphicalCard.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                graphicalCard.getLabelInsideCircle().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
                 selectedCard = graphicalCard;
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 graphicalCard.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+                graphicalCard.getLabelInsideCircle().addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
 
             @Override
@@ -454,23 +456,23 @@ public class GameMenu extends Menu implements CheatProcessor {
     public GameController getGameController() {
         return this.gameController;
     }
-
-    @Override
-    public void render(float v) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Array<Actor> actors = new Array<>(stage.getActors());
-            stage.clear();
-            for (Actor actor : actors) {
-                if (!(actor instanceof Window)) {
-                    stage.addActor(actor);
-                }
-            }
-        }
-        stage.act(v);
-        stage.draw();
-    }
+//
+//    @Override
+//    public void render(float v) {
+//        Gdx.gl.glClearColor(0, 0, 0, 1);
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+//            Array<Actor> actors = new Array<>(stage.getActors());
+//            stage.clear();
+//            for (Actor actor : actors) {
+//                if (!(actor instanceof Window)) {
+//                    stage.addActor(actor);
+//                }
+//            }
+//        }
+//        stage.act(v);
+//        stage.draw();
+//    }
 
     public void updateScores(PlayerInGame self, PlayerInGame enemy) {
         myScore.setText(self.getTotalHP());

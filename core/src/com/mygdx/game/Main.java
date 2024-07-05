@@ -3,18 +3,21 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.controller.Client;
+import com.mygdx.game.controller.ServerCommand;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.message.Message;
 import com.mygdx.game.view.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Main extends Game {
     public AssetManager assetManager;
     public AssetLoader assetLoader;
     private Player loggedInPlayer;
     private Music backgroundMusic;
+    private Client client;
 
     @Override
     public void create() {
@@ -30,10 +33,12 @@ public class Main extends Game {
         backgroundMusic.setLooping(true);
         // backgroundMusic.play();
 
-        Player arman = new Player("arman", "123", "a@b.com", "tahmasb");
-        Player arvin2 = new Player("arvin2", "123", "A@B.com", "Gay");
-        Player matin = new Player("matin", "123", "a@b.com", "tahmasb fan");
-        Player mahbod = new Player("mahbod", "123", "M@K.com", "Khalvati");
+        this.client = new Client(this, "127.0.0.1");
+
+        Player arman = getClient().sendToServer(ServerCommand.FETCH_USER, "arman");
+        Player arvin2 = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin2");
+        Player matin = getClient().sendToServer(ServerCommand.FETCH_USER, "matin");
+        Player mahbod = getClient().sendToServer(ServerCommand.FETCH_USER, "mahbod");
         arman.sendFriendRequest(mahbod);
         matin.sendFriendRequest(mahbod);
         arvin2.sendFriendRequest(mahbod);
@@ -52,15 +57,10 @@ public class Main extends Game {
         delay(100);
         ArrayList<Message> chatArmanVaMahbod = mahbod.getChatWithPlayer(arman);
 
-
-
         // Set the initial screen
-<<<<<<< Updated upstream
+
         setScreen(new LoginMenu(this));
 
-=======
-        setScreen(new GameMenu(this));
->>>>>>> Stashed changes
     }
 
     public void setLoggedInPlayer(Player player) {
@@ -71,6 +71,8 @@ public class Main extends Game {
         return this.loggedInPlayer;
     }
 
+    public Client getClient() { return this.client; }
+
     @Override
     public void render() {
         super.render();
@@ -79,6 +81,7 @@ public class Main extends Game {
     @Override
     public void dispose() {
         assetManager.dispose();
+        client.closeConnection();
     }
 
     public void cheraBenzinTamoomShod() {
@@ -96,5 +99,13 @@ public class Main extends Game {
         }
         // FOR TESTING PURPOSES
         // DELETE THIS LATER
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public void startGame() {
+        setScreen(new GameMenu(this));
     }
 }

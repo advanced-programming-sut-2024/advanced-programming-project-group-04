@@ -1,12 +1,12 @@
-package com.mygdx.game.model.leader.Scoiataell;
+package com.mygdx.game.model.leader.scoiatael;
 
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.PlayerInGame;
 import com.mygdx.game.model.leader.Leader;
 
-public class QueenOfDolBlathanna extends Leader {
-    public QueenOfDolBlathanna() {
-        super("Queen of Dol Blathanna");
+public class TheBeautiful extends Leader {
+    public TheBeautiful() {
+        super("The Beautiful");
     }
 
     @Override
@@ -15,4 +15,3 @@ public class QueenOfDolBlathanna extends Leader {
         currentPlayer.setIsLeaderUsed(true);
     }
 }
-    
