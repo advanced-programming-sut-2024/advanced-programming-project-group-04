@@ -5,7 +5,10 @@ import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.ability.Spy;
 import com.mygdx.game.model.card.*;
 import com.mygdx.game.model.faction.Faction;
+import com.mygdx.game.model.faction.Monsters;
 import com.mygdx.game.model.faction.Nilfgaard;
+import com.mygdx.game.model.faction.NorthernRealms;
+import org.w3c.dom.Notation;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -492,9 +495,11 @@ public class GameManager {
         calculateAllHPs();
         if (areBothPlayersPassed()) {
             // TODO end of the round
+            PlayerInGame winner = null;
             // Adding Point to winner
             if (currentPlayer.getTotalHP() > getOtherPlayer().getTotalHP()) {
                 getOtherPlayer().decreaseRemainingLives();
+                winner = getCurrentPlayer();
             } else if (currentPlayer.getTotalHP() == getOtherPlayer().getTotalHP()) {
                 if (!(getOtherPlayer().getPlayer().getFaction() instanceof Nilfgaard)) {
                     getOtherPlayer().decreaseRemainingLives();
@@ -504,8 +509,10 @@ public class GameManager {
                 }
             } else {
                 currentPlayer.decreaseRemainingLives();
+                winner = getOtherPlayer();
             }
 
+            // ending the game for real
             if (currentPlayer.getRemainingLives() == 0 && getOtherPlayer().getRemainingLives() == 0) {
                 System.out.println("TIED");
                 return;
@@ -517,15 +524,25 @@ public class GameManager {
                 return;
             }
 
+            // deleting the Cards in Board
             ArrayList<Card> currentPlayerAllCards = new ArrayList<>();
             ArrayList<Card> otherPlayerAllCards = new ArrayList<>();
+            ArrayList<Card> currentPlayerUnitCards = new ArrayList<>();
+            ArrayList<Card> otherPlayerUnitCards = new ArrayList<>();
             currentPlayerAllCards.addAll(currentPlayer.getAllCards());
             otherPlayerAllCards.addAll(getOtherPlayer().getAllCards());
+
             for (Card sampleCard : currentPlayerAllCards) {
+                if (sampleCard.isUnitCard()){
+                    currentPlayerUnitCards.add(sampleCard);
+                }
                 removeCard(sampleCard);
                 gameController.removeCardFromView(sampleCard);
             }
             for (Card sampleCard : otherPlayerAllCards) {
+                if (sampleCard.isUnitCard()){
+                    otherPlayerUnitCards.add(sampleCard);
+                }
                 removeCard(sampleCard);
                 gameController.removeCardFromView(sampleCard);
             }
@@ -533,15 +550,79 @@ public class GameManager {
                 gameController.removeCardFromView(weatherCards.get(i));
                 removeCard(weatherCards.get(i));
             }
+            if (currentPlayer.getPlayer().getFaction() instanceof Monsters) {
+                int index = (int) (Math.random() * currentPlayerUnitCards.size());
+                Card sampleCard = currentPlayerUnitCards.get(index);
+                if (sampleCard.getType().equals(Type.Agile)){
+                    placeCard(sampleCard , Position.Melee);
+                    currentPlayer.removeFromGraveyard(sampleCard);
+                } else {
+                    placeCard(sampleCard);
+                    currentPlayer.removeFromGraveyard(sampleCard);
+                }
+            }
+            if (getOtherPlayer().getPlayer().getFaction() instanceof Monsters) {
+                int index = (int) (Math.random() * otherPlayerUnitCards.size());
+                Card sampleCard = otherPlayerUnitCards.get(index);
+                if (sampleCard.getType().equals(Type.Agile)){
+                    getOtherPlayer().addToMelee(sampleCard);
+                    gameController.addCardToTableSection(sampleCard , Position.Melee , true);
+                    getOtherPlayer().removeFromGraveyard(sampleCard);
+                } else {
+                    if (sampleCard.getType().equals(Type.Agile)) {
+                    } else if (sampleCard.getType().equals(Type.CloseCombat)) {
+                        getOtherPlayer().addToMelee(sampleCard);
+                        gameController.addCardToTableSection(sampleCard, Position.Melee, true);
+                        getOtherPlayer().removeFromGraveyard(sampleCard);
+                    } else if (sampleCard.getType().equals(Type.RangedCombat)) {
+                        getOtherPlayer().addToRange(sampleCard);
+                        gameController.addCardToTableSection(sampleCard, Position.Range, true);
+                        getOtherPlayer().removeFromGraveyard(sampleCard);
+                    } else if (sampleCard.getType().equals(Type.Siege)) {
+                        getOtherPlayer().addToSiege(sampleCard);
+                        gameController.addCardToTableSection(sampleCard, Position.Siege, true);
+                        getOtherPlayer().removeFromGraveyard(sampleCard);
+                    } else if (sampleCard.getType().equals(Type.Spell)) {
+                    } else if (sampleCard.getType().equals(Type.Weather)) {
+                    } else {
+                        throw new RuntimeException();
+                    }
+                }
+            }
 
+            // Northern Realms
+            if (winner != null) {
+                if (winner.getPlayer().getFaction() instanceof NorthernRealms) {
+                    int index = (int) (Math.random() * winner.getDeckInGame().size());
+                    Card sampleCard = winner.getDeckInGame().get(index);
+                    winner.removeFromDeckInGame(sampleCard);
+                    if (winner == currentPlayer) {
+                        addToHand(sampleCard , true);
+                    } else if (winner == getOtherPlayer()) {
+                        addToHand(sampleCard , false);
+                    } else {
+
+                    }
+                } else {
+
+                }
+            } else {
+            }
+
+            // Skeillige
+            if (turnNumber == 1) {
+                // TODO : Skellige
+            }
+
+            // Updating the Scores
             gameController.updateScores(player1 , player2);
 
+            // reset isPassed for players
             currentPlayer.setIsPassed(false);
             getOtherPlayer().setIsPassed(false);
-
             gameController.resetPassButtons();
-            // delete the Cards
-            // Transformer Cards
+
+            // Who's Turn Is it?
             if (turnNumber % 2 == 0) {
                 if (currentPlayer != player2) {
                     switchTurn();

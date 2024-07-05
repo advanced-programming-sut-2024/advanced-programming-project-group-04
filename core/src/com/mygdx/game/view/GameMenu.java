@@ -87,7 +87,7 @@ public class GameMenu extends Menu {
         tableInit();
 
         myDeck = new Deck();
-        for (AllCards allCard : Skellige.getCards()) {
+        for (AllCards allCard : Monsters.getCards()) {
             for (int i = 0; i < allCard.getNumber(); i++)
                 myDeck.addCard(new Card(allCard));
         }
@@ -101,7 +101,9 @@ public class GameMenu extends Menu {
         }
 
         Player matin = new Player("Matin", "cDnak@(#&>CAxm09218", "matin@giga.com", "GigaChad");
+        matin.setFaction(new Monsters());
         Player arvin = new Player("Arvin", "1234", "arvin@gay.com", "Simp");
+        arvin.setFaction(new Nilfgaard());
         arvin.loadDeck(enemyDeck);
         matin.loadDeck(myDeck);
         players = gameController.startNewGame(matin, arvin);
