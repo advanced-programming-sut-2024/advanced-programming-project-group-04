@@ -29,6 +29,20 @@ import com.mygdx.game.model.PlayerInGame;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.*;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -324,20 +338,18 @@ public class GameMenu extends Menu {
         };
     }
 
-    private int currentIndexOfDisplayedCards = 0;
-    private GraphicalCard selectedGraphicalCardByTheUser = null;
-    public void showSomeCardsAndSelectOne(ArrayList<Card> cards) {
-        currentIndexOfDisplayedCards = 0;
-        selectedGraphicalCardByTheUser = null;
+    public GraphicalCard showSomeCardsAndSelectOne(ArrayList<Card> cards) {
+        final int[] currentIndex = {0};
+        final GraphicalCard[] selectedCard = {null};
 
         // Create a window to show the cards and navigation buttons
-        Window window = new Window("Select a Card", skin);
+        final Window window = new Window("Select a Card", skin);
         window.setFillParent(true);
 
-        Table cardTable = new Table();
+        final Table cardTable = new Table();
         window.add(cardTable).expand().fill();
 
-        GraphicalCard[] graphicalCards = new GraphicalCard[cards.size()];
+        final GraphicalCard[] graphicalCards = new GraphicalCard[cards.size()];
         for (int i = 0; i < cards.size(); i++) {
             graphicalCards[i] = createNewGraphicalCard(cards.get(i));
         }
@@ -347,20 +359,19 @@ public class GameMenu extends Menu {
             @Override
             public void run() {
                 cardTable.clear();
-                GraphicalCard cardToShow = graphicalCards[currentIndexOfDisplayedCards];
+                GraphicalCard cardToShow = graphicalCards[currentIndex[0]];
                 cardTable.add(new Image(cardToShow.getImage().getDrawable())).expand().fill();
             }
         };
-
 
         // Add left and right buttons for navigation
         TextButton leftButton = new TextButton("Left", skin);
         leftButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (currentIndexOfDisplayedCards > 0) {
-                    currentIndexOfDisplayedCards--;
-                    updateCardDisplay(cardTable, graphicalCards);
+                if (currentIndex[0] > 0) {
+                    currentIndex[0]--;
+                    updateCardDisplay.run();
                 }
             }
         });
@@ -369,9 +380,9 @@ public class GameMenu extends Menu {
         rightButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (currentIndexOfDisplayedCards < cards.size() - 1) {
-                    currentIndexOfDisplayedCards++;
-                    updateCardDisplay(cardTable , graphicalCards);
+                if (currentIndex[0] < cards.size() - 1) {
+                    currentIndex[0]++;
+                    updateCardDisplay.run();
                 }
             }
         });
@@ -385,19 +396,24 @@ public class GameMenu extends Menu {
             graphicalCard.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    selectedGraphicalCardByTheUser = graphicalCard;
+                    selectedCard[0] = graphicalCard;
                     window.remove();  // Close the window after selection
                 }
             });
         }
 
         // Initial display of the first card
-        updateCardDisplay(cardTable, graphicalCards);
+        updateCardDisplay.run();
 
         // Add the window to the stage
         stage.addActor(window);
 
         // Wait for selection (this is simplified, in reality you might want to handle this asynchronously)
+        while (selectedCard[0] == null) {
+            // This is a busy-wait loop which should be replaced with proper asynchronous handling
+        }
+
+        return selectedCard[0];
     }
 
 
