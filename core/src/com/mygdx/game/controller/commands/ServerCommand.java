@@ -1,4 +1,4 @@
-package com.mygdx.game.controller;
+package com.mygdx.game.controller.commands;
 
 import java.io.Serializable;
 

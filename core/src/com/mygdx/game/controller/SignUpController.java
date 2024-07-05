@@ -1,6 +1,6 @@
 package com.mygdx.game.controller;
 
-import com.mygdx.game.model.Player;
+import com.mygdx.game.controller.commands.ServerCommand;
 
 import java.util.Random;
 

@@ -1,7 +1,7 @@
 package com.mygdx.game.controller;
 
 import com.mygdx.game.Main;
-import com.mygdx.game.view.GameMenu;
+import com.mygdx.game.controller.commands.ServerCommand;
 
 public class StartGameController {
     private Main game;

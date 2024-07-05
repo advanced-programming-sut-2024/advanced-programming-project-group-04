@@ -3,13 +3,9 @@ package com.mygdx.game.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -19,13 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
-import com.mygdx.game.controller.CheatController;
-import com.mygdx.game.controller.CheatProcessor;
+import com.mygdx.game.controller.cheat.CheatController;
+import com.mygdx.game.controller.cheat.CheatProcessor;
 import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.Deck;
 import com.mygdx.game.model.Player;
@@ -66,8 +61,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     public GameMenu(Main game) {
         super(game);
         this.game = game;
-        this.gameController = new GameController(this);
-        gameController.setGameMenu(this);
+        this.gameController = new GameController(this, game.getClient());
 
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         assetLoader = game.assetLoader;
@@ -80,27 +74,27 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         tableInit();
 
-        myDeck = new Deck();
-        for (AllCards allCard : Monsters.getCards()) {
-            for (int i = 0; i < allCard.getNumber(); i++)
-                myDeck.addCard(new Card(allCard));
-        }
-        myDeck.addCard(new Card(AllCards.BitingFrost));
-        enemyDeck = new Deck();
-        for (AllCards allCard : Nilfgaard.getCards()) {
-            for (int i = 0; i < allCard.getNumber(); i++)
-                enemyDeck.addCard(new Card(allCard));
-        }
-
-        Player matin = new Player("Matin", "matin@giga.com", "GigaChad");
-        Player arvin = new Player("Arvin", "arvin@gay.com", "Simp");
-        arvin.loadDeck(enemyDeck);
-        matin.loadDeck(myDeck);
-        players = gameController.startNewGame(matin, arvin);
-
-
-        loadHand(players.get(0).getHand(), myHandTable);
-        loadHand(players.get(1).getHand(), enemyHandTable);
+//        myDeck = new Deck();
+//        for (AllCards allCard : Monsters.getCards()) {
+//            for (int i = 0; i < allCard.getNumber(); i++)
+//                myDeck.addCard(new Card(allCard));
+//        }
+//        myDeck.addCard(new Card(AllCards.BitingFrost));
+//        enemyDeck = new Deck();
+//        for (AllCards allCard : Nilfgaard.getCards()) {
+//            for (int i = 0; i < allCard.getNumber(); i++)
+//                enemyDeck.addCard(new Card(allCard));
+//        }
+//
+//        Player matin = new Player("Matin", "matin@giga.com", "GigaChad");
+//        Player arvin = new Player("Arvin", "arvin@gay.com", "Simp");
+//        arvin.loadDeck(enemyDeck);
+//        matin.loadDeck(myDeck);
+//        players = gameController.startNewGame(matin, arvin);
+//
+//
+//        loadHand(players.get(0).getHand(), myHandTable);
+//        loadHand(players.get(1).getHand(), enemyHandTable);
 
 
         cheatConsole = new CheatConsoleWindow("Cheat Console", skin, new CheatProcessor() {
@@ -199,28 +193,13 @@ public class GameMenu extends Menu implements CheatProcessor {
         // Create and position pass buttons
         passButtonEnemy = new TextButton("PASS enemy", buttonStyle);
         passButtonEnemy.setPosition(300, 1200);
-        passButtonEnemy.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (!gameController.isMyTurn) {
-                    players.get(1).setIsPassed(true);
-                    passButtonEnemy.setText("PASSED");
-                    gameController.passTurn();
-                }
-
-            }
-        });
 
         passButtonSelf = new TextButton("PASS self", buttonStyle);
         passButtonSelf.setPosition(300, 400);
         passButtonSelf.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (gameController.isMyTurn) {
-                    players.get(0).setIsPassed(true);
-                    passButtonSelf.setText("PASSED");
-                    gameController.passTurn();
-                }
+                if (gameController.passButtonClicked()) passButtonSelf.setText("PASSED");
             }
         });
 
@@ -374,27 +353,31 @@ public class GameMenu extends Menu implements CheatProcessor {
     public GameController getGameController() {
         return this.gameController;
     }
-//
-//    @Override
-//    public void render(float v) {
-//        Gdx.gl.glClearColor(0, 0, 0, 1);
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-//            Array<Actor> actors = new Array<>(stage.getActors());
-//            stage.clear();
-//            for (Actor actor : actors) {
-//                if (!(actor instanceof Window)) {
-//                    stage.addActor(actor);
-//                }
-//            }
-//        }
-//        stage.act(v);
-//        stage.draw();
-//    }
 
-    public void updateScores(PlayerInGame self, PlayerInGame enemy) {
-        myScore.setText(self.getTotalHP());
-        enemyScore.setText(enemy.getTotalHP());
+    @Override
+    public void render(float v) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Array<Actor> actors = new Array<>(stage.getActors());
+            stage.clear();
+            for (Actor actor : actors) {
+                if (!(actor instanceof Window)) {
+                    stage.addActor(actor);
+                }
+            }
+        }
+        if (game.getClient().isGameCommandReceived()) {
+            gameController.processCommand(game.getClient().getGameCommand());
+            game.getClient().setGameCommandReceived(false);
+        }
+        stage.act(v);
+        stage.draw();
+    }
+
+    public void updateScores(int selfTotalHP, int enemyTotalHP) {
+        myScore.setText(selfTotalHP);
+        enemyScore.setText(enemyTotalHP);
     }
 
     public void resetPassedButtons() {

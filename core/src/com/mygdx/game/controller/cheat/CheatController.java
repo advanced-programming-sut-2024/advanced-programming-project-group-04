@@ -1,4 +1,4 @@
-package com.mygdx.game.controller;
+package com.mygdx.game.controller.cheat;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;

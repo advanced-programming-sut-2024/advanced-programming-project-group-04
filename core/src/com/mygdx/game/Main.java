@@ -4,13 +4,13 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.mygdx.game.controller.Client;
-import com.mygdx.game.controller.ServerCommand;
+import com.mygdx.game.controller.commands.ClientCommand;
+import com.mygdx.game.controller.commands.ServerCommand;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.message.Message;
 import com.mygdx.game.view.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Main extends Game {
     public AssetManager assetManager;
@@ -29,11 +29,11 @@ public class Main extends Game {
 
 
         // Play background music
-        backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
-        backgroundMusic.setLooping(true);
-        backgroundMusic.play();
+//        backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
+//        backgroundMusic.setLooping(true);
+//        backgroundMusic.play();
 
-        this.client = new Client(this, "127.0.0.1");
+        this.client = new Client("127.0.0.1");
 
         Player arman = getClient().sendToServer(ServerCommand.FETCH_USER, "arman");
         Player arvin2 = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin2");
@@ -74,6 +74,10 @@ public class Main extends Game {
     @Override
     public void render() {
         super.render();
+        if (client.isClientCommandReceived()) {
+            processCommand(client.getClientCommand());
+            client.setClientCommandReceived(false);
+        }
     }
 
     @Override
@@ -99,11 +103,11 @@ public class Main extends Game {
         // DELETE THIS LATER
     }
 
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public void startGame() {
-        setScreen(new GameMenu(this));
+    private void processCommand(ClientCommand command) {
+        switch (command) {
+            case START_GAME:
+                setScreen(new GameMenu(this));
+                break;
+        }
     }
 }

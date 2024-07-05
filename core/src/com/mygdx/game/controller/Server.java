@@ -2,6 +2,8 @@ package com.mygdx.game.controller;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
+import com.mygdx.game.controller.commands.GameServerCommand;
+import com.mygdx.game.controller.commands.ServerCommand;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
@@ -12,6 +14,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +25,7 @@ public class Server extends Thread {
     private static final ConcurrentHashMap<Player, Server> allSessions = new ConcurrentHashMap<>();
 
     private boolean isReceived;
-    private Object obj;
+    private ArrayList<Object> inputs;
 
     private Socket socket;
     private ObjectInputStream in;
@@ -93,9 +96,15 @@ public class Server extends Thread {
             while (true) {
                 Object input = in.readObject();
 
-                if (!(input instanceof ServerCommand)) {
-                    this.obj = input;
+                if (input instanceof GameServerCommand) {
+                    inputs = new ArrayList<>();
+                    inputs.add(input);
+                    while (input != GameServerCommand.EOF) {
+                        input = in.readObject();
+                        inputs.add(input);
+                    }
                     setReceived(true);
+                    continue;
                 }
                 ServerCommand cmd = (ServerCommand) input;
                 System.out.println(cmd.name());
@@ -335,6 +344,8 @@ public class Server extends Thread {
     }
 
     public Socket getSocket() { return this.socket; }
+
+    public Player getPlayer() { return this.player; }
 
     public static void main(String[] args) {
         ServerSocket serverSocket;

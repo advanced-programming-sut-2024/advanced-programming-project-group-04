@@ -2,7 +2,7 @@ package com.mygdx.game.controller;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.mygdx.game.model.GameManager;
+import com.mygdx.game.controller.commands.GameClientCommand;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.PlayerInGame;
 import com.mygdx.game.model.Position;
@@ -14,34 +14,25 @@ import com.mygdx.game.view.GameMenu;
 import com.mygdx.game.view.GraphicalCard;
 import com.mygdx.game.view.TableSection;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.mygdx.game.controller.commands.GameServerCommand.*;
+
 public class GameController {
-    public GameManager gameManager;
-    public boolean isMyTurn;
-    public GameMenu gameMenu;
+    private boolean isMyTurn;
+    public final GameMenu gameMenu;
+    private Client client;
 
-    public GameController(GameMenu gameMenu) {
+    public GameController(GameMenu gameMenu, Client client) {
         this.gameMenu = gameMenu;
+        this.client = client;
     }
 
-    public ArrayList<PlayerInGame> startNewGame(Player p1, Player p2) {
-        gameManager = new GameManager(p1, p2, this);
-        isMyTurn = true;
-        ArrayList<PlayerInGame> output = new ArrayList<>();
-        output.add(gameManager.getCurrentPlayer());
-        output.add(gameManager.getOtherPlayer());
-        return output;
-    }
+    public void setIsMyTurn(boolean isMyTurn) { this.isMyTurn = isMyTurn; }
 
-    public void setGameMenu(GameMenu gameMenu) {
-        this.gameMenu = gameMenu;
-    }
-
-    public void updateScores(PlayerInGame p1, PlayerInGame p2) {
-        gameMenu.updateScores(p1, p2);
+    public void updateScores(int selfTotalHP, int enemyTotalHP) {
+        gameMenu.updateScores(selfTotalHP, enemyTotalHP);
     }
 
     public void resetPassButtons() {
@@ -68,14 +59,13 @@ public class GameController {
 
     public boolean canPlaceCardToPosition(Card card, TableSection tableSection) {
         Position position = tableSection.getPosition();
-        if (tableSection.isEnemy() ^ !isMyTurn) return gameManager.canPlaceCardEnemy(card, position);
-        else return gameManager.canPlaceCard(card, position);
+        if (tableSection.isEnemy() ^ !isMyTurn) return client.sendToServer(canPlaceCardEnemy, card, position);
+        else return client.sendToServer(canPlaceCard, card, position);
     }
 
-    public void addCardToHand(Card card, PlayerInGame player) {
-        if (player.equals(gameManager.getPlayer1()))
-            addCardToTable(card, gameMenu.getAllTables().get(TableSection.MY_HAND));
-        else addCardToTable(card, gameMenu.getAllTables().get(TableSection.ENEMY_HAND));
+    public void addCardToHand(Card card, boolean isEnemy) {
+        if (isEnemy) addCardToTable(card, gameMenu.getAllTables().get(TableSection.ENEMY_HAND));
+        else addCardToTable(card, gameMenu.getAllTables().get(TableSection.MY_HAND));
     }
 
     public void addCardToTableSection(Card card, Position position, boolean isEnemy) {
@@ -90,8 +80,7 @@ public class GameController {
         table.add(graphicalCard);
     }
 
-    public void changeTurn() {
-        isMyTurn = !isMyTurn;
+    public void changeTurn(boolean isMyTurn) {
         gameMenu.changeTurn(isMyTurn);
     }
 
@@ -143,7 +132,12 @@ public class GameController {
     }
 
     public void passTurn() {
-        gameManager.endTurn();
+//        gameManager.endTurn();
+        client.sendToServerVoid(PASS_TURN, EOF);
+    }
+
+    public boolean passButtonClicked() {
+
     }
 
     public void handleCheat(String cheatCode) {
@@ -211,6 +205,22 @@ public class GameController {
             gameManager.endTurn();
         }
 
+    }
+
+    public void processCommand(ArrayList<Object> inputs) {
+        GameClientCommand command = (GameClientCommand) inputs.get(0);
+        switch (command) {
+            case SET_IS_MY_TURN:
+                setIsMyTurn((boolean) inputs.get(1));
+                break;
+            case UPDATE_SCORES:
+                updateScores((int) inputs.get(1), (int) inputs.get(2));
+                break;
+            case RESET_PASS_BUTTONS:
+                resetPassButtons();
+                break;
+
+        }
     }
 
 }

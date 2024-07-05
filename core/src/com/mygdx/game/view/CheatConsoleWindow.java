@@ -1,13 +1,11 @@
 package com.mygdx.game.view;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.mygdx.game.AssetLoader;
-import com.mygdx.game.controller.CheatProcessor;
+import com.mygdx.game.controller.cheat.CheatProcessor;
 
 public class CheatConsoleWindow extends Window {
     private TextField cheatInputField;
