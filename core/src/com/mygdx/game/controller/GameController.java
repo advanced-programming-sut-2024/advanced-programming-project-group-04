@@ -159,7 +159,7 @@ public class GameController {
             gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() - 1);
         } else if (cheatCode.equals("take a life away from enemy")) {
             gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() - 1);
-        } else if (cheatCode.startsWith("add card")) {
+        } else if (cheatCode.startsWith("add card") && !cheatCode.contains("enemy")) {
             String[] parts = cheatCode.split(" ");
             String cardName = parts[2];
             AllCards allCard = null;
@@ -173,6 +173,21 @@ public class GameController {
             if (card != null) {
                 gameManager.getCurrentPlayer().addToHand(card);
                 addCardToHand(card, gameManager.getCurrentPlayer());
+            }
+        } else if (cheatCode.startsWith("add card enemy")) {
+            String[] parts = cheatCode.split(" ");
+            String cardName = parts[3];
+            AllCards allCard = null;
+            try {
+                allCard = AllCards.valueOf(cardName);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Card not found: " + cardName);
+            }
+            Card card = new Card(allCard);
+
+            if (card != null) {
+                gameManager.getOtherPlayer().addToHand(card);
+                addCardToHand(card, gameManager.getOtherPlayer());
             }
         } else if (cheatCode.equals("Besme Naddaf")) {
             for (Card card : gameManager.getAllCards()) {

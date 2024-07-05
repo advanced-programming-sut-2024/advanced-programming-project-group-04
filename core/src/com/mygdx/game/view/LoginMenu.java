@@ -2,13 +2,16 @@ package com.mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.Input;
 import com.mygdx.game.AssetLoader;
@@ -26,6 +29,7 @@ public class LoginMenu extends Menu {
     public LoginMenu(Main game) {
         super(game);
         this.loginController = new LoginController(game);
+        loginController.setLoginMenu(this);
 
         Player.loadAllPlayers();
 
@@ -130,11 +134,69 @@ public class LoginMenu extends Menu {
         if (response.isFailed()) {
             errorLabel.setText(response.getError());
             errorLabel.setColor(Color.RED);
+<<<<<<< Updated upstream
         }
         else {
             // TODO: WTF should I do with this line?
             Player.loginPlayer(Player.findPlayerByUsername(username));
+=======
+        } else {
+>>>>>>> Stashed changes
             setScreen(new MainMenu(game));
         }
+    }
+
+    public void verifyVerificationCode(String actualCode) {
+        Dialog dialog = new Dialog("Verify Email", game.assetLoader.skin);
+
+        // Set dialog size
+        float dialogWidth = Gdx.graphics.getWidth() * 0.8f;
+        float dialogHeight = Gdx.graphics.getHeight() * 0.6f;
+        dialog.setSize(dialogWidth, dialogHeight);
+
+        // Set dark blue background
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f)); // Dark blue color
+        pixmap.fill();
+
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+
+        dialog.setBackground(new TextureRegionDrawable(new TextureRegion(texture)));
+
+        Table table = new Table();
+        table.setFillParent(true);
+
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+        textFieldStyle.font = game.assetLoader.font;
+        textFieldStyle.fontColor = Color.WHITE;
+
+        TextField verificationCodeField = new TextField("", textFieldStyle);
+        verificationCodeField.setMessageText("Enter verification code");
+
+        TextButton.TextButtonStyle textButtonStyle = game.assetLoader.textButtonStyle;
+        TextButton confirmButton = new TextButton("Confirm", textButtonStyle);
+        confirmButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                String enteredCode = verificationCodeField.getText();
+                dialog.hide();
+                ControllerResponse response = loginController.verifyButtonPressed(actualCode, enteredCode);
+                errorLabel.setText(response.getError());
+                if (response.isFailed()) errorLabel.setColor(Color.RED);
+                else {
+                    errorLabel.setColor(Color.GREEN);
+                    setScreen(new MainMenu(game));
+                }
+            }
+        });
+
+        table.add(verificationCodeField).width(400).pad(10);
+        table.row();
+        table.add(confirmButton).width(200).height(70).pad(10);
+
+        dialog.getContentTable().add(table).expand().fill();
+        dialog.show(stage);
+        return;
     }
 }

@@ -28,7 +28,7 @@ public class Main extends Game {
         // Play background music
         backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
         backgroundMusic.setLooping(true);
-        backgroundMusic.play();
+        // backgroundMusic.play();
 
         Player arman = new Player("arman", "123", "a@b.com", "tahmasb");
         Player arvin2 = new Player("arvin2", "123", "A@B.com", "Gay");
@@ -55,8 +55,12 @@ public class Main extends Game {
 
 
         // Set the initial screen
+<<<<<<< Updated upstream
         setScreen(new LoginMenu(this));
 
+=======
+        setScreen(new GameMenu(this));
+>>>>>>> Stashed changes
     }
 
     public void setLoggedInPlayer(Player player) {

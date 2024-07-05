@@ -31,6 +31,7 @@ public class Player {
     private HashMap<Player, ArrayList<Message>> sentMessages = new HashMap<>();
     private HashMap<Player, ArrayList<Message>> receivedMessages = new HashMap<>();
     private ArrayList<Player> friends = new ArrayList<>();
+    private boolean twoFAEnabled;
 
     private ArrayList<Player> incomingFriendRequests = new ArrayList<>();
     private ArrayList<Player> outgoingFriendRequests = new ArrayList<>();
@@ -55,6 +56,7 @@ public class Player {
         this.winCount = 0;
         this.drawCount = 0;
         this.lossCount = 0;
+        twoFAEnabled = false;
 
         allPlayers.add(this);
         this.save();
@@ -302,5 +304,13 @@ public class Player {
         Collections.sort(combinedMessages, Comparator.comparingLong(Message::getSendTime));
 
         return combinedMessages;
+    }
+
+    public boolean getTwoFAEnabled() {
+        return twoFAEnabled;
+    }
+
+    public void toggleTwoFA() {
+        twoFAEnabled = !twoFAEnabled;
     }
 }
