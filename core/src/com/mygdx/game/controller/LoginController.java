@@ -33,9 +33,6 @@ public class LoginController {
             else if (client.sendToServer(ServerCommand.VALIDATE_PASSWORD, username, password).equals(false)) errorMessage = "Wrong password";
             else {
 
-                Player player = client.sendToServer(ServerCommand.FETCH_USER, username);
-                client.sendToServer(ServerCommand.LOGIN_PLAYER, player.getId());
-
                 this.username = username;
                 this.password = password;
                 Player player = client.sendToServer(ServerCommand.FETCH_USER, username);

@@ -27,10 +27,7 @@ public class SignUpController {
     private String password;
     private String email;
     private String nickname;
-
-
     private final Client client;
-    private EmailSender emailSender;
 
 
     public SignUpController(Client client) {

@@ -59,7 +59,7 @@ public class Main extends Game {
 
         // Set the initial screen
 
-        setScreen(new LoginMenu(this));
+        setScreen(new GameMenu(this));
 
     }
 

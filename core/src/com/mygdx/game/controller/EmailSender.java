@@ -39,7 +39,6 @@ public class EmailSender {
             message.setText(body);
 
             Transport.send(message);
-            System.out.println("mohandes pirooz shodim");
 
         } catch (MessagingException e) {
             e.printStackTrace();
