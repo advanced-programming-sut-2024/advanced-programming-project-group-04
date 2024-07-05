@@ -46,6 +46,9 @@ public class Scorch implements Ability {
                     gameManager.removeCard(card);
                 }
             }
+            if (callerCard.getAllCard().equals(AllCards.Scorch)) {
+                gameManager.removeCard(callerCard);
+            }
         }
     }
 }

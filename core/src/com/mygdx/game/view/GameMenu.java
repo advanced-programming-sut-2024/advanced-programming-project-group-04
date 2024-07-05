@@ -92,6 +92,8 @@ public class GameMenu extends Menu {
                 myDeck.addCard(new Card(allCard));
         }
         myDeck.addCard(new Card(AllCards.BitingFrost));
+        myDeck.addCard(new Card(AllCards.Scorch));
+
         enemyDeck = new Deck();
         for (AllCards allCard : Nilfgaard.getCards()) {
             for (int i = 0; i < allCard.getNumber(); i++)

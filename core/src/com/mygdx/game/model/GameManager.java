@@ -16,7 +16,7 @@ public class GameManager {
 
     private PlayerInGame player1, player2, currentPlayer;
     private GameController gameController;
-
+    private int turnNumber;
     private ArrayList<Card> weatherCards = new ArrayList<>();
 
     public GameManager(Player player1, Player player2, GameController gameController) {
@@ -24,6 +24,7 @@ public class GameManager {
         this.player2 = new PlayerInGame(player2);
         this.gameController = gameController;
         this.currentPlayer = this.player1;
+        this.turnNumber = 0;
     }
 
     public PlayerInGame getPlayer1() {
@@ -541,6 +542,16 @@ public class GameManager {
             gameController.resetPassButtons();
             // delete the Cards
             // Transformer Cards
+            if (turnNumber % 2 == 0) {
+                if (currentPlayer != player2) {
+                    switchTurn();
+                }
+            } else {
+                if (currentPlayer != player1) {
+                    switchTurn();
+                }
+            }
+            turnNumber++;
             return;
         }
         System.out.println("Arman:" + isOtherPlayerPassed());
@@ -639,7 +650,7 @@ public class GameManager {
         int maxOfCurrentHP = 0;
         ArrayList<Card> enemyCards = otherPlayer.getAllCards();
         for (Card card : enemyCards) {
-            if (card.getCurrentHP() > maxOfCurrentHP) {
+            if (card.getCurrentHP() > maxOfCurrentHP && !card.isHero()) {
                 maxOfCurrentHP = card.getCurrentHP();
             }
         }

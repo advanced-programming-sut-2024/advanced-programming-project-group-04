@@ -251,7 +251,7 @@ public enum AllCards {
         return ability instanceof CommanderHorn
             || ability instanceof MoralBoost
             || ability instanceof TightBond
-            || isWeather()
+            || isWeather() || ability instanceof Mardroeme
         ;
     }
 
