@@ -12,6 +12,11 @@ public class DaisyOfTheValley extends Leader {
     @Override
     public void run(GameManager gameManager) {
         PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
+        if (currentPlayer.getIsLeaderUsed()) {
+            return;
+        }
+
+        // TODO : This leader is Kinda Wierd
         currentPlayer.setIsLeaderUsed(true);
     }
 }

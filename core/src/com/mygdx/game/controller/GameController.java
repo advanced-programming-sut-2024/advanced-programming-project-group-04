@@ -142,6 +142,10 @@ public class GameController {
         }
     }
 
+    public Card showSomeCardsAndSelectOne (ArrayList<Card> cards){
+        return gameMenu.showSomeCardsAndSelectOne(cards).getCard();
+    }
+
     public void passTurn() {
         gameManager.endTurn();
     }
