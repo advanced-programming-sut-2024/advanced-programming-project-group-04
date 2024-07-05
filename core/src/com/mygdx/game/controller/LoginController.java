@@ -32,7 +32,6 @@ public class LoginController {
             else if (client.sendToServer(ServerCommand.HAS_ACTIVE_SESSION, username)) errorMessage = "Player logged in another device";
             else if (client.sendToServer(ServerCommand.VALIDATE_PASSWORD, username, password).equals(false)) errorMessage = "Wrong password";
             else {
-
                 this.username = username;
                 this.password = password;
                 Player player = client.sendToServer(ServerCommand.FETCH_USER, username);
