@@ -7,14 +7,11 @@ import java.util.Properties;
 
 public class EmailSender {
 
-    private final String username;
-    private final String password;
+    private final String username = "gwent.2fa@gmail.com";
+    private final String password = "kcnq fryl ofis nhdv";
     private final Properties properties;
 
-    public EmailSender(String username, String password) {
-        this.username = username;
-        this.password = password;
-
+    public EmailSender() {
         properties = new Properties();
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");

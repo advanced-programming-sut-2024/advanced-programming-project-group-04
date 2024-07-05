@@ -50,9 +50,8 @@ public class Client extends Thread {
                 out.writeObject(obj);
             }
 
-            System.out.println("Sent");
             while (!isReceived());
-            System.out.println("Returned");
+
 
             T response = (T) this.obj;
             this.obj = null;
@@ -76,7 +75,6 @@ public class Client extends Thread {
         while (isRunning) {
             try {
                 this.obj = in.readObject();
-                System.out.println("Received");
                 if (!(obj instanceof ClientCommand)) setReceived(true);
 
                 else {

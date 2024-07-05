@@ -31,7 +31,7 @@ public class Main extends Game {
         // Play background music
         backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
         backgroundMusic.setLooping(true);
-        backgroundMusic.play();
+        // backgroundMusic.play();
 
         this.client = new Client(this, "127.0.0.1");
 
@@ -58,7 +58,9 @@ public class Main extends Game {
         ArrayList<Message> chatArmanVaMahbod = mahbod.getChatWithPlayer(arman);
 
         // Set the initial screen
+
         setScreen(new LoginMenu(this));
+
     }
 
     public void setLoggedInPlayer(Player player) {

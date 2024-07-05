@@ -32,19 +32,15 @@ public class ProfileMenu extends Menu {
     public ProfileMenu(Main game) {
         super(game);
 
-        // Load assets
         this.skin = game.assetLoader.skin;
 
-        // Set up background
         Texture backgroundTexture = game.assetManager.get(AssetLoader.BACKGROUND, Texture.class);
         this.backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
-        // Set up the profile menu UI
         setupProfileMenu();
 
-        // Set the initial tab to "Change Credentials"
         changeCredentialsLabel.setColor(Color.YELLOW);
     }
 
@@ -54,31 +50,26 @@ public class ProfileMenu extends Menu {
         tabTable.setFillParent(true);
         stage.addActor(tabTable);
 
-        // Create tab labels
         backLabel = createTabLabel("Back to Main Menu");
         changeCredentialsLabel = createTabLabel("Change Credentials");
         statisticsLabel = createTabLabel("Statistics");
         matchHistoryLabel = createTabLabel("Match History");
 
-        // Add listeners to switch tabs
         backLabel.addListener(new ChangeTabListener(backLabel, "back"));
         changeCredentialsLabel.addListener(new ChangeTabListener(changeCredentialsLabel, "changeCredentials"));
         statisticsLabel.addListener(new ChangeTabListener(statisticsLabel, "statistics"));
         matchHistoryLabel.addListener(new ChangeTabListener(matchHistoryLabel, "matchHistory"));
 
-        // Add labels to the table
         tabTable.add(backLabel).pad(20);
         tabTable.add(changeCredentialsLabel).pad(20);
         tabTable.add(statisticsLabel).pad(20);
         tabTable.add(matchHistoryLabel).pad(20);
 
-        // Content table to display the tab content
         contentTable = new Table();
         contentTable.setFillParent(true);
         contentTable.center();
         stage.addActor(contentTable);
 
-        // Initially show the "Change Credentials" tab content
         showTabContent("changeCredentials");
     }
 
@@ -93,7 +84,6 @@ public class ProfileMenu extends Menu {
                 setScreen(new MainMenu(game));
                 break;
             case "changeCredentials":
-                // Add Change Credentials content
                 createChangeCredentialsContent();
                 break;
             case "statistics":
@@ -108,12 +98,7 @@ public class ProfileMenu extends Menu {
     }
 
     private void createChangeCredentialsContent() {
-        BitmapFont font2;
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
-        FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-        parameter.size = 40;
-        font2 = generator.generateFont(parameter);
-        generator.dispose();
+        BitmapFont font2 = AssetLoader.getFontWithCustomSize(40);
 
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font2;
@@ -134,6 +119,10 @@ public class ProfileMenu extends Menu {
         TextButton setUpForgetPasswordQuestionButton = new TextButton("Password Recovery", buttonStyle);
         setUpForgetPasswordQuestionButton.addListener(new PasswordRecoveryClickListener());
 
+        String twoFAButtonString = (game.getLoggedInPlayer().getTwoFAEnabled()) ? "Disable 2FA" : "Enable 2FA";
+        TextButton twoFAButton = new TextButton(twoFAButtonString, buttonStyle);
+        twoFAButton.addListener(new Toggle2FAClickListener(twoFAButton));
+
         contentTable.add(changeUsernameButton).width(400).height(120).pad(10).center();
         contentTable.row().pad(10, 0, 10, 0);
         contentTable.add(changePasswordButton).width(400).height(120).pad(10).center();
@@ -141,6 +130,9 @@ public class ProfileMenu extends Menu {
         contentTable.add(changeEmailButton).width(400).height(120).pad(10).center();
         contentTable.row().pad(10, 0, 10, 0);
         contentTable.add(setUpForgetPasswordQuestionButton).width(400).height(120).pad(10).center();
+        contentTable.row().pad(10, 0, 10, 0);
+        contentTable.add(twoFAButton).width(400).height(120).pad(10).center();
+
     }
 
     private class ChangeTabListener extends ClickListener {
@@ -233,6 +225,21 @@ public class ProfileMenu extends Menu {
                 }
             };
             dialog.show(stage);
+        }
+    }
+
+    private class Toggle2FAClickListener extends ClickListener {
+        TextButton button;
+        public Toggle2FAClickListener(TextButton button) {
+            this.button = button;
+        }
+
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            game.getLoggedInPlayer().toggleTwoFA();
+            String twoFAButtonString = (game.getLoggedInPlayer().getTwoFAEnabled()) ? "Disable 2FA" : "Enable 2FA";
+            // TODO @arman move this part to controller
+            button.setText(twoFAButtonString);
         }
     }
 

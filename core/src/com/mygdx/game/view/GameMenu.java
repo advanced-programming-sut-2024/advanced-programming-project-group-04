@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -43,6 +44,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     public GraphicalCard selectedCard;
     public static float SCALE = 0.15f, offset = 30;
 
+
     GameController gameController;
 
     Table table, upperSectionTable, middleSectionTable, lowerSectionTable;
@@ -61,13 +63,25 @@ public class GameMenu extends Menu implements CheatProcessor {
     private CheatConsoleWindow cheatConsole;
     private boolean cheatConsoleVisible = false;
     private Main game;
+    TextButton myGraveyard, enemyGraveyard;
+    TextButton passButtonEnemy, passButtonSelf;
+    private CheatController cheatController;
 
-    TextButton passButtonEnemy , passButtonSelf;
     public GameMenu(Main game) {
         super(game);
         this.game = game;
         this.gameController = new GameController(this);
         gameController.setGameMenu(this);
+
+        this.cheatController = new CheatController(this);
+
+        Gdx.input.setInputProcessor(stage);
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                return cheatController.keyDown(keycode);
+            }
+        });
 
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         assetLoader = game.assetLoader;
@@ -189,14 +203,82 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemyScore = new Label("0", game.assetLoader.labelStyle);
         myScore.setPosition(200, 400);
         enemyScore.setPosition(200, 1200);
+        TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
+
         stage.addActor(myScore);
         stage.addActor(enemyScore);
 
+        myGraveyard = new TextButton("Graveyard", buttonStyle);
+        enemyGraveyard = new TextButton("Graveyard", buttonStyle);
+        myGraveyard.setPosition(2300, 400);
+        enemyGraveyard.setPosition(2300, 1200);
+        myGraveyard.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ArrayList<Card> cards = players.get(0).getGraveyard();
+                ArrayList<GraphicalCard> graphicalCards = new ArrayList<>();
+                for (Card card : cards) {
+                    graphicalCards.add(createNewGraphicalCard(card));
+                }
+                // TODO @Arman karta ro az jaye dorosteshoon ke avaz kardi biar
+                // alan amalan be soorat hardocde gereftameshoon chon gofti holy change zadi
 
-        // Pass button style
-        TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
+                Window window = new Window("Cards", skin);
 
-        // Create and position pass buttons
+                Table cardsTable = new Table();
+
+                if (graphicalCards.isEmpty()) return;
+                for (GraphicalCard graphicalCard : graphicalCards) {
+                    Drawable drawable = graphicalCard.getImage().getDrawable();
+                    Image cardImage = new Image(drawable);
+
+                    cardsTable.add(cardImage).pad(10);
+                }
+
+                ScrollPane scrollPane = new ScrollPane(cardsTable, skin);
+                scrollPane.setScrollingDisabled(false, true); // Enable horizontal scrolling only
+                window.add(scrollPane).expand().fill();
+                window.setSize(Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.6f);
+                window.setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.2f);
+                stage.addActor(window);
+            }
+        });
+
+        enemyGraveyard.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ArrayList<Card> cards = players.get(1).getGraveyard();
+                ArrayList<GraphicalCard> graphicalCards = new ArrayList<>();
+                for (Card card : cards) {
+                    graphicalCards.add(createNewGraphicalCard(card));
+                }
+                // TODO @Arman karta ro az jaye dorosteshoon ke avaz kardi biar
+                // alan amalan be soorat hardocde gereftameshoon chon gofti holy change zadi
+
+                Window window = new Window("Cards", skin);
+
+                Table cardsTable = new Table();
+
+                if (graphicalCards.isEmpty()) return;
+                for (GraphicalCard graphicalCard : graphicalCards) {
+                    Drawable drawable = graphicalCard.getImage().getDrawable();
+                    Image cardImage = new Image(drawable);
+
+                    cardsTable.add(cardImage).pad(10);
+                }
+
+                ScrollPane scrollPane = new ScrollPane(cardsTable, skin);
+                scrollPane.setScrollingDisabled(false, true); // horizontal
+                window.add(scrollPane).expand().fill();
+                window.setSize(Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.6f);
+                window.setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.2f);
+                stage.addActor(window);
+            }
+        });
+
+        stage.addActor(myGraveyard);
+        stage.addActor(enemyGraveyard);
+
         passButtonEnemy = new TextButton("PASS enemy", buttonStyle);
         passButtonEnemy.setPosition(300, 1200);
         passButtonEnemy.addListener(new ClickListener() {
@@ -410,18 +492,33 @@ public class GameMenu extends Menu implements CheatProcessor {
 
 
     public void toggleCheatConsole() {
-        cheatConsoleVisible = !cheatConsoleVisible;
-        cheatConsole.setVisible(cheatConsoleVisible);
         if (cheatConsoleVisible) {
-            cheatConsole.setWidth(stage.getWidth());
-            cheatConsole.setHeight(150);
-            cheatConsole.setPosition(0, stage.getHeight() / 2 - cheatConsole.getHeight() / 2);
-            stage.setKeyboardFocus(cheatConsole.findActor("cheatInputField"));
+            hideCheatConsole();
         } else {
-            stage.setKeyboardFocus(null);
+            showCheatConsole();
         }
     }
 
+    public void showCheatConsole() {
+        cheatConsoleVisible = true;
+        cheatConsole.setVisible(true);
+        cheatConsole.setWidth(stage.getWidth());
+        cheatConsole.setHeight(150);
+        cheatConsole.setPosition(0, stage.getHeight() / 2 - cheatConsole.getHeight() / 2);
+        stage.addActor(cheatConsole);
+        stage.setKeyboardFocus(cheatConsole.findActor("cheatInputField"));
+    }
+
+    public void hideCheatConsole() {
+        cheatConsoleVisible = false;
+        cheatConsole.setVisible(false);
+        stage.setKeyboardFocus(null);
+    }
+
+    public boolean isCheatConsoleVisible() {
+        return cheatConsoleVisible;
+    }
+    
     public Main getMainInstance() {
         return game;
     }

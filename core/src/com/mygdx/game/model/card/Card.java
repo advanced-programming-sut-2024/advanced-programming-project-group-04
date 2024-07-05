@@ -19,7 +19,7 @@ public class Card implements Serializable {
         this.howManyMoralBoostAffected = 0;
         this.isCommandersHornAffected = false;
         this.isWeathered = false;
-        this.howManyMoralBoostAffected = 1;
+        this.howManyTightBond = 1;
     }
 
     public int getHowManyTightBond() {
