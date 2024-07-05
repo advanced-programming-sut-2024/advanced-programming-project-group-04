@@ -429,6 +429,11 @@ public class GameMenu extends Menu implements CheatProcessor {
         };
     }
 
+    public GraphicalCard showSomeCardsAndSelectOne(ArrayList<Card> cards) {
+        // TODO : @Matin
+        return null;
+    }
+
     public void changeTurn(boolean isMyTurn) {
         if (isMyTurn) {
             dnd.addSource(myHandSource);
