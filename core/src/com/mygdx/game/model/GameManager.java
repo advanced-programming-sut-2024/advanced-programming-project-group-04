@@ -188,6 +188,38 @@ public class GameManager {
         return true;
     }
 
+    public boolean placeCardEnemyButNotSpy(Card card) {
+        Type theCardType = card.getType();
+
+        PlayerInGame otherPlayer = getOtherPlayer();
+        boolean flag;
+
+        if (theCardType.equals(Type.Agile)) {
+            otherPlayer.addToMelee(card);
+            gameController.addCardToTableSection(card, Position.Melee, true);
+            flag = true;
+        } else if (theCardType.equals(Type.CloseCombat)) {
+            otherPlayer.addToMelee(card);
+            gameController.addCardToTableSection(card, Position.Melee, true);
+            flag = true;
+        } else if (theCardType.equals(Type.RangedCombat)) {
+            otherPlayer.addToRange(card);
+            gameController.addCardToTableSection(card, Position.Range, true);
+            flag = true;
+        } else if (theCardType.equals(Type.Siege)) {
+            otherPlayer.addToSiege(card);
+            gameController.addCardToTableSection(card, Position.Siege, true);
+            flag = true;
+        } else if (theCardType.equals(Type.Spell)) {
+            flag = false;
+        } else if (theCardType.equals(Type.Weather)) {
+            flag = false;
+        } else {
+            throw new RuntimeException();
+        }
+        return flag;
+    }
+
     public boolean addToSiege(Card card) {
         if (!canBeAddedToSiege(card)) {
             return false;
@@ -536,12 +568,32 @@ public class GameManager {
                 if (sampleCard.isUnitCard()){
                     currentPlayerUnitCards.add(sampleCard);
                 }
+                if (sampleCard.isTransformer()) {
+                    if (sampleCard.getAllCard().equals(AllCards.Cow)) {
+                        Card card = new Card(AllCards.BovineDefenseForce);
+                        placeCard(card);
+                    }
+                    if (sampleCard.getAllCard().equals(AllCards.Kambi)) {
+                        Card card = new Card(AllCards.Hemdall);
+                        placeCard(card);
+                    }
+                }
                 removeCard(sampleCard);
                 gameController.removeCardFromView(sampleCard);
             }
             for (Card sampleCard : otherPlayerAllCards) {
                 if (sampleCard.isUnitCard()){
                     otherPlayerUnitCards.add(sampleCard);
+                }
+                if (sampleCard.isTransformer()) {
+                    if (sampleCard.getAllCard().equals(AllCards.Cow)) {
+                        Card card = new Card(AllCards.BovineDefenseForce);
+                        placeCardEnemyButNotSpy(card);
+                    }
+                    if (sampleCard.getAllCard().equals(AllCards.Kambi)) {
+                        Card card = new Card(AllCards.Hemdall);
+                        placeCardEnemyButNotSpy(card);
+                    }
                 }
                 removeCard(sampleCard);
                 gameController.removeCardFromView(sampleCard);

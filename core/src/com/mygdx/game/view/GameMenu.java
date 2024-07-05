@@ -99,6 +99,11 @@ public class GameMenu extends Menu {
             for (int i = 0; i < allCard.getNumber(); i++)
                 enemyDeck.addCard(new Card(allCard));
         }
+        enemyDeck.addCard(new Card(AllCards.Cow));
+        enemyDeck.addCard(new Card(AllCards.Cow));
+        enemyDeck.addCard(new Card(AllCards.Cow));
+        enemyDeck.addCard(new Card(AllCards.Cow));
+        enemyDeck.addCard(new Card(AllCards.Cow));
 
         Player matin = new Player("Matin", "cDnak@(#&>CAxm09218", "matin@giga.com", "GigaChad");
         matin.setFaction(new Monsters());
