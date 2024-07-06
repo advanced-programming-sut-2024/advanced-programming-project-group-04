@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.Align;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
-import sun.tools.jstat.Alignment;
 
 import javax.swing.*;
 import java.util.HashMap;

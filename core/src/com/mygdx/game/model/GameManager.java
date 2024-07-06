@@ -603,7 +603,7 @@ public class GameManager {
                 gameController.removeCardFromView(weatherCards.get(i));
                 removeCard(weatherCards.get(i));
             }
-            if (currentPlayer.getPlayer().getFaction() instanceof Monsters) {
+            if (currentPlayer.getPlayer().getSelectedFaction() instanceof Monsters) {
                 int index = (int) (Math.random() * currentPlayerUnitCards.size());
                 Card sampleCard = currentPlayerUnitCards.get(index);
                 if (sampleCard.getType().equals(Type.Agile)){
@@ -614,7 +614,7 @@ public class GameManager {
                     currentPlayer.removeFromGraveyard(sampleCard);
                 }
             }
-            if (getOtherPlayer().getPlayer().getFaction() instanceof Monsters) {
+            if (getOtherPlayer().getPlayer().getSelectedFaction() instanceof Monsters) {
                 int index = (int) (Math.random() * otherPlayerUnitCards.size());
                 Card sampleCard = otherPlayerUnitCards.get(index);
                 if (sampleCard.getType().equals(Type.Agile)){
@@ -645,7 +645,7 @@ public class GameManager {
 
             // Northern Realms
             if (winner != null) {
-                if (winner.getPlayer().getFaction() instanceof NorthernRealms) {
+                if (winner.getPlayer().getSelectedFaction() instanceof NorthernRealms) {
                     int index = (int) (Math.random() * winner.getDeckInGame().size());
                     Card sampleCard = winner.getDeckInGame().get(index);
                     winner.removeFromDeckInGame(sampleCard);
