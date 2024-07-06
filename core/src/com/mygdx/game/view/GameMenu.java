@@ -38,6 +38,21 @@ import com.mygdx.game.model.faction.*;
 import com.mygdx.game.model.leader.Leader;
 import com.mygdx.game.model.leader.monsters.BringerOfDeath;
 import com.mygdx.game.model.leader.monsters.DestroyerOfWorlds;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,17 +120,28 @@ public class GameMenu extends Menu implements CheatProcessor {
                 myDeck.addCard(new Card(allCard));
         }
         myDeck.addCard(new Card(AllCards.BitingFrost));
+        myDeck.addCard(new Card(AllCards.Scorch));
+
         enemyDeck = new Deck();
         for (AllCards allCard : Nilfgaard.getCards()) {
             for (int i = 0; i < allCard.getNumber(); i++)
                 enemyDeck.addCard(new Card(allCard));
         }
+        enemyDeck.addCard(new Card(AllCards.Cow));
+        enemyDeck.addCard(new Card(AllCards.Cow));
+        enemyDeck.addCard(new Card(AllCards.Cow));
+        enemyDeck.addCard(new Card(AllCards.Cow));
+        enemyDeck.addCard(new Card(AllCards.Cow));
+
 
         myDeck.setLeader(new BringerOfDeath());
         enemyDeck.setLeader(new DestroyerOfWorlds());
 
         Player matin = new Player("Matin", "matin@giga.com", "GigaChad");
+        matin.setFaction(new Monsters());
         Player arvin = new Player("Arvin", "arvin@gay.com", "Simp");
+        arvin.setFaction(new Nilfgaard());
+
         arvin.loadDeck(enemyDeck);
         matin.loadDeck(myDeck);
         players = gameController.startNewGame(matin, arvin);
@@ -504,9 +530,83 @@ public class GameMenu extends Menu implements CheatProcessor {
     }
 
     public GraphicalCard showSomeCardsAndSelectOne(ArrayList<Card> cards) {
-        // TODO : @Matin
-        return null;
+        final int[] currentIndex = {0};
+        final GraphicalCard[] selectedCard = {null};
+
+        // Create a window to show the cards and navigation buttons
+        final Window window = new Window("Select a Card", skin);
+        window.setFillParent(true);
+
+        final Table cardTable = new Table();
+        window.add(cardTable).expand().fill();
+
+        final GraphicalCard[] graphicalCards = new GraphicalCard[cards.size()];
+        for (int i = 0; i < cards.size(); i++) {
+            graphicalCards[i] = createNewGraphicalCard(cards.get(i));
+        }
+
+        // Method to update the displayed card
+        final Runnable updateCardDisplay = new Runnable() {
+            @Override
+            public void run() {
+                cardTable.clear();
+                GraphicalCard cardToShow = graphicalCards[currentIndex[0]];
+                cardTable.add(new Image(cardToShow.getImage().getDrawable())).expand().fill();
+            }
+        };
+
+        // Add left and right buttons for navigation
+        TextButton leftButton = new TextButton("Left", skin);
+        leftButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (currentIndex[0] > 0) {
+                    currentIndex[0]--;
+                    updateCardDisplay.run();
+                }
+            }
+        });
+
+        TextButton rightButton = new TextButton("Right", skin);
+        rightButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (currentIndex[0] < cards.size() - 1) {
+                    currentIndex[0]++;
+                    updateCardDisplay.run();
+                }
+            }
+        });
+
+        cardTable.row();
+        cardTable.add(leftButton).left();
+        cardTable.add(rightButton).right();
+
+        // Add listener to the graphical cards to return the selected card when clicked
+        for (GraphicalCard graphicalCard : graphicalCards) {
+            graphicalCard.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    selectedCard[0] = graphicalCard;
+                    window.remove();  // Close the window after selection
+                }
+            });
+        }
+
+        // Initial display of the first card
+        updateCardDisplay.run();
+
+        // Add the window to the stage
+        stage.addActor(window);
+
+        // Wait for selection (this is simplified, in reality you might want to handle this asynchronously)
+        while (selectedCard[0] == null) {
+            // This is a busy-wait loop which should be replaced with proper asynchronous handling
+        }
+
+        return selectedCard[0];
     }
+
 
     public void changeTurn(boolean isMyTurn) {
         if (isMyTurn) {

@@ -245,10 +245,11 @@ public enum AllCards implements Serializable {
 
     public boolean isCardsAbilityPassive() {
         return ability instanceof CommanderHorn
-                || ability instanceof MoralBoost
-                || ability instanceof TightBond
-                || isWeather()
-                ;
+            || ability instanceof MoralBoost
+            || ability instanceof TightBond
+            || isWeather() || ability instanceof Mardroeme
+        ;
+
     }
 
     public String getImageURL() {

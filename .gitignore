@@ -113,3 +113,5 @@ Thumbs.db
 /ios/IOSLauncher.app
 /ios/IOSLauncher.app.dSYM
 /Data/
+
+desktop/out
