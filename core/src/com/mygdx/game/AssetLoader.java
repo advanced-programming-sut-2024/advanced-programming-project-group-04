@@ -29,6 +29,8 @@ public class AssetLoader {
     public static final String FRIENDS = "friends.png";
     public static final String FRIENDREQUESTS = "friendRequests.png";
     public static final String TABS = "tabs.png";
+    public static final String ONLINE = "statusOnline.png";
+    public static final String OFFLINE = "statusOffline.png";
 
 
 
@@ -60,6 +62,9 @@ public class AssetLoader {
         assetManager.load(FRIENDS, Texture.class);
         assetManager.load(FRIENDREQUESTS, Texture.class);
         assetManager.load(TABS, Texture.class);
+        assetManager.load(ONLINE, Texture.class);
+        assetManager.load(OFFLINE, Texture.class);
+
 
         // Load factions
         FileHandle factionDir = Gdx.files.internal("assets/images/factions/");

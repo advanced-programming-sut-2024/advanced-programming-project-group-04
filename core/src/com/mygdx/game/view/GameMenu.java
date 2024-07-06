@@ -31,6 +31,7 @@ import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.Deck;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.PlayerInGame;
+import com.mygdx.game.model.Position;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.*;
@@ -58,7 +59,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     DragAndDrop dnd;
     Skin skin;
     TextureRegionDrawable backgroundImage;
-    Label myScore, enemyScore;
+    Label myScore, enemyScore, myMeleeScore, enemyMeleeScore, myRangedScore, enemyRangedScore, mySiegeScore, enemySiegeScore, myCardsCount, enemyCardsCount, turnIndicator;
     ArrayList<PlayerInGame> players;
     private CheatConsoleWindow cheatConsole;
     private boolean cheatConsoleVisible = false;
@@ -201,6 +202,23 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         myScore = new Label("0", game.assetLoader.labelStyle);
         enemyScore = new Label("0", game.assetLoader.labelStyle);
+
+
+        // Add these motherfuckers to the screen where ever needed
+        myMeleeScore = new Label("0", game.assetLoader.labelStyle);
+        enemyMeleeScore = new Label("0", game.assetLoader.labelStyle);
+        myRangedScore = new Label("0", game.assetLoader.labelStyle);
+        enemyRangedScore = new Label("0", game.assetLoader.labelStyle);
+        mySiegeScore = new Label("0", game.assetLoader.labelStyle);
+        enemySiegeScore = new Label("0", game.assetLoader.labelStyle);
+
+        myCardsCount = new Label("10", game.assetLoader.labelStyle);
+        enemyCardsCount = new Label("10", game.assetLoader.labelStyle);
+
+        turnIndicator = new Label(gameController.isMyTurn ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
+
+
+
         myScore.setPosition(200, 400);
         enemyScore.setPosition(200, 1200);
         TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
@@ -482,6 +500,18 @@ public class GameMenu extends Menu implements CheatProcessor {
     public void updateScores(PlayerInGame self, PlayerInGame enemy) {
         myScore.setText(self.getTotalHP());
         enemyScore.setText(enemy.getTotalHP());
+
+        myMeleeScore.setText(self.getTotalHPRow(Position.Melee));
+        enemyMeleeScore.setText(enemy.getTotalHPRow(Position.Melee));
+        myRangedScore.setText(self.getTotalHPRow(Position.Range));
+        enemyRangedScore.setText(enemy.getTotalHPRow(Position.Range));
+        mySiegeScore.setText(self.getTotalHPRow(Position.Siege));
+        enemySiegeScore.setText(enemy.getTotalHPRow(Position.Siege));
+
+        myCardsCount.setText(self.getHandCount());
+        enemyCardsCount.setText(enemy.getHandCount());
+
+        turnIndicator.setText(gameController.isMyTurn ? "Your Turn" : "Enemy's Turn");
     }
 
     public void resetPassedButtons() {

@@ -31,7 +31,7 @@ public class Main extends Game {
         // Play background music
         backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
         backgroundMusic.setLooping(true);
-        // backgroundMusic.play();
+        backgroundMusic.play();
 
         this.client = new Client(this, "127.0.0.1");
 
@@ -59,7 +59,7 @@ public class Main extends Game {
 
         // Set the initial screen
 
-        setScreen(new GameMenu(this));
+        setScreen(new LoginMenu(this));
 
     }
 
