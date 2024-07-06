@@ -35,6 +35,9 @@ import com.mygdx.game.model.Position;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.*;
+import com.mygdx.game.model.leader.Leader;
+import com.mygdx.game.model.leader.monsters.BringerOfDeath;
+import com.mygdx.game.model.leader.monsters.DestroyerOfWorlds;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -108,6 +111,9 @@ public class GameMenu extends Menu implements CheatProcessor {
                 enemyDeck.addCard(new Card(allCard));
         }
 
+        myDeck.setLeader(new BringerOfDeath());
+        enemyDeck.setLeader(new DestroyerOfWorlds());
+
         Player matin = new Player("Matin", "matin@giga.com", "GigaChad");
         Player arvin = new Player("Arvin", "arvin@gay.com", "Simp");
         arvin.loadDeck(enemyDeck);
@@ -118,6 +124,7 @@ public class GameMenu extends Menu implements CheatProcessor {
         loadHand(players.get(0).getHand(), myHandTable);
         loadHand(players.get(1).getHand(), enemyHandTable);
 
+        loadLeaders();
 
         cheatConsole = new CheatConsoleWindow("Cheat Console", skin, new CheatProcessor() {
             @Override
@@ -435,6 +442,11 @@ public class GameMenu extends Menu implements CheatProcessor {
         weatherTable.setSize(375, 190);
         weatherTable.setPosition(195, 660);
 
+        myLeaderTable.setSize(140, 180);
+        enemyLeaderTable.setSize(140, 180);
+        myLeaderTable.setPosition(190, 160);
+        enemyLeaderTable.setPosition(190, 1155);
+
         for (CustomTable table : myRowsTables) {
             table.setDebug(true);
         }
@@ -444,6 +456,8 @@ public class GameMenu extends Menu implements CheatProcessor {
         myHandTable.setDebug(true);
         enemyHandTable.setDebug(true);
         weatherTable.setDebug(true);
+        myLeaderTable.setDebug(true);
+        enemyLeaderTable.setDebug(true);
 
         table.addActor(myRowsTables[2]);
         table.addActor(myRowsTables[1]);
@@ -460,6 +474,8 @@ public class GameMenu extends Menu implements CheatProcessor {
         table.addActor(myHandTable);
         table.addActor(enemyHandTable);
         table.addActor(weatherTable);
+        table.addActor(myLeaderTable);
+        table.addActor(enemyLeaderTable);
 
 
         stage.addActor(table);
@@ -598,5 +614,54 @@ public class GameMenu extends Menu implements CheatProcessor {
 
     public Main getMainInstance() {
         return game;
+    }
+
+    public void loadLeaders() {
+        Leader leader1 = players.get(0).getPlayer().getDeck().getLeader();
+        Leader leader2 = players.get(1).getPlayer().getDeck().getLeader();
+        ImageButton myLeader = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get("images/leaders/Monsters/BringerOfDeath.jpg", Texture.class))));
+        ImageButton enemyLeader = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get("images/leaders/Monsters/DestroyerOfWorlds.jpg", Texture.class))));
+        myLeader.setSize(140, 180);
+        enemyLeader.setSize(140, 180);
+        myLeader.getImageCell().size(140, 180);
+        enemyLeader.getImageCell().size(140, 180);
+        myLeaderTable.addActor(myLeader);
+        enemyLeaderTable.addActor(enemyLeader);
+
+        myLeader.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                myLeader.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                myLeader.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // TODO @Arvin ina ro kamel kon ke vaghti leader click shod chi beshe
+            }
+        });
+
+        enemyLeader.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                enemyLeader.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                enemyLeader.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // TODO @Arvin ina ro kamel kon ke vaghti leader click shod chi beshe
+            }
+        });
+
     }
 }
