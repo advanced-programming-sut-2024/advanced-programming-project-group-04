@@ -72,6 +72,12 @@ public class GraphicalCard extends ImageButton {
 
         // text
         labelInsideCircle.setText(card.getCurrentHP());
+        if (card.getCurrentHP() > card.getPower()) {
+            labelInsideCircle.setStyle(new Label.LabelStyle(font, Color.GREEN));
+        } else if (card.getCurrentHP() < card.getPower()) {
+            labelInsideCircle.setStyle(new Label.LabelStyle(font, Color.RED));
+        } else {}
+
         float widthError = labelInsideCircle.getWidth() * (0.5f + 0.025f) ;
         float heightError = labelInsideCircle.getHeight() * (0.5f - 0.1f);
         labelInsideCircle.setPosition(centerX - widthError, centerY - heightError);
