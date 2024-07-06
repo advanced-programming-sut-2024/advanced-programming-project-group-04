@@ -80,6 +80,7 @@ public class GraphicalCard extends ImageButton {
         getStage().addActor(labelInsideCircle);
         // Restart the batch to continue drawing other elements
         batch.begin();
+
     }
 
 

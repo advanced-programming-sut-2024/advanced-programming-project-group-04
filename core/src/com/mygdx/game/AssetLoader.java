@@ -24,7 +24,7 @@ public class AssetLoader {
     public static final String BACKGROUND = "background.png";
     public static final String MUSIC = "track1.mp3";
     public static final String SKIN = "skins/neon/skin/default.json";
-    public static final String BOARD = "board.jpg";
+    public static final String BOARD = "board2.jpg";
     public static final String MOHANDES = "mohandes.mp3";
     public static final String FRIENDS = "friends.png";
     public static final String FRIENDREQUESTS = "friendRequests.png";
