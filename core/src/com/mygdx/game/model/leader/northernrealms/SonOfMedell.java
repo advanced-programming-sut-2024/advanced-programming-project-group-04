@@ -1,4 +1,4 @@
-package com.mygdx.game.model.leader.northern;
+package com.mygdx.game.model.leader.northernrealms;
 
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.PlayerInGame;
@@ -6,9 +6,9 @@ import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.leader.Leader;
 
-public class LordCommanderOfTheNorth extends Leader {
-    public LordCommanderOfTheNorth() {
-        super("Lord Commander of the North");
+public class SonOfMedell extends Leader {
+    public SonOfMedell() {
+        super("Son of Medell");
     }
 
     @Override
@@ -19,7 +19,7 @@ public class LordCommanderOfTheNorth extends Leader {
             return;
         }
 
-        Card newCard = new Card(AllCards.Schirru);
+        Card newCard = new Card(AllCards.Toad);
         newCard.getAbility().run(gameManager, newCard);
         
         currentPlayer.setIsLeaderUsed(true);

@@ -2,7 +2,9 @@ package com.mygdx.game.model.card;
 
 import com.mygdx.game.model.ability.*;
 
-public class Card {
+import java.io.Serializable;
+
+public class Card implements Serializable {
     private final AllCards allCard;
     private int currentHP;
     private int howManyMoralBoostAffected;

@@ -395,5 +395,18 @@ public class PlayerInGame {
         return sum;
     }
 
+    public int getTotalHPRow(Position position) {
+        ArrayList<Card> row = new ArrayList<>();
+        int totalHP = 0;
+        if (position.equals(Position.Melee)) row = melee;
+        if (position.equals(Position.Range)) row = range;
+        if (position.equals(Position.Siege)) row = siege;
+
+        for (Card card : row) {
+            totalHP += card.getCurrentHP();
+        }
+        return totalHP;
+    }
+
 
 }

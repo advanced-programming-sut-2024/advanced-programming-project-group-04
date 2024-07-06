@@ -24,7 +24,15 @@ public class AssetLoader {
     public static final String BACKGROUND = "background.png";
     public static final String MUSIC = "track1.mp3";
     public static final String SKIN = "skins/neon/skin/default.json";
-    public static final String BOARD = "board.jpg";
+    public static final String BOARD = "board2.jpg";
+    public static final String MOHANDES = "mohandes.mp3";
+    public static final String FRIENDS = "friends.png";
+    public static final String FRIENDREQUESTS = "friendRequests.png";
+    public static final String TABS = "tabs.png";
+    public static final String ONLINE = "statusOnline.png";
+    public static final String OFFLINE = "statusOffline.png";
+
+
 
     private AssetManager assetManager;
     private Map<String, List<String>> factionLeadersMap;
@@ -34,7 +42,7 @@ public class AssetLoader {
 
     public Skin skin;
     public Image backgroundImage;
-    public static BitmapFont font;
+    public BitmapFont font;
     public TextButton.TextButtonStyle textButtonStyle;
     public Label.LabelStyle labelStyle;
     public TextField.TextFieldStyle textFieldStyle;
@@ -50,6 +58,13 @@ public class AssetLoader {
         assetManager.load(MUSIC, Music.class);
         assetManager.load(SKIN, Skin.class);
         assetManager.load(BOARD, Texture.class);
+        assetManager.load(MOHANDES, Music.class);
+        assetManager.load(FRIENDS, Texture.class);
+        assetManager.load(FRIENDREQUESTS, Texture.class);
+        assetManager.load(TABS, Texture.class);
+        assetManager.load(ONLINE, Texture.class);
+        assetManager.load(OFFLINE, Texture.class);
+
 
         // Load factions
         FileHandle factionDir = Gdx.files.internal("assets/images/factions/");
@@ -168,7 +183,7 @@ public class AssetLoader {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Gwent-Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = size;
-        font = generator.generateFont(parameter);
+        BitmapFont font = generator.generateFont(parameter);
         generator.dispose();
         return font;
     }

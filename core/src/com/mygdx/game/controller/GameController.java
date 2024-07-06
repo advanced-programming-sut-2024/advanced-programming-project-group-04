@@ -6,7 +6,9 @@ import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.PlayerInGame;
 import com.mygdx.game.model.Position;
+import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
+import com.mygdx.game.model.faction.Monsters;
 import com.mygdx.game.view.CustomTable;
 import com.mygdx.game.view.GameMenu;
 import com.mygdx.game.view.GraphicalCard;
@@ -38,8 +40,8 @@ public class GameController {
         this.gameMenu = gameMenu;
     }
 
-    public void updateScores(PlayerInGame p1 , PlayerInGame p2) {
-        gameMenu.updateScores(p1 , p2);
+    public void updateScores(PlayerInGame p1, PlayerInGame p2) {
+        gameMenu.updateScores(p1, p2);
     }
 
     public void resetPassButtons() {
@@ -48,15 +50,14 @@ public class GameController {
 
     public boolean placeCard(Card card, TableSection tableSection) {
         boolean result;
-        if (tableSection.isEnemy() ^ !isMyTurn) {
+        if (tableSection.equals(TableSection.WEATHER)) {
+            result = gameManager.placeCard(card);
+        }
+        else if (tableSection.isEnemy() ^ !isMyTurn) {
             result = gameManager.placeCardEnemy(card);
-        }
-        else {
-
+        } else {
             result = gameManager.placeCard(card, tableSection.getPosition());
-            System.out.println(tableSection.getTitle());
         }
-        System.out.println(isMyTurn);
 
         if (result) gameManager.endTurn();
         if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
@@ -67,12 +68,16 @@ public class GameController {
 
     public boolean canPlaceCardToPosition(Card card, TableSection tableSection) {
         Position position = tableSection.getPosition();
-        if (tableSection.isEnemy() ^ !isMyTurn) return gameManager.canPlaceCardEnemy(card, position);
+        if (tableSection.equals(TableSection.WEATHER)) {
+            return gameManager.canPlaceCard(card, Position.WeatherPlace);
+        }
+        else if (tableSection.isEnemy() ^ !isMyTurn) return gameManager.canPlaceCardEnemy(card, position);
         else return gameManager.canPlaceCard(card, position);
     }
 
     public void addCardToHand(Card card, PlayerInGame player) {
-        if (player.equals(gameManager.getPlayer1())) addCardToTable(card, gameMenu.getAllTables().get(TableSection.MY_HAND));
+        if (player.equals(gameManager.getPlayer1()))
+            addCardToTable(card, gameMenu.getAllTables().get(TableSection.MY_HAND));
         else addCardToTable(card, gameMenu.getAllTables().get(TableSection.ENEMY_HAND));
     }
 
@@ -109,9 +114,10 @@ public class GameController {
 
     public GraphicalCard removeCardFromTable(Table table, Card card) {
         for (Actor actor : table.getChildren()) {
-            if (actor instanceof GraphicalCard && ((GraphicalCard)actor).getCard().equals(card)) {
+            if (actor instanceof GraphicalCard && ((GraphicalCard) actor).getCard().equals(card)) {
                 table.removeActor(actor);
-                return (GraphicalCard)actor;
+                ((GraphicalCard) actor).getLabelInsideCircle().setText("");
+                return (GraphicalCard) actor;
             }
         }
         return null;
@@ -134,7 +140,7 @@ public class GameController {
 
         if (tableSection == TableSection.MY_HAND) gameManager.addToHand(card, isMyTurn);
         else if (tableSection == TableSection.ENEMY_HAND) gameManager.addToHand(card, !isMyTurn);
-        else if (position != null){
+        else if (position != null) {
             if (tableSection.isEnemy() ^ !isMyTurn) gameManager.placeCard(card, position);
             else gameManager.placeCardEnemy(card);
         }
@@ -146,6 +152,88 @@ public class GameController {
 
     public void passTurn() {
         gameManager.endTurn();
+    }
+
+    public void handleCheat(String cheatCode) {
+        if (cheatCode.equals("Naddaf")) {
+            System.out.println("<3<3<3<3");
+        } else if (cheatCode.equals("Mohandes?")) {
+            gameMenu.getMainInstance().cheraBenzinTamoomShod();
+        } else if (cheatCode.equals("give me a life")) {
+            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() + 1);
+        } else if (cheatCode.equals("give enemy a life")) {
+            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() + 1);
+        } else if (cheatCode.equals("take a life away from me")) {
+            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() - 1);
+        } else if (cheatCode.equals("take a life away from enemy")) {
+            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() - 1);
+        } else if (cheatCode.startsWith("add card") && !cheatCode.contains("enemy")) {
+            String[] parts = cheatCode.split(" ");
+            String cardName = parts[2];
+            AllCards allCard = null;
+            try {
+                allCard = AllCards.valueOf(cardName);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Card not found: " + cardName);
+            }
+            Card card = new Card(allCard);
+
+            if (card != null) {
+                gameManager.getCurrentPlayer().addToHand(card);
+                addCardToHand(card, gameManager.getCurrentPlayer());
+            }
+        } else if (cheatCode.startsWith("add card enemy")) {
+            String[] parts = cheatCode.split(" ");
+            String cardName = parts[3];
+            AllCards allCard = null;
+            try {
+                allCard = AllCards.valueOf(cardName);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Card not found: " + cardName);
+            }
+            Card card = new Card(allCard);
+
+            if (card != null) {
+                gameManager.getOtherPlayer().addToHand(card);
+                addCardToHand(card, gameManager.getOtherPlayer());
+            }
+        } else if (cheatCode.equals("Besme Naddaf")) {
+            for (Card card : gameManager.getAllCards()) {
+                if (Monsters.getCards().contains(card)) {
+                    gameManager.removeCard(card);
+                    removeCardFromView(card);
+                }
+            }
+        } else if (cheatCode.equals("nah i'd win")) {
+            gameManager.getOtherPlayer().setRemainingLives(0);
+            gameManager.getCurrentPlayer().setIsPassed(true);
+            gameManager.getOtherPlayer().setIsPassed(true);
+            gameManager.endTurn();
+        } else if (cheatCode.equals("defeat")) {
+            gameManager.getCurrentPlayer().setRemainingLives(0);
+            gameManager.endTurn();
+        } else if (cheatCode.startsWith("remove enemy")) {
+            String[] parts = cheatCode.split(" ");
+            String cardName = parts[2];
+            AllCards allCard = null;
+            try {
+                allCard = AllCards.valueOf(cardName);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Card not found: " + cardName);
+            }
+            ArrayList<Card> enemyCards = gameManager.getOtherPlayer().getAllCards();
+            for (Card card : enemyCards) {
+                if (card.getAllCard().equals(allCard)) {
+                    gameManager.removeCard(card);
+                    removeCardFromView(card);
+                }
+            }
+        } else if (cheatCode.equals("end round")) {
+            gameManager.getCurrentPlayer().setIsPassed(true);
+            gameManager.getOtherPlayer().setIsPassed(true);
+            gameManager.endTurn();
+        }
+
     }
 
 }

@@ -1,12 +1,12 @@
-package com.mygdx.game.model.leader.Scoiataell;
+package com.mygdx.game.model.leader.scoiatael;
 
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.PlayerInGame;
 import com.mygdx.game.model.leader.Leader;
 
-public class DaisyOfTheValley extends Leader {
-    public DaisyOfTheValley() {
-        super("Daisy of the Valley");
+public class HopeOfTheAenSeidhe extends Leader{
+    public HopeOfTheAenSeidhe() {
+        super("Hope of the Aen Seidhe");
     }
 
     @Override
@@ -15,8 +15,7 @@ public class DaisyOfTheValley extends Leader {
         if (currentPlayer.getIsLeaderUsed()) {
             return;
         }
-
-        // TODO : This leader is Kinda Wierd
+        // TODO : inam ajibe
         currentPlayer.setIsLeaderUsed(true);
     }
 }

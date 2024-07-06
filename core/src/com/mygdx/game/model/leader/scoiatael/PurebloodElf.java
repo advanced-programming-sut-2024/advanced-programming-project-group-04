@@ -1,4 +1,4 @@
-package com.mygdx.game.model.leader.Scoiataell;
+package com.mygdx.game.model.leader.scoiatael;
 
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.PlayerInGame;

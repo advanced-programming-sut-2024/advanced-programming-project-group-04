@@ -2,6 +2,8 @@ package com.mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -22,10 +25,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
+import com.mygdx.game.controller.CheatController;
+import com.mygdx.game.controller.CheatProcessor;
 import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.Deck;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.PlayerInGame;
+import com.mygdx.game.model.Position;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.*;
@@ -49,9 +55,10 @@ import java.util.HashMap;
 
 import static com.mygdx.game.view.TableSection.*;
 
-public class GameMenu extends Menu {
+public class GameMenu extends Menu implements CheatProcessor {
     public GraphicalCard selectedCard;
     public static float SCALE = 0.15f, offset = 30;
+
 
     GameController gameController;
 
@@ -66,14 +73,31 @@ public class GameMenu extends Menu {
     DragAndDrop dnd;
     Skin skin;
     TextureRegionDrawable backgroundImage;
-    Label myScore, enemyScore;
+    Label myScore, enemyScore, myMeleeScore, enemyMeleeScore, myRangedScore, enemyRangedScore, mySiegeScore, enemySiegeScore, myCardsCount, enemyCardsCount, turnIndicator;
     ArrayList<PlayerInGame> players;
+    private CheatConsoleWindow cheatConsole;
+    private boolean cheatConsoleVisible = false;
+    private Main game;
+    TextButton myGraveyard, enemyGraveyard;
+    TextButton passButtonEnemy, passButtonSelf;
+    private CheatController cheatController;
 
-    TextButton passButtonEnemy , passButtonSelf;
+
     public GameMenu(Main game) {
         super(game);
+        this.game = game;
         this.gameController = new GameController(this);
         gameController.setGameMenu(this);
+
+        this.cheatController = new CheatController(this);
+
+        Gdx.input.setInputProcessor(stage);
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                return cheatController.keyDown(keycode);
+            }
+        });
 
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         assetLoader = game.assetLoader;
@@ -105,10 +129,12 @@ public class GameMenu extends Menu {
         enemyDeck.addCard(new Card(AllCards.Cow));
         enemyDeck.addCard(new Card(AllCards.Cow));
 
-        Player matin = new Player("Matin", "cDnak@(#&>CAxm09218", "matin@giga.com", "GigaChad");
+
+        Player matin = new Player("Matin", "matin@giga.com", "GigaChad");
         matin.setFaction(new Monsters());
-        Player arvin = new Player("Arvin", "1234", "arvin@gay.com", "Simp");
+        Player arvin = new Player("Arvin", "arvin@gay.com", "Simp");
         arvin.setFaction(new Nilfgaard());
+
         arvin.loadDeck(enemyDeck);
         matin.loadDeck(myDeck);
         players = gameController.startNewGame(matin, arvin);
@@ -116,6 +142,21 @@ public class GameMenu extends Menu {
 
         loadHand(players.get(0).getHand(), myHandTable);
         loadHand(players.get(1).getHand(), enemyHandTable);
+
+
+        cheatConsole = new CheatConsoleWindow("Cheat Console", skin, new CheatProcessor() {
+            @Override
+            public void processCheat(String cheatCode) {
+                gameController.handleCheat(cheatCode);
+            }
+        });
+        cheatConsole.setVisible(false);
+        stage.addActor(cheatConsole);
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(new CheatController(this));
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
     }
 
@@ -168,7 +209,7 @@ public class GameMenu extends Menu {
                 table.row();
                 table.add(getLabelFromString("Description " + card.getDescription()));
                 table.row();
-                table.add(getLabelFromString("CurrentHP " + Integer.toString(card.getCurrentHP())));
+                table.add(getLabelFromString("CurrentHP " + card.getCurrentHP()));
                 table.row();
                 table.setFillParent(true);
                 table.setX(0);
@@ -187,16 +228,119 @@ public class GameMenu extends Menu {
 
         myScore = new Label("0", game.assetLoader.labelStyle);
         enemyScore = new Label("0", game.assetLoader.labelStyle);
-        myScore.setPosition(200, 400);
-        enemyScore.setPosition(200, 1200);
-        stage.addActor(myScore);
-        stage.addActor(enemyScore);
+
+        table.setBackground(backgroundImage);
+
+        // TODO Add these motherfuckers to the screen where ever needed
+        myMeleeScore = new Label("0", game.assetLoader.labelStyle);
+        enemyMeleeScore = new Label("0", game.assetLoader.labelStyle);
+        myRangedScore = new Label("0", game.assetLoader.labelStyle);
+        enemyRangedScore = new Label("0", game.assetLoader.labelStyle);
+        mySiegeScore = new Label("0", game.assetLoader.labelStyle);
+        enemySiegeScore = new Label("0", game.assetLoader.labelStyle);
+
+        myCardsCount = new Label("10", game.assetLoader.labelStyle);
+        enemyCardsCount = new Label("10", game.assetLoader.labelStyle);
+
+        turnIndicator = new Label(gameController.isMyTurn ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
 
 
-        // Pass button style
+
+
+        myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
+        enemyScore.setPosition(610 - enemyScore.getWidth() / 2f, 1005 - enemyScore.getHeight() / 2f);
+
+        myMeleeScore.setPosition(718 - myMeleeScore.getWidth() / 2f, 791 - myMeleeScore.getHeight() / 2f);
+        enemyMeleeScore.setPosition(718 - enemyMeleeScore.getWidth() / 2f, 987 - enemyMeleeScore.getHeight() / 2f);
+        myRangedScore.setPosition(718 - myRangedScore.getWidth() / 2f, 615 - myRangedScore.getHeight() / 2f);
+        enemyRangedScore.setPosition(718 - enemyRangedScore.getWidth() / 2f, 1171 - enemyRangedScore.getHeight() / 2f);
+        mySiegeScore.setPosition(718 - mySiegeScore.getWidth() / 2f, 431 - mySiegeScore.getHeight() / 2f);
+        enemySiegeScore.setPosition(718 - enemySiegeScore.getWidth() / 2f, 1345 - enemySiegeScore.getHeight() / 2f);
+
         TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
 
-        // Create and position pass buttons
+        table.addActor(myScore);
+        table.addActor(enemyScore);
+
+        table.addActor(myMeleeScore);
+        table.addActor(enemyMeleeScore);
+        table.addActor(myRangedScore);
+        table.addActor(enemyRangedScore);
+        table.addActor(mySiegeScore);
+        table.addActor(enemySiegeScore);
+
+
+        myGraveyard = new TextButton("Graveyard", buttonStyle);
+        enemyGraveyard = new TextButton("Graveyard", buttonStyle);
+        myGraveyard.setPosition(2300, 400);
+        enemyGraveyard.setPosition(2300, 1200);
+        myGraveyard.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ArrayList<Card> cards = players.get(0).getGraveyard();
+                ArrayList<GraphicalCard> graphicalCards = new ArrayList<>();
+                for (Card card : cards) {
+                    graphicalCards.add(createNewGraphicalCard(card));
+                }
+                // TODO @Arman karta ro az jaye dorosteshoon ke avaz kardi biar
+                // alan amalan be soorat hardocde gereftameshoon chon gofti holy change zadi
+
+                Window window = new Window("Cards", skin);
+
+                Table cardsTable = new Table();
+
+                if (graphicalCards.isEmpty()) return;
+                for (GraphicalCard graphicalCard : graphicalCards) {
+                    Drawable drawable = graphicalCard.getImage().getDrawable();
+                    Image cardImage = new Image(drawable);
+
+                    cardsTable.add(cardImage).pad(10);
+                }
+
+                ScrollPane scrollPane = new ScrollPane(cardsTable, skin);
+                scrollPane.setScrollingDisabled(false, true); // Enable horizontal scrolling only
+                window.add(scrollPane).expand().fill();
+                window.setSize(Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.6f);
+                window.setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.2f);
+                stage.addActor(window);
+            }
+        });
+
+        enemyGraveyard.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ArrayList<Card> cards = players.get(1).getGraveyard();
+                ArrayList<GraphicalCard> graphicalCards = new ArrayList<>();
+                for (Card card : cards) {
+                    graphicalCards.add(createNewGraphicalCard(card));
+                }
+                // TODO @Arman karta ro az jaye dorosteshoon ke avaz kardi biar
+                // alan amalan be soorat hardocde gereftameshoon chon gofti holy change zadi
+
+                Window window = new Window("Cards", skin);
+
+                Table cardsTable = new Table();
+
+                if (graphicalCards.isEmpty()) return;
+                for (GraphicalCard graphicalCard : graphicalCards) {
+                    Drawable drawable = graphicalCard.getImage().getDrawable();
+                    Image cardImage = new Image(drawable);
+
+                    cardsTable.add(cardImage).pad(10);
+                }
+
+                ScrollPane scrollPane = new ScrollPane(cardsTable, skin);
+                scrollPane.setScrollingDisabled(false, true); // horizontal
+                window.add(scrollPane).expand().fill();
+                window.setSize(Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.6f);
+                window.setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.2f);
+                stage.addActor(window);
+            }
+        });
+
+        table.addActor(myGraveyard);
+        table.addActor(enemyGraveyard);
+
         passButtonEnemy = new TextButton("PASS enemy", buttonStyle);
         passButtonEnemy.setPosition(300, 1200);
         passButtonEnemy.addListener(new ClickListener() {
@@ -228,8 +372,8 @@ public class GameMenu extends Menu {
         passButtonEnemy.setColor(0, 1, 0, 1f);
         passButtonSelf.setColor(0, 1, 0, 1f);
 
-        stage.addActor(passButtonEnemy);
-        stage.addActor(passButtonSelf);
+        table.addActor(passButtonEnemy);
+        table.addActor(passButtonSelf);
 
         table.setFillParent(true);
         table.setDebug(true);
@@ -280,47 +424,68 @@ public class GameMenu extends Menu {
             });
         }
 
-        table.add(enemyGraveyardTable).height(200).width(200);
-        table.add(enemyHandTable);
-        table.row();
-        table.add(enemyLeaderTable).height(400).width(200);
+        myRowsTables[0].setSize(1080, 160);
+        myRowsTables[1].setSize(1080, 160);
+        myRowsTables[2].setSize(1080, 160);
+        enemyRowsTables[0].setSize(1080, 160);
+        enemyRowsTables[1].setSize(1080, 160);
+        enemyRowsTables[2].setSize(1080, 160);
 
-        upperSectionTable = new Table();
-        upperSectionTable.setDebug(true);
-        upperSectionTable.add(enemyRowsTables[5]).height(200).width(200);
-        upperSectionTable.add(enemyRowsTables[2]).height(200).width(1500);
-        upperSectionTable.row();
-        upperSectionTable.add(enemyRowsTables[4]).height(200).width(200);
-        upperSectionTable.add(enemyRowsTables[1]).height(200).width(1500);
+        myRowsTables[3].setSize(180, 160);
+        myRowsTables[4].setSize(180, 160);
+        myRowsTables[5].setSize(180, 160);
+        enemyRowsTables[3].setSize(180, 160);
+        enemyRowsTables[4].setSize(180, 160);
+        enemyRowsTables[5].setSize(180, 160);
 
-        table.add(upperSectionTable).height(400).width(1700);
-        table.row();
-        table.add(weatherTable).height(400).width(200);
+        myRowsTables[2].setPosition(950, 350);
+        myRowsTables[1].setPosition(950, 530);
+        myRowsTables[0].setPosition(950, 700);
+        enemyRowsTables[0].setPosition(950, 905);
+        enemyRowsTables[1].setPosition(950, 1085);
+        enemyRowsTables[2].setPosition(950, 1265);
 
-        middleSectionTable = new Table();
-        middleSectionTable.setDebug(true);
-        middleSectionTable.add(enemyRowsTables[3]).height(200).width(200);
-        middleSectionTable.add(enemyRowsTables[0]).height(200).width(1500);
-        middleSectionTable.row();
-        middleSectionTable.add(myRowsTables[3]).height(200).width(200);
-        middleSectionTable.add(myRowsTables[0]).height(200).width(1500);
+        myRowsTables[5].setPosition(760, 350);
+        myRowsTables[4].setPosition(760, 530);
+        myRowsTables[3].setPosition(760, 700);
+        enemyRowsTables[3].setPosition(760, 905);
+        enemyRowsTables[4].setPosition(760, 1085);
+        enemyRowsTables[5].setPosition(760, 1265);
 
-        table.add(middleSectionTable).height(400).width(1700);
-        table.row();
-        table.add(myLeaderTable).height(400).width(200);
+        myHandTable.setSize(1250, 180);
+        enemyHandTable.setSize(1250, 180);
+        myHandTable.setPosition(770, 150);
+        enemyHandTable.setPosition(770, 1425);
 
-        lowerSectionTable = new Table();
-        lowerSectionTable.setDebug(true);
-        lowerSectionTable.add(myRowsTables[4]).height(200).width(200);
-        lowerSectionTable.add(myRowsTables[1]).height(200).width(1500);
-        lowerSectionTable.row();
-        lowerSectionTable.add(myRowsTables[5]).height(200).width(200);
-        lowerSectionTable.add(myRowsTables[2]).height(200).width(1500);
+        weatherTable.setSize(375, 190);
+        weatherTable.setPosition(195, 660);
 
-        table.add(lowerSectionTable).height(400).width(1700);
-        table.row();
-        table.add(myGraveyardTable).height(200).width(200);
-        table.add(myHandTable);
+        for (CustomTable table : myRowsTables) {
+            table.setDebug(true);
+        }
+        for (CustomTable table : enemyRowsTables) {
+            table.setDebug(true);
+        }
+        myHandTable.setDebug(true);
+        enemyHandTable.setDebug(true);
+        weatherTable.setDebug(true);
+
+        table.addActor(myRowsTables[2]);
+        table.addActor(myRowsTables[1]);
+        table.addActor(myRowsTables[0]);
+        table.addActor(enemyRowsTables[2]);
+        table.addActor(enemyRowsTables[1]);
+        table.addActor(enemyRowsTables[0]);
+        table.addActor(myRowsTables[5]);
+        table.addActor(myRowsTables[4]);
+        table.addActor(myRowsTables[3]);
+        table.addActor(enemyRowsTables[5]);
+        table.addActor(enemyRowsTables[4]);
+        table.addActor(enemyRowsTables[3]);
+        table.addActor(myHandTable);
+        table.addActor(enemyHandTable);
+        table.addActor(weatherTable);
+
 
         stage.addActor(table);
     }
@@ -474,10 +639,63 @@ public class GameMenu extends Menu {
     public void updateScores(PlayerInGame self, PlayerInGame enemy) {
         myScore.setText(self.getTotalHP());
         enemyScore.setText(enemy.getTotalHP());
+        myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
+        enemyScore.setPosition(610 - enemyScore.getWidth() / 2f, 1005 - enemyScore.getHeight() / 2f);
+
+        myMeleeScore.setText(self.getTotalHPRow(Position.Melee));
+        enemyMeleeScore.setText(enemy.getTotalHPRow(Position.Melee));
+        myRangedScore.setText(self.getTotalHPRow(Position.Range));
+        enemyRangedScore.setText(enemy.getTotalHPRow(Position.Range));
+        mySiegeScore.setText(self.getTotalHPRow(Position.Siege));
+        enemySiegeScore.setText(enemy.getTotalHPRow(Position.Siege));
+
+        myCardsCount.setText(self.getHandCount());
+        enemyCardsCount.setText(enemy.getHandCount());
+
+        turnIndicator.setText(gameController.isMyTurn ? "Your Turn" : "Enemy's Turn");
     }
 
     public void resetPassedButtons() {
         passButtonEnemy.setText("PASS enemy");
         passButtonSelf.setText("PASS self");
+    }
+
+
+    @Override
+    public void processCheat(String cheatCode) {
+        gameController.handleCheat(cheatCode);
+    }
+
+
+    public void toggleCheatConsole() {
+        if (cheatConsoleVisible) {
+            hideCheatConsole();
+        } else {
+            showCheatConsole();
+        }
+    }
+
+    public void showCheatConsole() {
+        cheatConsoleVisible = true;
+        cheatConsole.setVisible(true);
+        cheatConsole.setWidth(stage.getWidth());
+        cheatConsole.setHeight(150);
+        cheatConsole.setPosition(0, stage.getHeight() / 2 - cheatConsole.getHeight() / 2);
+        stage.addActor(cheatConsole);
+        stage.setKeyboardFocus(cheatConsole.findActor("cheatInputField"));
+    }
+
+    public void hideCheatConsole() {
+        cheatConsoleVisible = false;
+        cheatConsole.setVisible(false);
+        stage.setKeyboardFocus(null);
+    }
+
+    public boolean isCheatConsoleVisible() {
+        return cheatConsoleVisible;
+    }
+
+    public Main getMainInstance() {
+        return game;
     }
 }
