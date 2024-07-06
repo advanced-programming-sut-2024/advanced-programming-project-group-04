@@ -385,12 +385,10 @@ public class GameMenu extends Menu implements CheatProcessor {
         passButtonSelf.setText("PASS self");
     }
 
-
     @Override
     public void processCheat(String cheatCode) {
         gameController.handleCheat(cheatCode);
     }
-
 
     public void toggleCheatConsole() {
         cheatConsoleVisible = !cheatConsoleVisible;

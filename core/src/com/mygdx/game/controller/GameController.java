@@ -60,8 +60,8 @@ public class GameController {
 
     public boolean canPlaceCardToPosition(Card card, TableSection tableSection) {
         Position position = tableSection.getPosition();
-        if (tableSection.isEnemy() ^ !isMyTurn) return client.sendToServer(canPlaceCardEnemy, card, position);
-        else return client.sendToServer(canPlaceCard, card, position);
+        if (tableSection.isEnemy() ^ !isMyTurn) return client.sendToServer(CAN_PLACE_CARD_ENEMY, card, position, EOF);
+        else return client.sendToServer(CAN_PLACE_CARD, card, position, EOF);
     }
 
     public void addCardToHand(Card card, boolean isEnemy) {
@@ -138,83 +138,87 @@ public class GameController {
     }
 
     public boolean passButtonClicked() {
-
+        if (client.sendToServer(IS_MY_TURN, EOF)) {
+            client.sendToServerVoid(PASS_TURN, EOF);
+            return true;
+        } else return false;
     }
 
     public void handleCheat(String cheatCode) {
-        if (cheatCode.equals("Naddaf")) {
-            System.out.println("<3<3<3<3");
-        } else if (cheatCode.equals("Mohandes?")) {
-            gameMenu.getMainInstance().cheraBenzinTamoomShod();
-        } else if (cheatCode.equals("give me a life")) {
-            client.sendToServerVoid(ADD_A_LIFE_TO_ME, EOF);
-            // TODO: @Arman
-//            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() + 1);
-        } else if (cheatCode.equals("give enemy a life")) {
-            client.sendToServerVoid(ADD_A_LIFE_TO_ENEMY, EOF);
-            // TODO: @Arman
-//            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() + 1);
-        } else if (cheatCode.equals("take a life away from me")) {
-            client.sendToServerVoid(REMOVE_LIFE_FROM_ME);
-            // TODO: @Arman
-//            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() - 1);
-        } else if (cheatCode.equals("take a life away from enemy")) {
-            client.sendToServerVoid(REMOVE_LIFE_FROM_ENEMY);
-            // TODO: @Arman
-//            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() - 1);
-        } else if (cheatCode.startsWith("add card")) {
-            // TODO @Matin check if the card is null
-            String[] parts = cheatCode.split(" ");
-            String cardName = parts[2];
-            AllCards allCard = null;
-            try {
-                allCard = AllCards.valueOf(cardName);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Card not found: " + cardName);
-            }
-            Card card = new Card(allCard);
-
-            if (card != null) {
-                gameManager.getCurrentPlayer().addToHand(card);
-                addCardToHand(card, gameManager.getCurrentPlayer());
-            }
-        } else if (cheatCode.equals("Besme Naddaf")) {
-            for (Card card : gameManager.getAllCards()) {
-                if (Monsters.getCards().contains(card)) {
-                    gameManager.removeCard(card);
-                    removeCardFromView(card);
-                }
-            }
-        } else if (cheatCode.equals("nah i'd win")) {
-            gameManager.getOtherPlayer().setRemainingLives(0);
-            gameManager.getCurrentPlayer().setIsPassed(true);
-            gameManager.getOtherPlayer().setIsPassed(true);
-            client.sendToServer(END_TURN, EOF);
-        } else if (cheatCode.equals("defeat")) {
-            gameManager.getCurrentPlayer().setRemainingLives(0);
-            client.sendToServer(END_TURN, EOF);
-        } else if (cheatCode.startsWith("remove enemy")) {
-            String[] parts = cheatCode.split(" ");
-            String cardName = parts[2];
-            AllCards allCard = null;
-            try {
-                allCard = AllCards.valueOf(cardName);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Card not found: " + cardName);
-            }
-            ArrayList<Card> enemyCards = gameManager.getOtherPlayer().getAllCards();
-            for (Card card : enemyCards) {
-                if (card.getAllCard().equals(allCard)) {
-                    gameManager.removeCard(card);
-                    removeCardFromView(card);
-                }
-            }
-        } else if (cheatCode.equals("end round")) {
-            gameManager.getCurrentPlayer().setIsPassed(true);
-            gameManager.getOtherPlayer().setIsPassed(true);
-            client.sendToServer(END_TURN, EOF);
-        }
-
+//        if (cheatCode.equals("Naddaf")) {
+//            System.out.println("<3<3<3<3");
+//        } else if (cheatCode.equals("Mohandes?")) {
+//            gameMenu.getMainInstance().cheraBenzinTamoomShod();
+//        } else if (cheatCode.equals("give me a life")) {
+//            client.sendToServerVoid(ADD_A_LIFE_TO_ME, EOF);
+//            // TODO: @Arman
+////            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() + 1);
+//        } else if (cheatCode.equals("give enemy a life")) {
+//            client.sendToServerVoid(ADD_A_LIFE_TO_ENEMY, EOF);
+//            // TODO: @Arman
+////            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() + 1);
+//        } else if (cheatCode.equals("take a life away from me")) {
+//            client.sendToServerVoid(REMOVE_LIFE_FROM_ME);
+//            // TODO: @Arman
+////            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() - 1);
+//        } else if (cheatCode.equals("take a life away from enemy")) {
+//            client.sendToServerVoid(REMOVE_LIFE_FROM_ENEMY);
+//            // TODO: @Arman
+////            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() - 1);
+//        } else if (cheatCode.startsWith("add card")) {
+//            // TODO @Matin check if the card is null
+//            String[] parts = cheatCode.split(" ");
+//            String cardName = parts[2];
+//            AllCards allCard = null;
+//            try {
+//                allCard = AllCards.valueOf(cardName);
+//            } catch (IllegalArgumentException e) {
+//                System.out.println("Card not found: " + cardName);
+//            }
+//            Card card = new Card(allCard);
+//
+//            if (card != null) {
+////                gameManager.getCurrentPlayer().addToHand(card);
+//                client.sendToServerVoid(ADD_TO_HAND, card, false, EOF);
+//                addCardToHand(card, false);
+//            }
+//        } else if (cheatCode.equals("Besme Naddaf")) {
+//            for (Card card : gameManager.getAllCards()) {
+//                if (Monsters.getCards().contains(card)) {
+//                    gameManager.removeCard(card);
+//                    removeCardFromView(card);
+//                }
+//            }
+//        } else if (cheatCode.equals("nah i'd win")) {
+//            gameManager.getOtherPlayer().setRemainingLives(0);
+//            gameManager.getCurrentPlayer().setIsPassed(true);
+//            gameManager.getOtherPlayer().setIsPassed(true);
+//            client.sendToServer(END_TURN, EOF);
+//        } else if (cheatCode.equals("defeat")) {
+//            gameManager.getCurrentPlayer().setRemainingLives(0);
+//            client.sendToServer(END_TURN, EOF);
+//        } else if (cheatCode.startsWith("remove enemy")) {
+//            String[] parts = cheatCode.split(" ");
+//            String cardName = parts[2];
+//            AllCards allCard = null;
+//            try {
+//                allCard = AllCards.valueOf(cardName);
+//            } catch (IllegalArgumentException e) {
+//                System.out.println("Card not found: " + cardName);
+//            }
+//            ArrayList<Card> enemyCards = gameManager.getOtherPlayer().getAllCards();
+//            for (Card card : enemyCards) {
+//                if (card.getAllCard().equals(allCard)) {
+//                    gameManager.removeCard(card);
+//                    removeCardFromView(card);
+//                }
+//            }
+//        } else if (cheatCode.equals("end round")) {
+//            gameManager.getCurrentPlayer().setIsPassed(true);
+//            gameManager.getOtherPlayer().setIsPassed(true);
+//            client.sendToServer(END_TURN, EOF);
+//        }
+//
     }
 
     public void processCommand(ArrayList<Object> inputs) {

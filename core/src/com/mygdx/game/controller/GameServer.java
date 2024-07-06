@@ -26,7 +26,7 @@ public class GameServer extends Thread {
     Server mySession;
     Server enemySession;
 
-    private GameManager gameManager;
+    private final GameManager gameManager;
 
     public GameServer(Server mySession, Server enemySession) {
         this.mySession = mySession;
@@ -43,20 +43,29 @@ public class GameServer extends Thread {
     }
 
     private void init() {
-        mySession.sendToClient(ClientCommand.START_GAME);
-        enemySession.sendToClient(ClientCommand.START_GAME);
-        mySession.sendToClient(SET_IS_MY_TURN, true, EOF);
-        enemySession.sendToClient(SET_IS_MY_TURN, false, EOF);
+        sendToBoth(ClientCommand.START_GAME);
+        mySession.sendToClientVoid(SET_IS_MY_TURN, true, EOF);
+        enemySession.sendToClientVoid(SET_IS_MY_TURN, false, EOF);
+        Player p1 = gameManager.getPlayer1().getPlayer();
+        Player p2 = gameManager.getPlayer2().getPlayer();
+        mySession.sendToClientVoid(SET_FACTION, p1.getSelectedFaction(), EOF);
+        enemySession.sendToClientVoid(SET_FACTION, p2.getSelectedFaction(), EOF);
+        mySession.sendToClientVoid(SET_DECK, p1.getDeck(), EOF);
+        enemySession.sendToClientVoid(SET_DECK, p1.getDeck(), EOF);
+        mySession.sendToClientVoid(SET_LEADERS, p1.getDeck().getLeader(), p2.getDeck().getLeader(), EOF);
+        enemySession.sendToClientVoid(SET_LEADERS, p2.getDeck().getLeader(), p1.getDeck().getLeader(), EOF);
     }
 
     public void updateScores(PlayerInGame p1, PlayerInGame p2) {
 //        gameMenu.updateScores(p1, p2);
-        mySession.sendToClient(UPDATE_SCORES, p1.getTotalHP(), p2.getTotalHP(), EOF);
-        enemySession.sendToClient(UPDATE_SCORES, p2.getTotalHP(), p1.getTotalHP(), EOF);
+        mySession.sendToClientVoid(UPDATE_SCORES, p1.getTotalHP(), p2.getTotalHP(), EOF);
+        enemySession.sendToClientVoid(UPDATE_SCORES, p2.getTotalHP(), p1.getTotalHP(), EOF);
     }
 
     public void resetPassButtons() {
-        gameMenu.resetPassedButtons();
+//        gameMenu.resetPassedButtons();
+        mySession.sendToClientVoid(RESET_PASS_BUTTONS, EOF);
+        enemySession.sendToClientVoid(RESET_PASS_BUTTONS, EOF);
     }
 
     public boolean placeCard(Card card, TableSection tableSection) {
@@ -71,8 +80,9 @@ public class GameServer extends Thread {
         System.out.println(isMyTurn);
 
         if (result) gameManager.endTurn();
-        if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
-        else gameMenu.updateScores(gameManager.getOtherPlayer(), gameManager.getCurrentPlayer());
+//        if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
+//        else gameMenu.updateScores(gameManager.getOtherPlayer(), gameManager.getCurrentPlayer());
+        sendToBoth(UPDATE_SCORES, EOF);
 
         return result;
     }
@@ -107,8 +117,7 @@ public class GameServer extends Thread {
     }
 
     public void removeCardFromView(Card card) {
-        mySession.sendToClient(REMOVE_FROM_VIEW, card, EOF);
-        enemySession.sendToClient(REMOVE_FROM_VIEW, card, EOF);
+        sendToBoth(REMOVE_FROM_VIEW, card, EOF);
     }
 
     public GraphicalCard removeCardFromView(Card card, Position position, boolean isEnemy) {
@@ -219,5 +228,10 @@ public class GameServer extends Thread {
             gameManager.endTurn();
         }
 
+    }
+
+    private void sendToBoth(Object... inputs) {
+        mySession.sendToClientVoid(inputs);
+        enemySession.sendToClientVoid(inputs);
     }
 }

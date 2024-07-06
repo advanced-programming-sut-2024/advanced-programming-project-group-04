@@ -24,7 +24,9 @@ public class Server extends Thread {
     private static final ConcurrentHashMap<Integer, Integer> gameRequests = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Player, Server> allSessions = new ConcurrentHashMap<>();
 
-    private boolean isReceived;
+    private boolean gameCommandReceived;
+    private boolean outputReceived;
+    private Object obj;
     private ArrayList<Object> inputs;
 
     private Socket socket;
@@ -71,7 +73,24 @@ public class Server extends Thread {
         return null;
     }
 
-    public void sendToClient(Object... inputs) {
+    public <T> T sendToClient(Object... inputs) {
+        T response;
+        try {
+            for (Object obj : inputs) {
+                out.writeObject(obj);
+            }
+
+            while (!isOutputReceived());
+
+            response = (T) this.obj;
+            setOutputReceived(false);
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendToClientVoid(Object... inputs) {
         try {
             for (Object obj : inputs) {
                 out.writeObject(obj);
@@ -82,13 +101,17 @@ public class Server extends Thread {
         }
     }
 
-    private synchronized boolean isReceived() {
-        return this.isReceived;
+    private synchronized boolean isGameCommandReceived() {
+        return this.gameCommandReceived;
     }
 
-    private synchronized void setReceived(boolean received) {
-        this.isReceived = received;
+    private synchronized void setGameCommandReceived(boolean gameCommandReceived) {
+        this.gameCommandReceived = gameCommandReceived;
     }
+
+    private synchronized boolean isOutputReceived() { return this.outputReceived; }
+
+    private synchronized void setOutputReceived(boolean outputReceived) { this.outputReceived = outputReceived; }
 
     @Override
     public void run() {
@@ -103,67 +126,74 @@ public class Server extends Thread {
                         input = in.readObject();
                         inputs.add(input);
                     }
-                    setReceived(true);
-                    continue;
-                }
-                ServerCommand cmd = (ServerCommand) input;
-                System.out.println(cmd.name());
-
-                switch (cmd) {
-                    case DOES_USERNAME_EXIST:
-                        checkUsername();
-                        break;
-                    case REGISTER_USER:
-                        registerUser();
-                        break;
-                    case FETCH_USER:
-                        fetchUser();
-                        break;
-                    case FIND_USER_ACCOUNT:
-                        findUserAccount();
-                        break;
-                    case VALIDATE_PASSWORD:
-                        validatePassword();
-                        break;
-                    case HAS_ACTIVE_SESSION:
-                        hasActiveSession();
-                        break;
-                    case LOGIN_PLAYER:
-                        loginPlayer();
-                        break;
-                    case LOGOUT_PLAYER:
-                        logoutPlayer();
-                        break;
-
-                    case SELECT_FACTION:
-                        selectFaction();
-                        break;
-                    case SELECT_LEADER:
-                        selectLeader();
-                        break;
-                    case SELECT_CARD:
-                        selectCard();
-                        break;
-                    case DE_SELECT_CARD:
-                        deSelectCard();
-                        break;
-
-                    case IS_ONLINE:
-                        isOnline();
-                        break;
-                    case START_GAME_REQUEST:
-                        sendGameRequest();
-                        break;
-
-                    case CLOSE_CONNECTION:
-                        closeConnection();
-                        return;
+                    setGameCommandReceived(true);
+                } else if (input instanceof ServerCommand) {
+                    processCommand(input);
+                } else {
+                    this.obj = input;
+                    setOutputReceived(true);
                 }
 
             }
         } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
                  InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void processCommand(Object input) throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ServerCommand cmd = (ServerCommand) input;
+        System.out.println(cmd.name());
+
+        switch (cmd) {
+            case DOES_USERNAME_EXIST:
+                checkUsername();
+                break;
+            case REGISTER_USER:
+                registerUser();
+                break;
+            case FETCH_USER:
+                fetchUser();
+                break;
+            case FIND_USER_ACCOUNT:
+                findUserAccount();
+                break;
+            case VALIDATE_PASSWORD:
+                validatePassword();
+                break;
+            case HAS_ACTIVE_SESSION:
+                hasActiveSession();
+                break;
+            case LOGIN_PLAYER:
+                loginPlayer();
+                break;
+            case LOGOUT_PLAYER:
+                logoutPlayer();
+                break;
+
+            case SELECT_FACTION:
+                selectFaction();
+                break;
+            case SELECT_LEADER:
+                selectLeader();
+                break;
+            case SELECT_CARD:
+                selectCard();
+                break;
+            case DE_SELECT_CARD:
+                deSelectCard();
+                break;
+
+            case IS_ONLINE:
+                isOnline();
+                break;
+            case START_GAME_REQUEST:
+                sendGameRequest();
+                break;
+
+            case CLOSE_CONNECTION:
+                closeConnection();
+                return;
         }
     }
 
