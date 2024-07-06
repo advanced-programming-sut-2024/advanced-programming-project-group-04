@@ -172,7 +172,7 @@ public enum AllCards implements Serializable {
     CommandersHorn("Commanders horn", 0, 3, Spell, new CommanderHorn(), false, "Doubles the power of the cards in the row that was placed. Only one of this type can be played in a row"),
     Decoy("Decoy", 0, 3, Spell, new NoAbility(), false, "The description has been given before"), // Chenged
     Dandelion("Dandelion", 2, 1, CloseCombat, new CommanderHorn(), false, "Same power as the commander's horn"),
-    Cow("Cow", 0, 1, RangedCombat, new NoAbility(), false, "Turns into a card with a power of 8 after one round"),
+    Cow("Cow", 0, 1, RangedCombat, new Transformers(), false, "Turns into a card with a power of 8 after one round"),
     EmielRegis("Emiel Regis", 5, 1, CloseCombat, new NoAbility(), false, ""),
     GaunterODimm("Gaunter O'Dimm", 2, 1, Siege, new Muster(), false, ""),
     GaunterODimmDarkness("Gaunter O'Dimm Darkness", 4, 3, RangedCombat, new Muster(), false, ""),
