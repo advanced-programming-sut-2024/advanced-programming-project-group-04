@@ -28,6 +28,7 @@ import com.mygdx.game.model.PlayerInGame;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.*;
+import com.mygdx.game.model.leader.Leader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     Skin skin;
     TextureRegionDrawable backgroundImage;
     Label myScore, enemyScore;
+    Leader myLeader, enemyLeader;
     ArrayList<PlayerInGame> players;
     private CheatConsoleWindow cheatConsole;
     private boolean cheatConsoleVisible = false;
@@ -61,7 +63,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     public GameMenu(Main game) {
         super(game);
         this.game = game;
-        this.gameController = new GameController(this, game.getClient());
+        this.gameController = new GameController(this, game.getClient(), game.getLoggedInPlayer());
 
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         assetLoader = game.assetLoader;
@@ -95,7 +97,7 @@ public class GameMenu extends Menu implements CheatProcessor {
 //
 //        loadHand(players.get(0).getHand(), myHandTable);
 //        loadHand(players.get(1).getHand(), enemyHandTable);
-
+        
 
         cheatConsole = new CheatConsoleWindow("Cheat Console", skin, new CheatProcessor() {
             @Override
@@ -401,6 +403,11 @@ public class GameMenu extends Menu implements CheatProcessor {
         } else {
             stage.setKeyboardFocus(null);
         }
+    }
+
+    public void setLeaders(Leader myLeader, Leader enemyLeader) {
+        this.myLeader = myLeader;
+        this.enemyLeader = enemyLeader;
     }
 
     public Main getMainInstance() {

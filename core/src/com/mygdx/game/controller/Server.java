@@ -101,12 +101,16 @@ public class Server extends Thread {
         }
     }
 
-    private synchronized boolean isGameCommandReceived() {
+    public synchronized boolean isGameCommandReceived() {
         return this.gameCommandReceived;
     }
 
-    private synchronized void setGameCommandReceived(boolean gameCommandReceived) {
+    public synchronized void setGameCommandReceived(boolean gameCommandReceived) {
         this.gameCommandReceived = gameCommandReceived;
+    }
+
+    public ArrayList<Object> getInputs() {
+        return this.inputs;
     }
 
     private synchronized boolean isOutputReceived() { return this.outputReceived; }

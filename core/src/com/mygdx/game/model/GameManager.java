@@ -532,7 +532,7 @@ public class GameManager {
                 removeCard(weatherCards.get(i));
             }
 
-            gameServer.updateScores(player1 , player2);
+            gameServer.updateScores();
 
             currentPlayer.setIsPassed(false);
             getOtherPlayer().setIsPassed(false);

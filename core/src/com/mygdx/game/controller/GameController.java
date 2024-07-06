@@ -3,12 +3,15 @@ package com.mygdx.game.controller;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.game.controller.commands.GameClientCommand;
+import com.mygdx.game.model.Deck;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.PlayerInGame;
 import com.mygdx.game.model.Position;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
+import com.mygdx.game.model.faction.Faction;
 import com.mygdx.game.model.faction.Monsters;
+import com.mygdx.game.model.leader.Leader;
 import com.mygdx.game.view.CustomTable;
 import com.mygdx.game.view.GameMenu;
 import com.mygdx.game.view.GraphicalCard;
@@ -23,10 +26,12 @@ public class GameController {
     private boolean isMyTurn;
     public final GameMenu gameMenu;
     private Client client;
+    private Player player;
 
-    public GameController(GameMenu gameMenu, Client client) {
+    public GameController(GameMenu gameMenu, Client client, Player player) {
         this.gameMenu = gameMenu;
         this.client = client;
+        this.player = player;
     }
 
     public void setIsMyTurn(boolean isMyTurn) { this.isMyTurn = isMyTurn; }
@@ -50,7 +55,7 @@ public class GameController {
         }
         System.out.println(isMyTurn);
 
-        if (result) client.sendToServer(END_TURN, EOF);
+        if (result) client.sendToServerVoid(END_TURN, EOF);
         // TODO: @Arman send back update scores signal from the server
 //        if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
 //        else gameMenu.updateScores(gameManager.getOtherPlayer(), gameManager.getCurrentPlayer());
@@ -81,7 +86,8 @@ public class GameController {
         table.add(graphicalCard);
     }
 
-    public void changeTurn(boolean isMyTurn) {
+    public void changeTurn() {
+        this.isMyTurn = !isMyTurn;
         gameMenu.changeTurn(isMyTurn);
     }
 
@@ -227,14 +233,46 @@ public class GameController {
             case SET_IS_MY_TURN:
                 setIsMyTurn((boolean) inputs.get(1));
                 break;
+            case CHANGE_TURN:
+                changeTurn();
+                break;
+            case SET_FACTION:
+                setFaction((Faction) inputs.get(1));
+                break;
+            case SET_DECK:
+                setDeck((Deck) inputs.get(1));
+                break;
+            case SET_LEADERS:
+                setLeaders((Leader) inputs.get(1), (Leader) inputs.get(2));
+                break;
             case UPDATE_SCORES:
                 updateScores((int) inputs.get(1), (int) inputs.get(2));
                 break;
             case RESET_PASS_BUTTONS:
                 resetPassButtons();
                 break;
+            case REMOVE_FROM_VIEW:
+                removeCardFromView((Card) inputs.get(1));
+                break;
+            case ADD_CARD_TO_TABLE_SECTION:
+                addCardToTableSection((Card) inputs.get(1), (Position) inputs.get(2), (boolean) inputs.get(3));
+                break;
+            case ADD_CARD_TO_HAND:
+                addCardToHand((Card) inputs.get(1), (boolean) inputs.get(2));
+                break;
 
         }
     }
 
+    private void setFaction(Faction faction) {
+        player.setFaction(faction);
+    }
+
+    private void setDeck(Deck deck) {
+        player.loadDeck(deck);
+    }
+
+    private void setLeaders(Leader myLeader, Leader enemyLeader) {
+
+    }
 }
