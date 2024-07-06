@@ -50,14 +50,14 @@ public class GameController {
 
     public boolean placeCard(Card card, TableSection tableSection) {
         boolean result;
-        if (tableSection.isEnemy() ^ !isMyTurn) {
+        if (tableSection.equals(TableSection.WEATHER)) {
+            result = gameManager.placeCard(card);
+        }
+        else if (tableSection.isEnemy() ^ !isMyTurn) {
             result = gameManager.placeCardEnemy(card);
         } else {
-
             result = gameManager.placeCard(card, tableSection.getPosition());
-            System.out.println(tableSection.getTitle());
         }
-        System.out.println(isMyTurn);
 
         if (result) gameManager.endTurn();
         if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
@@ -68,7 +68,10 @@ public class GameController {
 
     public boolean canPlaceCardToPosition(Card card, TableSection tableSection) {
         Position position = tableSection.getPosition();
-        if (tableSection.isEnemy() ^ !isMyTurn) return gameManager.canPlaceCardEnemy(card, position);
+        if (tableSection.equals(TableSection.WEATHER)) {
+            return gameManager.canPlaceCard(card, Position.WeatherPlace);
+        }
+        else if (tableSection.isEnemy() ^ !isMyTurn) return gameManager.canPlaceCardEnemy(card, position);
         else return gameManager.canPlaceCard(card, position);
     }
 
@@ -113,6 +116,7 @@ public class GameController {
         for (Actor actor : table.getChildren()) {
             if (actor instanceof GraphicalCard && ((GraphicalCard) actor).getCard().equals(card)) {
                 table.removeActor(actor);
+                ((GraphicalCard) actor).getLabelInsideCircle().setText("");
                 return (GraphicalCard) actor;
             }
         }

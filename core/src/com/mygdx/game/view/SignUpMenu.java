@@ -19,6 +19,9 @@ import com.mygdx.game.Main;
 import com.mygdx.game.controller.ControllerResponse;
 import com.mygdx.game.controller.SignUpController;
 
+import java.security.SecureRandom;
+import java.util.Random;
+
 public class SignUpMenu extends Menu {
     private final SignUpController signUpController;
     Label errorLabel;
@@ -77,6 +80,47 @@ public class SignUpMenu extends Menu {
             }
         });
 
+        TextButton generateRandomPassword = new TextButton("random password", textButtonStyle);
+        generateRandomPassword.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                String randomPassword = generateRandomPassword(10);
+                errorLabel.setText("Random password: " + randomPassword);
+                errorLabel.setColor(Color.PURPLE);
+            }
+
+            public String generateRandomPassword(int length) {
+                String lowercase = "abcdefghijklmnopqrstuvwxyz";
+                String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                String digits = "0123456789";
+                String specialCharacters = "!@#$%";
+
+                Random random = new SecureRandom();
+                StringBuilder password = new StringBuilder();
+
+                password.append(lowercase.charAt(random.nextInt(lowercase.length())));
+                password.append(uppercase.charAt(random.nextInt(uppercase.length())));
+                password.append(digits.charAt(random.nextInt(digits.length())));
+                password.append(specialCharacters.charAt(random.nextInt(specialCharacters.length())));
+
+                for (int i = 4; i < length; i++) {
+                    String allCharacters = lowercase + uppercase + digits + specialCharacters;
+                    char randomChar = allCharacters.charAt(random.nextInt(allCharacters.length()));
+                    password.append(randomChar);
+                }
+
+                char[] passwordArray = password.toString().toCharArray();
+                for (int i = passwordArray.length - 1; i > 0; i--) {
+                    int j = random.nextInt(i + 1);
+                    char temp = passwordArray[i];
+                    passwordArray[i] = passwordArray[j];
+                    passwordArray[j] = temp;
+                }
+
+                return new String(passwordArray);
+            }
+        });
+
         TextButton backButton = new TextButton("Back", textButtonStyle);
         backButton.addListener(new ClickListener() {
             @Override
@@ -111,9 +155,11 @@ public class SignUpMenu extends Menu {
         table.row().pad(20, 0, 20, 0);
         table.add(nicknameField).width(400).pad(pad);
         table.row().pad(10, 0, 10, 0);
-        table.add(signUpButton).pad(pad).width(400).height(120);
+        table.add(signUpButton).pad(10).width(400).height(120);
         table.row().pad(10, 0, 10, 0);
-        table.add(backButton).pad(pad).width(400).height(120);
+        table.add(generateRandomPassword).pad(10).width(400).height(120);
+        table.row().pad(10, 0, 10, 0);
+        table.add(backButton).pad(10).width(400).height(120);
     }
 
     public void verifyVerificationCode(String actualCode) {

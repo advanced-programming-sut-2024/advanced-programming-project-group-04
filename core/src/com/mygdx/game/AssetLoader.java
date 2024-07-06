@@ -24,11 +24,13 @@ public class AssetLoader {
     public static final String BACKGROUND = "background.png";
     public static final String MUSIC = "track1.mp3";
     public static final String SKIN = "skins/neon/skin/default.json";
-    public static final String BOARD = "board.jpg";
+    public static final String BOARD = "board2.jpg";
     public static final String MOHANDES = "mohandes.mp3";
     public static final String FRIENDS = "friends.png";
     public static final String FRIENDREQUESTS = "friendRequests.png";
     public static final String TABS = "tabs.png";
+    public static final String ONLINE = "statusOnline.png";
+    public static final String OFFLINE = "statusOffline.png";
 
 
 
@@ -60,6 +62,9 @@ public class AssetLoader {
         assetManager.load(FRIENDS, Texture.class);
         assetManager.load(FRIENDREQUESTS, Texture.class);
         assetManager.load(TABS, Texture.class);
+        assetManager.load(ONLINE, Texture.class);
+        assetManager.load(OFFLINE, Texture.class);
+
 
         // Load factions
         FileHandle factionDir = Gdx.files.internal("assets/images/factions/");

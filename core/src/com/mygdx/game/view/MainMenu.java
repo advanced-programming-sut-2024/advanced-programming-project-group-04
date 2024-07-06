@@ -8,12 +8,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.AssetLoader;
 import com.mygdx.game.Main;
 import com.mygdx.game.controller.ControllerResponse;
 import com.mygdx.game.controller.MainMenuController;
+import com.mygdx.game.controller.ServerCommand;
 import com.mygdx.game.model.Player;
 
 import java.util.ArrayList;
@@ -171,21 +174,66 @@ public class MainMenu extends Menu {
 
     private void loadFriendsList() {
         friendsWindow.clear();
+        if (game.getLoggedInPlayer() == null) return;
         ArrayList<Player> friends = game.getLoggedInPlayer().getFriends();
         float buttonWidth = friendsWindow.getWidth() * 0.50f;
+
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(new Color(0f, 0.5f, 0.5f, 1f)); // blue
+        pixmap.fill();
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+        Drawable blueBackground = new TextureRegionDrawable(new TextureRegion(texture));
+
+
         if (friends == null) return;
+
+
         for (Player friend : friends) {
-            TextButton friendButton = new TextButton(friend.getUsername(), game.assetLoader.textButtonStyle);
-            friendButton.addListener(new ClickListener() {
+            Table friendEntry = new Table();
+            friendEntry.setBackground(blueBackground);
+            boolean isOnline = game.getClient().sendToServer(ServerCommand.IS_ONLINE, friend.getUsername());
+            Texture statusTexture = game.assetManager.get(isOnline ? AssetLoader.ONLINE : AssetLoader.OFFLINE, Texture.class);
+            Image statusImage = new Image(statusTexture);
+
+            Label.LabelStyle labelStyle = new Label.LabelStyle();
+            labelStyle.font = AssetLoader.getFontWithCustomSize(38);
+            Label friendLabel = new Label(friend.getUsername(), labelStyle);
+
+            friendEntry.add(friendLabel).padRight(10);
+            friendEntry.add(statusImage).size(30, 30).padRight(10);
+
+            TextButton.TextButtonStyle textButtonStyle;
+            textButtonStyle = new TextButton.TextButtonStyle();
+            textButtonStyle.font = AssetLoader.getFontWithCustomSize(38);
+            textButtonStyle.fontColor = Color.WHITE;
+            textButtonStyle.up = game.assetLoader.skin.getDrawable("button-c");
+            textButtonStyle.down = game.assetLoader.skin.getDrawable("button-pressed-c");
+            textButtonStyle.over = game.assetLoader.skin.getDrawable("button-over-c");
+            TextButton chatButton = new TextButton("Chat", textButtonStyle);
+            chatButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     showMessageDialog(game.getLoggedInPlayer(), friend);
                 }
             });
-            friendsWindow.add(friendButton).width(buttonWidth).pad(5);
+            friendEntry.add(chatButton).padRight(10);
+
+            friendsWindow.add(friendEntry).width(buttonWidth).pad(5);
             friendsWindow.row();
         }
     }
+
+    private void startFriendsListUpdater() {
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                loadFriendsList();
+            }
+        }, 0, 5); // update online status once every 5 seconds
+    }
+
+
     private void loadFriendRequestsList() {
         friendRequestsWindow.clear();
         ArrayList<Player> incomingRequests = game.getLoggedInPlayer().getIncomingFriendRequests();
@@ -331,6 +379,11 @@ public class MainMenu extends Menu {
         inputTable.row();
 
         window.add(inputTable).expandX().bottom().pad(10);
+    }
+
+    @Override
+    public void show() {
+        startFriendsListUpdater();
     }
 
 }

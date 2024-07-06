@@ -31,6 +31,7 @@ import com.mygdx.game.controller.GameController;
 import com.mygdx.game.model.Deck;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.PlayerInGame;
+import com.mygdx.game.model.Position;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.*;
@@ -58,7 +59,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     DragAndDrop dnd;
     Skin skin;
     TextureRegionDrawable backgroundImage;
-    Label myScore, enemyScore;
+    Label myScore, enemyScore, myMeleeScore, enemyMeleeScore, myRangedScore, enemyRangedScore, mySiegeScore, enemySiegeScore, myCardsCount, enemyCardsCount, turnIndicator;
     ArrayList<PlayerInGame> players;
     private CheatConsoleWindow cheatConsole;
     private boolean cheatConsoleVisible = false;
@@ -66,6 +67,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     TextButton myGraveyard, enemyGraveyard;
     TextButton passButtonEnemy, passButtonSelf;
     private CheatController cheatController;
+
 
     public GameMenu(Main game) {
         super(game);
@@ -201,12 +203,47 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         myScore = new Label("0", game.assetLoader.labelStyle);
         enemyScore = new Label("0", game.assetLoader.labelStyle);
-        myScore.setPosition(200, 400);
-        enemyScore.setPosition(200, 1200);
+
+        table.setBackground(backgroundImage);
+
+        // TODO Add these motherfuckers to the screen where ever needed
+        myMeleeScore = new Label("0", game.assetLoader.labelStyle);
+        enemyMeleeScore = new Label("0", game.assetLoader.labelStyle);
+        myRangedScore = new Label("0", game.assetLoader.labelStyle);
+        enemyRangedScore = new Label("0", game.assetLoader.labelStyle);
+        mySiegeScore = new Label("0", game.assetLoader.labelStyle);
+        enemySiegeScore = new Label("0", game.assetLoader.labelStyle);
+
+        myCardsCount = new Label("10", game.assetLoader.labelStyle);
+        enemyCardsCount = new Label("10", game.assetLoader.labelStyle);
+
+        turnIndicator = new Label(gameController.isMyTurn ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
+
+
+
+
+        myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
+        enemyScore.setPosition(610 - enemyScore.getWidth() / 2f, 1005 - enemyScore.getHeight() / 2f);
+
+        myMeleeScore.setPosition(718 - myMeleeScore.getWidth() / 2f, 791 - myMeleeScore.getHeight() / 2f);
+        enemyMeleeScore.setPosition(718 - enemyMeleeScore.getWidth() / 2f, 987 - enemyMeleeScore.getHeight() / 2f);
+        myRangedScore.setPosition(718 - myRangedScore.getWidth() / 2f, 615 - myRangedScore.getHeight() / 2f);
+        enemyRangedScore.setPosition(718 - enemyRangedScore.getWidth() / 2f, 1171 - enemyRangedScore.getHeight() / 2f);
+        mySiegeScore.setPosition(718 - mySiegeScore.getWidth() / 2f, 431 - mySiegeScore.getHeight() / 2f);
+        enemySiegeScore.setPosition(718 - enemySiegeScore.getWidth() / 2f, 1345 - enemySiegeScore.getHeight() / 2f);
+
         TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
 
-        stage.addActor(myScore);
-        stage.addActor(enemyScore);
+        table.addActor(myScore);
+        table.addActor(enemyScore);
+
+        table.addActor(myMeleeScore);
+        table.addActor(enemyMeleeScore);
+        table.addActor(myRangedScore);
+        table.addActor(enemyRangedScore);
+        table.addActor(mySiegeScore);
+        table.addActor(enemySiegeScore);
+
 
         myGraveyard = new TextButton("Graveyard", buttonStyle);
         enemyGraveyard = new TextButton("Graveyard", buttonStyle);
@@ -276,8 +313,8 @@ public class GameMenu extends Menu implements CheatProcessor {
             }
         });
 
-        stage.addActor(myGraveyard);
-        stage.addActor(enemyGraveyard);
+        table.addActor(myGraveyard);
+        table.addActor(enemyGraveyard);
 
         passButtonEnemy = new TextButton("PASS enemy", buttonStyle);
         passButtonEnemy.setPosition(300, 1200);
@@ -310,8 +347,8 @@ public class GameMenu extends Menu implements CheatProcessor {
         passButtonEnemy.setColor(0, 1, 0, 1f);
         passButtonSelf.setColor(0, 1, 0, 1f);
 
-        stage.addActor(passButtonEnemy);
-        stage.addActor(passButtonSelf);
+        table.addActor(passButtonEnemy);
+        table.addActor(passButtonSelf);
 
         table.setFillParent(true);
         table.setDebug(true);
@@ -362,47 +399,68 @@ public class GameMenu extends Menu implements CheatProcessor {
             });
         }
 
-        table.add(enemyGraveyardTable).height(200).width(200);
-        table.add(enemyHandTable);
-        table.row();
-        table.add(enemyLeaderTable).height(400).width(200);
+        myRowsTables[0].setSize(1080, 160);
+        myRowsTables[1].setSize(1080, 160);
+        myRowsTables[2].setSize(1080, 160);
+        enemyRowsTables[0].setSize(1080, 160);
+        enemyRowsTables[1].setSize(1080, 160);
+        enemyRowsTables[2].setSize(1080, 160);
 
-        upperSectionTable = new Table();
-        upperSectionTable.setDebug(true);
-        upperSectionTable.add(enemyRowsTables[5]).height(200).width(200);
-        upperSectionTable.add(enemyRowsTables[2]).height(200).width(1500);
-        upperSectionTable.row();
-        upperSectionTable.add(enemyRowsTables[4]).height(200).width(200);
-        upperSectionTable.add(enemyRowsTables[1]).height(200).width(1500);
+        myRowsTables[3].setSize(180, 160);
+        myRowsTables[4].setSize(180, 160);
+        myRowsTables[5].setSize(180, 160);
+        enemyRowsTables[3].setSize(180, 160);
+        enemyRowsTables[4].setSize(180, 160);
+        enemyRowsTables[5].setSize(180, 160);
 
-        table.add(upperSectionTable).height(400).width(1700);
-        table.row();
-        table.add(weatherTable).height(400).width(200);
+        myRowsTables[2].setPosition(950, 350);
+        myRowsTables[1].setPosition(950, 530);
+        myRowsTables[0].setPosition(950, 700);
+        enemyRowsTables[0].setPosition(950, 905);
+        enemyRowsTables[1].setPosition(950, 1085);
+        enemyRowsTables[2].setPosition(950, 1265);
 
-        middleSectionTable = new Table();
-        middleSectionTable.setDebug(true);
-        middleSectionTable.add(enemyRowsTables[3]).height(200).width(200);
-        middleSectionTable.add(enemyRowsTables[0]).height(200).width(1500);
-        middleSectionTable.row();
-        middleSectionTable.add(myRowsTables[3]).height(200).width(200);
-        middleSectionTable.add(myRowsTables[0]).height(200).width(1500);
+        myRowsTables[5].setPosition(760, 350);
+        myRowsTables[4].setPosition(760, 530);
+        myRowsTables[3].setPosition(760, 700);
+        enemyRowsTables[3].setPosition(760, 905);
+        enemyRowsTables[4].setPosition(760, 1085);
+        enemyRowsTables[5].setPosition(760, 1265);
 
-        table.add(middleSectionTable).height(400).width(1700);
-        table.row();
-        table.add(myLeaderTable).height(400).width(200);
+        myHandTable.setSize(1250, 180);
+        enemyHandTable.setSize(1250, 180);
+        myHandTable.setPosition(770, 150);
+        enemyHandTable.setPosition(770, 1425);
 
-        lowerSectionTable = new Table();
-        lowerSectionTable.setDebug(true);
-        lowerSectionTable.add(myRowsTables[4]).height(200).width(200);
-        lowerSectionTable.add(myRowsTables[1]).height(200).width(1500);
-        lowerSectionTable.row();
-        lowerSectionTable.add(myRowsTables[5]).height(200).width(200);
-        lowerSectionTable.add(myRowsTables[2]).height(200).width(1500);
+        weatherTable.setSize(375, 190);
+        weatherTable.setPosition(195, 660);
 
-        table.add(lowerSectionTable).height(400).width(1700);
-        table.row();
-        table.add(myGraveyardTable).height(200).width(200);
-        table.add(myHandTable);
+        for (CustomTable table : myRowsTables) {
+            table.setDebug(true);
+        }
+        for (CustomTable table : enemyRowsTables) {
+            table.setDebug(true);
+        }
+        myHandTable.setDebug(true);
+        enemyHandTable.setDebug(true);
+        weatherTable.setDebug(true);
+
+        table.addActor(myRowsTables[2]);
+        table.addActor(myRowsTables[1]);
+        table.addActor(myRowsTables[0]);
+        table.addActor(enemyRowsTables[2]);
+        table.addActor(enemyRowsTables[1]);
+        table.addActor(enemyRowsTables[0]);
+        table.addActor(myRowsTables[5]);
+        table.addActor(myRowsTables[4]);
+        table.addActor(myRowsTables[3]);
+        table.addActor(enemyRowsTables[5]);
+        table.addActor(enemyRowsTables[4]);
+        table.addActor(enemyRowsTables[3]);
+        table.addActor(myHandTable);
+        table.addActor(enemyHandTable);
+        table.addActor(weatherTable);
+
 
         stage.addActor(table);
     }
@@ -482,6 +540,20 @@ public class GameMenu extends Menu implements CheatProcessor {
     public void updateScores(PlayerInGame self, PlayerInGame enemy) {
         myScore.setText(self.getTotalHP());
         enemyScore.setText(enemy.getTotalHP());
+        myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
+        enemyScore.setPosition(610 - enemyScore.getWidth() / 2f, 1005 - enemyScore.getHeight() / 2f);
+
+        myMeleeScore.setText(self.getTotalHPRow(Position.Melee));
+        enemyMeleeScore.setText(enemy.getTotalHPRow(Position.Melee));
+        myRangedScore.setText(self.getTotalHPRow(Position.Range));
+        enemyRangedScore.setText(enemy.getTotalHPRow(Position.Range));
+        mySiegeScore.setText(self.getTotalHPRow(Position.Siege));
+        enemySiegeScore.setText(enemy.getTotalHPRow(Position.Siege));
+
+        myCardsCount.setText(self.getHandCount());
+        enemyCardsCount.setText(enemy.getHandCount());
+
+        turnIndicator.setText(gameController.isMyTurn ? "Your Turn" : "Enemy's Turn");
     }
 
     public void resetPassedButtons() {
@@ -523,7 +595,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     public boolean isCheatConsoleVisible() {
         return cheatConsoleVisible;
     }
-    
+
     public Main getMainInstance() {
         return game;
     }
