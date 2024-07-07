@@ -2,6 +2,11 @@ package com.mygdx.game.controller;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.mygdx.game.controller.commands.GameServerCommand;
 import com.mygdx.game.controller.commands.ServerCommand;
 import com.mygdx.game.model.Player;
@@ -12,11 +17,13 @@ import com.mygdx.game.model.leader.Leader;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.JarFile;
 
 public class Server extends Thread {
     private static final Vector<Player> allPlayers = new Vector<>();
@@ -42,7 +49,10 @@ public class Server extends Thread {
         File dataDir = new File("Data/Users");
         File[] subFiles = dataDir.listFiles();
 
-        Gson gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Leader.class, new LeaderTypeAdapter());
+        builder.registerTypeAdapter(Faction.class, new FactionTypeAdapter());
+        Gson gson = builder.create();
         for (File file : subFiles) {
             FileHandle fileHandle = new FileHandle(file + "/login-data.json");
             String json = fileHandle.readString();
@@ -312,6 +322,7 @@ public class Server extends Thread {
 
         player.setFaction((Faction)faction);
         player.createNewDeck();
+        updatePlayerData(player);
         out.writeObject(faction);
     }
 
@@ -325,6 +336,7 @@ public class Server extends Thread {
         System.out.println(leader.getName());
 
         player.getDeck().setLeader(leader);
+        updatePlayerData(player);
         out.writeObject(leader);
     }
 
@@ -332,6 +344,7 @@ public class Server extends Thread {
         AllCards allCard = (AllCards) in.readObject();
         Card card = new Card(allCard);
         player.getDeck().addCard(card);
+        updatePlayerData(player);
         out.writeObject(card);
     }
 
@@ -339,6 +352,7 @@ public class Server extends Thread {
         AllCards allCard = (AllCards) in.readObject();
         Card card = player.getDeck().removeCardFromAllCard(allCard);
         if (card == null) throw new RuntimeException();
+        updatePlayerData(player);
         out.writeObject(card);
     }
 
@@ -364,6 +378,100 @@ public class Server extends Thread {
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void updatePlayerData(Player player) {
+        File file = new File("Data/Users/" + player.getId() + "/login-data.json");
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Faction.class, new FactionTypeAdapter());
+        builder.registerTypeAdapter(Leader.class, new LeaderTypeAdapter());
+        Gson gson = builder.create();
+        try {
+            FileWriter writer = new FileWriter(file);
+            gson.toJson(player, writer);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static class LeaderTypeAdapter extends TypeAdapter<Leader> {
+
+        @Override
+        public void write(JsonWriter jsonWriter, Leader leader) throws IOException {
+            System.out.println("meow");
+            System.out.println(leader == null);
+            if (leader == null) {
+                jsonWriter.beginObject();
+                jsonWriter.name("className");
+                jsonWriter.value("");
+                jsonWriter.endObject();
+                return;
+            }
+            System.out.println("leader 1");
+            jsonWriter.beginObject();
+            System.out.println("leader 2");
+            jsonWriter.name("className");
+            System.out.println("leader 3");
+            jsonWriter.value(leader.getClass().getCanonicalName());
+            System.out.println("leader 4");
+            jsonWriter.endObject();
+            System.out.println("leader 5");
+        }
+
+        @Override
+        public Leader read(JsonReader jsonReader) throws IOException {
+            System.out.println("leader consumed");
+            jsonReader.beginObject();
+            jsonReader.nextName();
+            String leaderClassName = jsonReader.nextString();
+            System.out.println(leaderClassName);
+            if (leaderClassName.isEmpty()) return null;
+            else {
+                try {
+                    Class<?> clazz = Class.forName(leaderClassName);
+                    Object obj = clazz.getConstructor().newInstance();
+                    System.out.println("leader returned: " + ((Leader) obj).getName());
+                    jsonReader.endObject();
+                    return (Leader) obj;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    static class FactionTypeAdapter extends TypeAdapter<Faction> {
+        @Override
+        public void write(JsonWriter writer, Faction faction) throws IOException {
+            System.out.println("Yo yo");
+            if (faction == null) return;
+            System.out.println("faction 1");
+            writer.beginObject();
+            System.out.println("faction 2");
+            writer.name("clasName");
+            System.out.println("faction 3");
+            writer.value(faction.getClass().getCanonicalName());
+            System.out.println("faction 4");
+            writer.endObject();
+            System.out.println("faction 5");
+        }
+
+        @Override
+        public Faction read(JsonReader reader) throws IOException {
+            System.out.println("faction consumed");
+            try {
+                reader.beginObject();
+                reader.nextName();
+                Class<?> clazz = Class.forName(reader.nextString());
+                reader.endObject();
+                return (Faction) clazz.getConstructor().newInstance();
+            } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
+                     InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

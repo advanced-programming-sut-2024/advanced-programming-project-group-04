@@ -64,6 +64,8 @@ public class GameServer extends Thread {
         enemySession.sendToClientVoid(SET_DECK, p1.getDeck(), EOF);
         mySession.sendToClientVoid(SET_LEADERS, p1.getDeck().getLeader(), p2.getDeck().getLeader(), EOF);
         enemySession.sendToClientVoid(SET_LEADERS, p2.getDeck().getLeader(), p1.getDeck().getLeader(), EOF);
+        mySession.sendToClientVoid(SET_HANDS, gameManager.getCurrentPlayer().getHand(), gameManager.getOtherPlayer().getHand(), EOF);
+        enemySession.sendToClientVoid(SET_HANDS, gameManager.getOtherPlayer().getHand(), gameManager.getCurrentPlayer().getHand(), EOF);
     }
 
     public void updateScores() {
@@ -283,7 +285,9 @@ public class GameServer extends Thread {
 //    }
 
     private void sendToBoth(Object... inputs) {
+        System.out.println("Sent to me");
         mySession.sendToClientVoid(inputs);
+        System.out.println("Sent to enemy");
         enemySession.sendToClientVoid(inputs);
     }
 

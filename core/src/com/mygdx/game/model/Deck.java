@@ -1,12 +1,13 @@
 package com.mygdx.game.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.leader.Leader;
 
-public class Deck {
+public class Deck implements Serializable {
     private Leader leader;
     private ArrayList<Card> cards = new ArrayList<>();
     private final int UNIT_MIN = 22, SPELL_MAX = 10;

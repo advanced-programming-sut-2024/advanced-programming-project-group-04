@@ -123,7 +123,10 @@ public class GameMenu extends Menu implements CheatProcessor {
         }
     }
 
-    private void loadHand(ArrayList<Card> hand, Table table) {
+    public void loadHand(ArrayList<Card> hand, boolean isEnemy) {
+        Table table;
+        if (isEnemy) table = enemyHandTable;
+        else table = myHandTable;
         for (Card card : hand) {
             GraphicalCard graphicalCard = createNewGraphicalCard(card);
             table.add(graphicalCard);

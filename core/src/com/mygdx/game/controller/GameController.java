@@ -245,6 +245,8 @@ public class GameController {
             case SET_LEADERS:
                 setLeaders((Leader) inputs.get(1), (Leader) inputs.get(2));
                 break;
+            case SET_HANDS:
+                setHands((ArrayList<Card>) inputs.get(1), (ArrayList<Card>) inputs.get(2));
             case UPDATE_SCORES:
                 updateScores((int) inputs.get(1), (int) inputs.get(2));
                 break;
@@ -274,5 +276,10 @@ public class GameController {
 
     private void setLeaders(Leader myLeader, Leader enemyLeader) {
 
+    }
+
+    private void setHands(ArrayList<Card> myHand, ArrayList<Card> enemyHand) {
+        gameMenu.loadHand(myHand, false);
+        gameMenu.loadHand(enemyHand, true);
     }
 }
