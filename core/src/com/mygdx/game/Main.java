@@ -31,7 +31,7 @@ public class Main extends Game {
         // Play background music
         backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
         backgroundMusic.setLooping(true);
-        // backgroundMusic.play();
+        backgroundMusic.play();
 
         this.client = new Client(this, "127.0.0.1");
 
@@ -56,7 +56,13 @@ public class Main extends Game {
         mahbod.sendMessage(arman, "sirk");
         delay(100);
         ArrayList<Message> chatArmanVaMahbod = mahbod.getChatWithPlayer(arman);
+        matin.setForgetPasswordQuestion("Who do you worship?");
+        matin.setAnswerToQuestion("Naddaf");
 
+        mahbod.addLP(353);
+        arman.addLP(712);
+        matin.addLP(241);
+        arvin2.addLP(115);
         // Set the initial screen
 
         setScreen(new GameMenu(this));

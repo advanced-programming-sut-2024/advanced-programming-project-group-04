@@ -33,6 +33,8 @@ public class Player implements Serializable {
     private HashMap<Player, ArrayList<Message>> receivedMessages = new HashMap<>();
     private ArrayList<Player> friends = new ArrayList<>();
     private boolean twoFAEnabled;
+    private Rank rank;
+    private int LP;
 
     private ArrayList<Player> incomingFriendRequests = new ArrayList<>();
     private ArrayList<Player> outgoingFriendRequests = new ArrayList<>();
@@ -43,8 +45,8 @@ public class Player implements Serializable {
 
     private ArrayList<Deck> savedDecks = new ArrayList<>();
 
-    
-    public Player (String username , String email , String nickname) {
+
+    public Player(String username, String email, String nickname) {
         this.username = username;
         this.email = email;
         this.nickname = nickname;
@@ -58,16 +60,24 @@ public class Player implements Serializable {
         this.drawCount = 0;
         this.lossCount = 0;
         twoFAEnabled = false;
+        LP = 0;
 
     }
 
-    public int getId() { return this.id; }
+    public int getId() {
+        return this.id;
+    }
 
-    public String getUsername() { return this.username; }
-
+    public String getUsername() {
+        return this.username;
+    }
 
     public boolean validateAnswerToQuestion(String answer) {
         return this.answerToQuestion.equals(answer);
+    }
+
+    public void setAnswerToQuestion(String answer) {
+        answerToQuestion = answer;
     }
 
     public String getNickname() {
@@ -132,6 +142,10 @@ public class Player implements Serializable {
         return forgetPasswordQuestion;
     }
 
+    public void setForgetPasswordQuestion(String question) {
+        this.forgetPasswordQuestion = question;
+    }
+
     public void setGameCount(int gameCount) {
         this.gameCount = gameCount;
     }
@@ -160,7 +174,9 @@ public class Player implements Serializable {
         this.deck = deck;
     }
 
-    public void createNewDeck() { this.deck = new Deck(); }
+    public void createNewDeck() {
+        this.deck = new Deck();
+    }
 
     public boolean isDeckSaved(Deck deck) {
         for (Deck savedDeck : savedDecks) {
@@ -259,5 +275,47 @@ public class Player implements Serializable {
 
     public void toggleTwoFA() {
         twoFAEnabled = !twoFAEnabled;
+    }
+
+    public int getLP() {
+        return LP;
+    }
+
+    public void addLP(int amount) {
+        LP += amount;
+        if (LP < 0) LP = 0;
+    }
+
+    public Rank getRank() {
+        for (Rank rank : Rank.values()) {
+            if (LP >= rank.getMinimumLP()) {
+                return rank;
+            }
+        }
+        return null; // should never reach this
+    }
+
+    public int calculateLPGains(Player opponent, GameResult result) {
+        int opponentLP = opponent.getLP();
+        int lpDifference = opponentLP - this.LP;
+        int lpChange = 0;
+
+        switch (result) {
+            case Win:
+                lpChange = 25 + lpDifference / 20;
+                lpChange = Math.max(lpChange, 1);
+                break;
+
+            case Loss:
+                lpChange = -20 + lpDifference / 20;
+                lpChange = Math.min(lpChange, -1);
+                break;
+
+            case Draw:
+                lpChange = 2 + lpDifference / 40;
+                break;
+        }
+
+        return lpChange;
     }
 }

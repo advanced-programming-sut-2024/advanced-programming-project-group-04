@@ -350,4 +350,6 @@ public class Server extends Thread {
             throw new RuntimeException(e);
         }
     }
+
+    public static Vector<Player> getAllPlayers() { return allPlayers; }
 }
