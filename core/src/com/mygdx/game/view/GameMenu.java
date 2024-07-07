@@ -250,7 +250,7 @@ public class GameMenu extends Menu implements CheatProcessor {
         myCardsCount = new Label("10", game.assetLoader.labelStyle);
         enemyCardsCount = new Label("10", game.assetLoader.labelStyle);
 
-        turnIndicator = new Label(gameController.isMyTurn ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
+        turnIndicator = new Label(!gameController.isMyTurn ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
 
 
 
@@ -264,7 +264,7 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemyRangedScore.setPosition(718 - enemyRangedScore.getWidth() / 2f, 1171 - enemyRangedScore.getHeight() / 2f);
         mySiegeScore.setPosition(718 - mySiegeScore.getWidth() / 2f, 431 - mySiegeScore.getHeight() / 2f);
         enemySiegeScore.setPosition(718 - enemySiegeScore.getWidth() / 2f, 1345 - enemySiegeScore.getHeight() / 2f);
-
+        turnIndicator.setPosition(400 - turnIndicator.getWidth() / 2f, 1400 - turnIndicator.getHeight() / 2f);
         TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
 
         table.addActor(myScore);
@@ -276,6 +276,7 @@ public class GameMenu extends Menu implements CheatProcessor {
         table.addActor(enemyRangedScore);
         table.addActor(mySiegeScore);
         table.addActor(enemySiegeScore);
+        table.addActor(turnIndicator);
 
 
         myGraveyard = new TextButton("Graveyard", buttonStyle);

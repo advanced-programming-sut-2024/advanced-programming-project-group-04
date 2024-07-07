@@ -82,6 +82,24 @@ public class LoginMenu extends Menu {
             }
         });
 
+
+        TextButton.TextButtonStyle textButtonStyle2 = new TextButton.TextButtonStyle();
+        textButtonStyle.font = AssetLoader.getFontWithCustomSize(44);
+        textButtonStyle.fontColor = Color.WHITE;
+        textButtonStyle.up = game.assetLoader.skin.getDrawable("button-c");
+        textButtonStyle.down = game.assetLoader.skin.getDrawable("button-pressed-c");
+        textButtonStyle.over = game.assetLoader.skin.getDrawable("button-over-c");
+
+        TextButton forgetPassword = new TextButton("Forgot password?", textButtonStyle2);
+        createAccountButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setScreen(new PasswordRecoveryMenu(game));
+            }
+        });
+
+
+
         // Add input listener for Enter key
         usernameField.addListener(new InputListener() {
             @Override
@@ -118,9 +136,11 @@ public class LoginMenu extends Menu {
         table.row().pad(20, 0, 20, 0);
         table.add(passwordField).width(400).pad(pad);
         table.row().pad(20, 0, 20, 0);
-        table.add(signInButton).pad(pad).width(400).height(120);
-        table.row().pad(10, 0, 10, 0);
-        table.add(createAccountButton).pad(pad).width(400).height(120);
+        table.add(signInButton).pad(10).width(400).height(120);
+        table.row().pad(20, 0, 20, 0);
+        table.add(createAccountButton).pad(10).width(400).height(120);
+        table.row().pad(20, 0, 20, 0);
+        table.add(forgetPassword).pad(10).width(400).height(120);
     }
 
     public void signInButtonPressed() {

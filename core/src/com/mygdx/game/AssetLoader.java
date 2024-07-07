@@ -90,6 +90,15 @@ public class AssetLoader {
             assetManager.load(cardPath, Texture.class);
         }
 
+        // Load ranks
+        FileHandle ranksDir = Gdx.files.internal("assets/images/rank/");
+        System.out.println("SIRK");
+        for (FileHandle file : ranksDir.list()) {
+            String rankPath = "images/rank/" + file.name();
+            assetManager.load(rankPath, Texture.class);
+            System.out.println("RANK PATH : " + rankPath);
+        }
+
 
         // Load leaders
         FileHandle leadersDir = Gdx.files.internal("assets/images/leaders/");

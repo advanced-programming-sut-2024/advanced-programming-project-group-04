@@ -10,11 +10,17 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.Main;
 import com.mygdx.game.AssetLoader;
+import com.mygdx.game.controller.Server;
+import com.mygdx.game.model.Player;
+import com.mygdx.game.model.Rank;
+
+import java.util.Vector;
 
 public class ProfileMenu extends Menu {
     private final Skin skin;
@@ -88,7 +94,8 @@ public class ProfileMenu extends Menu {
                 break;
             case "statistics":
                 // Add Statistics content
-                contentTable.add(new Label("Statistics Content", game.assetLoader.labelStyle)).pad(20);
+                createStatisticsContent();
+                // contentTable.add(new Label("Statistics Content", game.assetLoader.labelStyle)).pad(20);
                 break;
             case "matchHistory":
                 // Add Match History content
@@ -134,6 +141,95 @@ public class ProfileMenu extends Menu {
         contentTable.add(twoFAButton).width(400).height(120).pad(10).center();
 
     }
+
+    private void createStatisticsContent() {
+        Table mainTable = new Table();
+
+        Vector<Player> allPlayers = Server.getAllPlayers();
+        allPlayers.get(0).addLP(353);
+        allPlayers.get(1).addLP(712);
+        allPlayers.get(2).addLP(241);
+        allPlayers.get(3).addLP(115);
+        allPlayers.get(4).addLP(78);
+
+        allPlayers.sort((p1, p2) -> Integer.compare(p2.getLP(), p1.getLP()));
+
+
+
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(new Color(0.5f, 0.7f, 1f, 1f)); // Light blue color
+        pixmap.fill();
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+        Drawable lightBlueBackground = new TextureRegionDrawable(new TextureRegion(texture));
+
+        int currentRank = 1;
+        int previousLP = -1;
+
+        for (int i = 0; i < allPlayers.size(); i++) {
+            Player player = allPlayers.get(i);
+
+            if (player.getLP() != previousLP) {
+                currentRank = i + 1;
+                previousLP = player.getLP();
+            }
+
+            Table playerTable = new Table();
+            playerTable.setBackground(lightBlueBackground);
+            playerTable.setSize(1300, 200);
+
+            Label rankLabel = getLabelFromString(currentRank + ".", Color.BLACK);
+            Label usernameLabel = getLabelFromString(player.getUsername(), Color.BLACK);
+            Table leftSection = new Table();
+            leftSection.add(rankLabel).padRight(10);
+            leftSection.add(usernameLabel).expandX().left();
+
+            Label winsLabel = getLabelFromString("Wins: " + player.getWinCount(), Color.GREEN);
+            Label lossesLabel = getLabelFromString("Losses: " + player.getLossCount(), Color.RED);
+            Label drawsLabel = getLabelFromString("Draws: " + player.getDrawCount(), Color.GRAY);
+            Table middleSection = new Table();
+            middleSection.add(winsLabel).padRight(15);
+            middleSection.add(drawsLabel).padRight(15);
+            middleSection.add(lossesLabel);
+
+            String rankIconURL = player.getRank().getImageURL();
+            Texture rankTexture = game.assetManager.get(rankIconURL, Texture.class);
+            Image rankImage = new Image(rankTexture);
+            rankImage.setSize(150, 150);
+            Label rankIconLabel = getLabelFromString(player.getRank().toString(), Color.BLACK);
+            Label lpLabel = getLabelFromString(player.getLP() + " LP", Color.BLACK);
+
+            Table rightSection = new Table();
+            rightSection.add(rankImage).size(150, 150).row();
+            rightSection.add(rankIconLabel).padTop(5).row();
+            rightSection.add(lpLabel).padTop(5);
+
+            playerTable.add(leftSection).expandX().left().pad(10);
+            playerTable.add(middleSection).expandX().center().pad(10);
+            playerTable.add(rightSection).expandX().right().pad(10);
+
+            mainTable.add(playerTable).fillX().pad(10);
+            mainTable.row();
+        }
+
+        ScrollPane scrollPane = new ScrollPane(mainTable);
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setScrollingDisabled(true, false);
+        scrollPane.setOverscroll(false, false);
+        scrollPane.setForceScroll(false, true);
+        scrollPane.setSize(1300, 1400);
+        scrollPane.setPosition((stage.getWidth() - 1300) / 2, (stage.getHeight() - 1400) / 2); // Center the scroll pane
+
+        contentTable.addActor(scrollPane);
+    }
+
+    private Label getLabelFromString(String text, Color color) {
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = game.assetLoader.font;
+        labelStyle.fontColor = color;
+        return new Label(text, labelStyle);
+    }
+
 
     private class ChangeTabListener extends ClickListener {
         private final Label label;
@@ -230,6 +326,7 @@ public class ProfileMenu extends Menu {
 
     private class Toggle2FAClickListener extends ClickListener {
         TextButton button;
+
         public Toggle2FAClickListener(TextButton button) {
             this.button = button;
         }
