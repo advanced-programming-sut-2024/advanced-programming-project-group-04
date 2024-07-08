@@ -138,6 +138,7 @@ public class Server extends Thread {
                     inputs.add(input);
                     while (input != GameServerCommand.EOF) {
                         input = in.readObject();
+                        System.out.println("Server received inputs: " + input.toString());
                         inputs.add(input);
                     }
                     setGameCommandReceived(true);
@@ -401,8 +402,6 @@ public class Server extends Thread {
 
         @Override
         public void write(JsonWriter jsonWriter, Leader leader) throws IOException {
-            System.out.println("meow");
-            System.out.println(leader == null);
             if (leader == null) {
                 jsonWriter.beginObject();
                 jsonWriter.name("className");
@@ -410,30 +409,22 @@ public class Server extends Thread {
                 jsonWriter.endObject();
                 return;
             }
-            System.out.println("leader 1");
             jsonWriter.beginObject();
-            System.out.println("leader 2");
             jsonWriter.name("className");
-            System.out.println("leader 3");
             jsonWriter.value(leader.getClass().getCanonicalName());
-            System.out.println("leader 4");
             jsonWriter.endObject();
-            System.out.println("leader 5");
         }
 
         @Override
         public Leader read(JsonReader jsonReader) throws IOException {
-            System.out.println("leader consumed");
             jsonReader.beginObject();
             jsonReader.nextName();
             String leaderClassName = jsonReader.nextString();
-            System.out.println(leaderClassName);
             if (leaderClassName.isEmpty()) return null;
             else {
                 try {
                     Class<?> clazz = Class.forName(leaderClassName);
                     Object obj = clazz.getConstructor().newInstance();
-                    System.out.println("leader returned: " + ((Leader) obj).getName());
                     jsonReader.endObject();
                     return (Leader) obj;
                 } catch (Exception e) {
@@ -446,22 +437,15 @@ public class Server extends Thread {
     static class FactionTypeAdapter extends TypeAdapter<Faction> {
         @Override
         public void write(JsonWriter writer, Faction faction) throws IOException {
-            System.out.println("Yo yo");
             if (faction == null) return;
-            System.out.println("faction 1");
             writer.beginObject();
-            System.out.println("faction 2");
             writer.name("clasName");
-            System.out.println("faction 3");
             writer.value(faction.getClass().getCanonicalName());
-            System.out.println("faction 4");
             writer.endObject();
-            System.out.println("faction 5");
         }
 
         @Override
         public Faction read(JsonReader reader) throws IOException {
-            System.out.println("faction consumed");
             try {
                 reader.beginObject();
                 reader.nextName();

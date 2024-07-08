@@ -25,9 +25,13 @@ public class FactionAndLeaderController {
     public void loadData() {
         faction = game.getLoggedInPlayer().getSelectedFaction();
         Deck deck = game.getLoggedInPlayer().getDeck();
-        if (deck != null) {
-            leader = deck.getLeader();
-            menu.setCards(deck.getCards());
+        if (faction != null) {
+            if (deck != null) {
+                leader = deck.getLeader();
+                menu.setCards(deck.getCards());
+            } else {
+                menu.setCards(new ArrayList<>());
+            }
         }
     }
 

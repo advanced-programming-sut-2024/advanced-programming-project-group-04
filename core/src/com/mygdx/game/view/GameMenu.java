@@ -48,7 +48,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     Deck myDeck, enemyDeck;
     AssetLoader assetLoader;
     HashMap<Card, GraphicalCard> allCardsCreated;
-    Source myHandSource, enemyHandSource;
+    Source myHandSource;
     DragAndDrop dnd;
     Skin skin;
     TextureRegionDrawable backgroundImage;
@@ -64,6 +64,7 @@ public class GameMenu extends Menu implements CheatProcessor {
         super(game);
         this.game = game;
         this.gameController = new GameController(this, game.getClient(), game.getLoggedInPlayer());
+        game.getClient().setGameController(gameController);
 
         stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         assetLoader = game.assetLoader;
@@ -244,8 +245,6 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         dnd = new DragAndDrop();
         myHandSource = getSource(myHandTable);
-        enemyHandSource = getSource(enemyHandTable);
-        dnd.addSource(myHandSource);
 
         for (CustomTable table : allTables.values()) {
             if (!table.getTableSection().canPlaceCard()) continue;
@@ -334,10 +333,8 @@ public class GameMenu extends Menu implements CheatProcessor {
     public void changeTurn(boolean isMyTurn) {
         if (isMyTurn) {
             dnd.addSource(myHandSource);
-            dnd.removeSource(enemyHandSource);
         } else {
             dnd.removeSource(myHandSource);
-            dnd.addSource(enemyHandSource);
         }
     }
 
@@ -376,6 +373,7 @@ public class GameMenu extends Menu implements CheatProcessor {
             gameController.processCommand(game.getClient().getGameCommand());
             game.getClient().setGameCommandReceived(false);
         }
+//        System.out.println("render");
         stage.act(v);
         stage.draw();
     }
@@ -411,6 +409,10 @@ public class GameMenu extends Menu implements CheatProcessor {
     public void setLeaders(Leader myLeader, Leader enemyLeader) {
         this.myLeader = myLeader;
         this.enemyLeader = enemyLeader;
+    }
+
+    public void addSource() {
+        dnd.addSource(myHandSource);
     }
 
     public Main getMainInstance() {

@@ -129,7 +129,9 @@ public class LoginMenu extends Menu {
             errorLabel.setColor(Color.RED);
         }
         else {
-            setScreen(new MainMenu(game));
+//            setScreen(new MainMenu(game));
+            // TODO: set this back to the original form
+            setScreen(new StartGameMenu(game));
         }
     }
 }

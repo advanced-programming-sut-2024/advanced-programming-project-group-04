@@ -9,6 +9,7 @@ public enum GameClientCommand implements Serializable, Command {
     SET_DECK,
     SET_LEADERS,
     SET_HANDS,
+    ADD_SOURCE,
 
     UPDATE_SCORES,
     RESET_PASS_BUTTONS,

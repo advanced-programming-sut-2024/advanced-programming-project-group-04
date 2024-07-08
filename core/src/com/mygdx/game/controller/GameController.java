@@ -34,28 +34,33 @@ public class GameController {
         this.player = player;
     }
 
-    public void setIsMyTurn(boolean isMyTurn) { this.isMyTurn = isMyTurn; }
+    public boolean isMyTurn() { return this.isMyTurn; }
 
-    public void updateScores(int selfTotalHP, int enemyTotalHP) {
-        gameMenu.updateScores(selfTotalHP, enemyTotalHP);
+    public boolean setIsMyTurn(boolean isMyTurn) {
+        this.isMyTurn = isMyTurn;
+        return true;
     }
 
-    public void resetPassButtons() {
+    public boolean updateScores(int selfTotalHP, int enemyTotalHP) {
+        gameMenu.updateScores(selfTotalHP, enemyTotalHP);
+        return true;
+    }
+
+    public boolean resetPassButtons() {
         gameMenu.resetPassedButtons();
+        return true;
     }
 
     public boolean placeCard(Card card, TableSection tableSection) {
         boolean result;
-        if (tableSection.isEnemy() ^ !isMyTurn) {
+        if (tableSection.isEnemy()) {
             result = client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
         } else {
-
             result = client.sendToServer(PLACE_CARD, card, tableSection.getPosition(), EOF);
             System.out.println(tableSection.getTitle());
         }
-        System.out.println(isMyTurn);
 
-        if (result) client.sendToServerVoid(END_TURN, EOF);
+        if (result) client.sendToServer(END_TURN, EOF);
         // TODO: @Arman send back update scores signal from the server
 //        if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
 //        else gameMenu.updateScores(gameManager.getOtherPlayer(), gameManager.getCurrentPlayer());
@@ -69,14 +74,16 @@ public class GameController {
         else return client.sendToServer(CAN_PLACE_CARD, card, position, EOF);
     }
 
-    public void addCardToHand(Card card, boolean isEnemy) {
+    public boolean addCardToHand(Card card, boolean isEnemy) {
         if (isEnemy) addCardToTable(card, gameMenu.getAllTables().get(TableSection.ENEMY_HAND));
         else addCardToTable(card, gameMenu.getAllTables().get(TableSection.MY_HAND));
+        return true;
     }
 
-    public void addCardToTableSection(Card card, Position position, boolean isEnemy) {
+    public boolean addCardToTableSection(Card card, Position position, boolean isEnemy) {
         TableSection tableSection = TableSection.getTableSectionByPosition(position, isEnemy ^ !isMyTurn);
         addCardToTable(card, gameMenu.getAllTables().get(tableSection));
+        return true;
     }
 
     public void addCardToTable(Card card, Table table) {
@@ -86,17 +93,18 @@ public class GameController {
         table.add(graphicalCard);
     }
 
-    public void changeTurn() {
+    public boolean changeTurn() {
         this.isMyTurn = !isMyTurn;
         gameMenu.changeTurn(isMyTurn);
+        return true;
     }
 
-    public GraphicalCard removeCardFromView(Card card) {
+    public boolean removeCardFromView(Card card) {
+        System.out.println("GameController removeCardFromView 1");
         for (CustomTable table : gameMenu.getAllTables().values()) {
-            GraphicalCard graphicalCard = removeCardFromTable(table, card);
-            if (graphicalCard != null) return graphicalCard;
+            removeCardFromTable(table, card);
         }
-        return null;
+        return true;
     }
 
     public GraphicalCard removeCardFromView(Card card, Position position, boolean isEnemy) {
@@ -106,6 +114,7 @@ public class GameController {
     }
 
     public GraphicalCard removeCardFromTable(Table table, Card card) {
+        System.out.println("GameController removeCardFromTable 1");
         for (Actor actor : table.getChildren()) {
             if (actor instanceof GraphicalCard && ((GraphicalCard) actor).getCard().equals(card)) {
                 table.removeActor(actor);
@@ -118,9 +127,9 @@ public class GameController {
     public void removeGraphicalCardFromTable(GraphicalCard graphicalCard, CustomTable table) {
         TableSection tableSection = table.getTableSection();
         Card card = graphicalCard.getCard();
-        if (tableSection == TableSection.MY_HAND) client.sendToServerVoid(REMOVE_FROM_HAND, card, isMyTurn, EOF);
-        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServerVoid(REMOVE_FROM_HAND, card, !isMyTurn, EOF);
-        else if (tableSection.getPosition() != null) client.sendToServerVoid(REMOVE_CARD, card, EOF);
+        if (tableSection == TableSection.MY_HAND) client.sendToServer(REMOVE_FROM_HAND, card, isMyTurn, EOF);
+        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServer(REMOVE_FROM_HAND, card, !isMyTurn, EOF);
+        else if (tableSection.getPosition() != null) client.sendToServer(REMOVE_CARD, card, EOF);
     }
 
     public void addGraphicalCardToTable(GraphicalCard graphicalCard, CustomTable table) {
@@ -130,22 +139,25 @@ public class GameController {
 
         // TODO: check the bug where your cards can go to the enemy's hand
 
-        if (tableSection == TableSection.MY_HAND) client.sendToServerVoid(ADD_TO_HAND, card, isMyTurn, EOF);
-        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServerVoid(ADD_TO_HAND, card, !isMyTurn, EOF);
+        if (tableSection == TableSection.MY_HAND) client.sendToServer(ADD_TO_HAND, card, EOF);
+        else if (tableSection == TableSection.ENEMY_HAND) {
+//            client.sendToServer(ADD_TO_HAND, card, false, EOF);
+            throw new RuntimeException("Can't add card to enemy hand");
+        }
         else if (position != null) {
-            if (tableSection.isEnemy() ^ !isMyTurn) client.sendToServerVoid(PLACE_CARD, card, position, EOF);
-            else client.sendToServerVoid(PLACE_CARD_ENEMY, card, EOF);
+            if (tableSection.isEnemy() ^ !isMyTurn) client.sendToServer(PLACE_CARD, card, position, EOF);
+            else client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
         }
     }
 
     public void passTurn() {
 //        gameManager.endTurn();
-        client.sendToServerVoid(PASS_TURN, EOF);
+        client.sendToServer(PASS_TURN, EOF);
     }
 
     public boolean passButtonClicked() {
         if (client.sendToServer(IS_MY_TURN, EOF)) {
-            client.sendToServerVoid(PASS_TURN, EOF);
+            client.sendToServer(PASS_TURN, EOF);
             return true;
         } else return false;
     }
@@ -156,19 +168,19 @@ public class GameController {
 //        } else if (cheatCode.equals("Mohandes?")) {
 //            gameMenu.getMainInstance().cheraBenzinTamoomShod();
 //        } else if (cheatCode.equals("give me a life")) {
-//            client.sendToServerVoid(ADD_A_LIFE_TO_ME, EOF);
+//            client.sendToServer(ADD_A_LIFE_TO_ME, EOF);
 //            // TODO: @Arman
 ////            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() + 1);
 //        } else if (cheatCode.equals("give enemy a life")) {
-//            client.sendToServerVoid(ADD_A_LIFE_TO_ENEMY, EOF);
+//            client.sendToServer(ADD_A_LIFE_TO_ENEMY, EOF);
 //            // TODO: @Arman
 ////            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() + 1);
 //        } else if (cheatCode.equals("take a life away from me")) {
-//            client.sendToServerVoid(REMOVE_LIFE_FROM_ME);
+//            client.sendToServer(REMOVE_LIFE_FROM_ME);
 //            // TODO: @Arman
 ////            gameManager.getCurrentPlayer().setRemainingLives(gameManager.getCurrentPlayer().getRemainingLives() - 1);
 //        } else if (cheatCode.equals("take a life away from enemy")) {
-//            client.sendToServerVoid(REMOVE_LIFE_FROM_ENEMY);
+//            client.sendToServer(REMOVE_LIFE_FROM_ENEMY);
 //            // TODO: @Arman
 ////            gameManager.getOtherPlayer().setRemainingLives(gameManager.getOtherPlayer().getRemainingLives() - 1);
 //        } else if (cheatCode.startsWith("add card")) {
@@ -185,7 +197,7 @@ public class GameController {
 //
 //            if (card != null) {
 ////                gameManager.getCurrentPlayer().addToHand(card);
-//                client.sendToServerVoid(ADD_TO_HAND, card, false, EOF);
+//                client.sendToServer(ADD_TO_HAND, card, false, EOF);
 //                addCardToHand(card, false);
 //            }
 //        } else if (cheatCode.equals("Besme Naddaf")) {
@@ -229,57 +241,75 @@ public class GameController {
 
     public void processCommand(ArrayList<Object> inputs) {
         GameClientCommand command = (GameClientCommand) inputs.get(0);
+        System.out.println("GameController received: " + command.toString());
+        boolean sendOutput;
         switch (command) {
             case SET_IS_MY_TURN:
-                setIsMyTurn((boolean) inputs.get(1));
+                sendOutput = setIsMyTurn((boolean) inputs.get(1));
                 break;
             case CHANGE_TURN:
-                changeTurn();
+                sendOutput = changeTurn();
                 break;
             case SET_FACTION:
-                setFaction((Faction) inputs.get(1));
+                sendOutput = setFaction((Faction) inputs.get(1));
                 break;
             case SET_DECK:
-                setDeck((Deck) inputs.get(1));
+                sendOutput = setDeck((Deck) inputs.get(1));
                 break;
             case SET_LEADERS:
-                setLeaders((Leader) inputs.get(1), (Leader) inputs.get(2));
+                sendOutput = setLeaders((Leader) inputs.get(1), (Leader) inputs.get(2));
                 break;
             case SET_HANDS:
-                setHands((ArrayList<Card>) inputs.get(1), (ArrayList<Card>) inputs.get(2));
+                sendOutput = setHands((ArrayList<Card>) inputs.get(1), (ArrayList<Card>) inputs.get(2));
+                break;
+            case ADD_SOURCE:
+                gameMenu.addSource();
+                sendOutput = true;
+                break;
             case UPDATE_SCORES:
-                updateScores((int) inputs.get(1), (int) inputs.get(2));
+                sendOutput = updateScores((int) inputs.get(1), (int) inputs.get(2));
                 break;
             case RESET_PASS_BUTTONS:
-                resetPassButtons();
+                sendOutput = resetPassButtons();
                 break;
             case REMOVE_FROM_VIEW:
-                removeCardFromView((Card) inputs.get(1));
+                sendOutput = removeCardFromView((Card) inputs.get(1));
                 break;
             case ADD_CARD_TO_TABLE_SECTION:
-                addCardToTableSection((Card) inputs.get(1), (Position) inputs.get(2), (boolean) inputs.get(3));
+                sendOutput = addCardToTableSection((Card) inputs.get(1), (Position) inputs.get(2), (boolean) inputs.get(3));
                 break;
             case ADD_CARD_TO_HAND:
-                addCardToHand((Card) inputs.get(1), (boolean) inputs.get(2));
+                sendOutput = addCardToHand((Card) inputs.get(1), (boolean) inputs.get(2));
                 break;
 
+
+
+            default:
+                sendOutput = false;
+                break;
         }
+        System.out.println("GameController command processed");
+        if (sendOutput) client.sendToServerVoid(0);
     }
 
-    private void setFaction(Faction faction) {
+    private boolean setFaction(Faction faction) {
         player.setFaction(faction);
+        return true;
     }
 
-    private void setDeck(Deck deck) {
+    private boolean setDeck(Deck deck) {
         player.loadDeck(deck);
+        return true;
     }
 
-    private void setLeaders(Leader myLeader, Leader enemyLeader) {
+    private boolean setLeaders(Leader myLeader, Leader enemyLeader) {
 
+        return true;
     }
 
-    private void setHands(ArrayList<Card> myHand, ArrayList<Card> enemyHand) {
+    private boolean setHands(ArrayList<Card> myHand, ArrayList<Card> enemyHand) {
         gameMenu.loadHand(myHand, false);
         gameMenu.loadHand(enemyHand, true);
+        return true;
     }
 }

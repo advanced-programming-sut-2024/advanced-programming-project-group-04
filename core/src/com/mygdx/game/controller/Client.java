@@ -3,6 +3,7 @@ package com.mygdx.game.controller;
 import com.mygdx.game.controller.commands.ClientCommand;
 import com.mygdx.game.controller.commands.GameClientCommand;
 import com.mygdx.game.controller.commands.ServerCommand;
+import com.mygdx.game.view.GameMenu;
 
 import java.io.*;
 import java.net.Socket;
@@ -16,6 +17,7 @@ public class Client extends Thread {
     private boolean outputReceived = false;
     private boolean clientCommandReceived = false;
     private boolean gameCommandReceived = false;
+    private GameController gameController;
     private Object obj;
     private ArrayList<Object> inputs;
 
@@ -28,6 +30,10 @@ public class Client extends Thread {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
     }
 
     public void closeConnection() {
@@ -91,20 +97,25 @@ public class Client extends Thread {
         while (isRunning) {
             try {
                 Object obj = in.readObject();
+                if (obj != null) System.out.println("Client read object: " + obj);
+                else System.out.println("Client read object: null");
                 if (obj instanceof ClientCommand) {
                     this.obj = obj;
                     setClientCommandReceived(true);
-                }
-                else if (obj instanceof GameClientCommand) {
+                } else if (obj instanceof GameClientCommand) {
+                    System.out.println("GameClientCommand 1");
                     inputs = new ArrayList<>();
                     inputs.add(obj);
+                    System.out.println("GameClientCommand 2");
                     while (obj != GameClientCommand.EOF) {
+                        System.out.println("GameClientCommand 3");
                         obj = in.readObject();
                         inputs.add(obj);
                     }
+                    System.out.println("GameClientCommand 4");
                     setGameCommandReceived(true);
-                }
-                else {
+                    System.out.println("GameClientCommand 5");
+                } else {
                     this.obj = obj;
                     setOutputReceived(true);
                 }

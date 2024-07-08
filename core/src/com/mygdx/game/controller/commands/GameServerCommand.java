@@ -19,6 +19,7 @@ public enum GameServerCommand implements Serializable, Command {
     REMOVE_LIFE_FROM_ME,
     REMOVE_LIFE_FROM_ENEMY,
 
+    DONE,
     EOF,
     ;
 }

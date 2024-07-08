@@ -106,6 +106,7 @@ public class Main extends Game {
     private void processCommand(ClientCommand command) {
         switch (command) {
             case START_GAME:
+                client.sendToServerVoid(1);
                 setScreen(new GameMenu(this));
                 break;
         }

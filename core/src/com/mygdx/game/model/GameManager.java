@@ -65,6 +65,7 @@ public class GameManager {
 
     /// Functions for Placing the Cards with position
     public boolean placeCard(Card card, Position position) {
+        System.out.println("GameManager placeCard 1: " + card.getName() + " " + position.toString());
         boolean flag;
         if (position.equals(Position.Melee)) {
             flag = addToMelee(card);
@@ -83,11 +84,12 @@ public class GameManager {
         } else {
             flag = false;
         }
+        System.out.println("GameManager placeCard 2");
 
         if (!flag) {
             return false;
         }
-
+        System.out.println("GameManager placeCard 3");
         if (!card.isBerserker() && !card.isCardsAbilityPassive() && !card.isTransformer()) {
             card.getAbility().run(this, card);
         }

@@ -43,10 +43,14 @@ public class GameServer extends Thread {
 
         while (true) {
             if (mySession.isGameCommandReceived()) {
+                System.out.println("GameServer received Command from me:");
                 processCommand(mySession, enemySession, isMyTurn);
+                mySession.setGameCommandReceived(false);
             }
             if (enemySession.isGameCommandReceived()) {
+                System.out.println("GameServer received Command from enemy:");
                 processCommand(enemySession, mySession, !isMyTurn);
+                enemySession.setGameCommandReceived(false);
             }
         }
 
@@ -54,26 +58,29 @@ public class GameServer extends Thread {
 
     private void init() {
         sendToBoth(ClientCommand.START_GAME);
-        mySession.sendToClientVoid(SET_IS_MY_TURN, true, EOF);
-        enemySession.sendToClientVoid(SET_IS_MY_TURN, false, EOF);
+        mySession.sendToClient(SET_IS_MY_TURN, true, EOF);
+        System.out.println("Sending set is my turn to enemy");
+        enemySession.sendToClient(SET_IS_MY_TURN, false, EOF);
         Player p1 = gameManager.getPlayer1().getPlayer();
         Player p2 = gameManager.getPlayer2().getPlayer();
-        mySession.sendToClientVoid(SET_FACTION, p1.getSelectedFaction(), EOF);
-        enemySession.sendToClientVoid(SET_FACTION, p2.getSelectedFaction(), EOF);
-        mySession.sendToClientVoid(SET_DECK, p1.getDeck(), EOF);
-        enemySession.sendToClientVoid(SET_DECK, p1.getDeck(), EOF);
-        mySession.sendToClientVoid(SET_LEADERS, p1.getDeck().getLeader(), p2.getDeck().getLeader(), EOF);
-        enemySession.sendToClientVoid(SET_LEADERS, p2.getDeck().getLeader(), p1.getDeck().getLeader(), EOF);
-        mySession.sendToClientVoid(SET_HANDS, gameManager.getCurrentPlayer().getHand(), gameManager.getOtherPlayer().getHand(), EOF);
-        enemySession.sendToClientVoid(SET_HANDS, gameManager.getOtherPlayer().getHand(), gameManager.getCurrentPlayer().getHand(), EOF);
+        mySession.sendToClient(SET_FACTION, p1.getSelectedFaction(), EOF);
+        enemySession.sendToClient(SET_FACTION, p2.getSelectedFaction(), EOF);
+        mySession.sendToClient(SET_DECK, p1.getDeck(), EOF);
+        enemySession.sendToClient(SET_DECK, p1.getDeck(), EOF);
+        mySession.sendToClient(SET_LEADERS, p1.getDeck().getLeader(), p2.getDeck().getLeader(), EOF);
+        enemySession.sendToClient(SET_LEADERS, p2.getDeck().getLeader(), p1.getDeck().getLeader(), EOF);
+        mySession.sendToClient(SET_HANDS, gameManager.getCurrentPlayer().getHand(), gameManager.getOtherPlayer().getHand(), EOF);
+        enemySession.sendToClient(SET_HANDS, gameManager.getOtherPlayer().getHand(), gameManager.getCurrentPlayer().getHand(), EOF);
+        mySession.sendToClient(ADD_SOURCE, EOF);
+        System.out.println("GameServer: Game initialized");
     }
 
     public void updateScores() {
 //        gameMenu.updateScores(p1, p2);
         PlayerInGame p1 = gameManager.getPlayer1();
         PlayerInGame p2 = gameManager.getPlayer2();
-        mySession.sendToClientVoid(UPDATE_SCORES, p1.getTotalHP(), p2.getTotalHP(), EOF);
-        enemySession.sendToClientVoid(UPDATE_SCORES, p2.getTotalHP(), p1.getTotalHP(), EOF);
+        mySession.sendToClient(UPDATE_SCORES, p1.getTotalHP(), p2.getTotalHP(), EOF);
+        enemySession.sendToClient(UPDATE_SCORES, p2.getTotalHP(), p1.getTotalHP(), EOF);
     }
 
     public void resetPassButtons() {
@@ -99,36 +106,50 @@ public class GameServer extends Thread {
 //        return result;
 //    }
 
-    public void placeCard(Card card) {
-        gameManager.placeCard(card);
-    }
-
-    public void placeCardEnemy(Card card) {
-        gameManager.placeCardEnemy(card);
-    }
-
-    public void endTurn() {
+    public boolean placeCard(Card card, Position position) {
+        System.out.println("GameServer placeCard 1");
+        gameManager.placeCard(card, position);
+        System.out.println("GameServer placeCard 2");
         gameManager.endTurn();
+        System.out.println("GameServer placeCard 3");
+        updateScores();
+        System.out.println("GameServer placeCard 4");
+        return true;
     }
 
-    public void canPlaceCard(Server server, Card card, Position position) {
+    public boolean placeCardEnemy(Card card) {
+        gameManager.placeCardEnemy(card);
+        return true;
+    }
+
+    public boolean endTurn() {
+        gameManager.endTurn();
+        return true;
+    }
+
+    public boolean canPlaceCard(Server server, Card card, Position position) {
         server.sendToClientVoid(gameManager.canPlaceCard(card, position));
+        return false;
     }
 
-    public void canPlaceCardEnemy(Server server, Card card, Position position) {
+    public boolean canPlaceCardEnemy(Server server, Card card, Position position) {
         server.sendToClientVoid(gameManager.canPlaceCardEnemy(card, position));
+        return false;
     }
 
-    public void removeFromHand(Card card, boolean isMyTurn) {
+    public boolean removeFromHand(Card card, boolean isMyTurn) {
         gameManager.removeFromHand(card, isMyTurn);
+        return true;
     }
 
-    public void removeCard(Card card) {
+    public boolean removeCard(Card card) {
         gameManager.removeCard(card);
+        return true;
     }
 
-    public void addToHand(Card card, boolean isMyTurn) {
+    public boolean addToHand(Card card, boolean isMyTurn) {
         gameManager.addToHand(card, isMyTurn);
+        return true;
     }
 
 //    public boolean canPlaceCardToPosition(Card card, TableSection tableSection) {
@@ -142,19 +163,21 @@ public class GameServer extends Thread {
 //            addCardToTable(card, gameMenu.getAllTables().get(TableSection.MY_HAND));
 //        else addCardToTable(card, gameMenu.getAllTables().get(TableSection.ENEMY_HAND));
         if (player.getPlayer().equals(mySession.getPlayer())) {
-            mySession.sendToClientVoid(ADD_CARD_TO_HAND, card, true, EOF);
-            enemySession.sendToClientVoid(ADD_CARD_TO_HAND, card, false, EOF);
+            mySession.sendToClient(ADD_CARD_TO_HAND, card, true, EOF);
+            enemySession.sendToClient(ADD_CARD_TO_HAND, card, false, EOF);
         } else {
-            mySession.sendToClientVoid(ADD_CARD_TO_HAND, card, false, EOF);
-            enemySession.sendToClientVoid(ADD_CARD_TO_HAND, card, true, EOF);
+            mySession.sendToClient(ADD_CARD_TO_HAND, card, false, EOF);
+            enemySession.sendToClient(ADD_CARD_TO_HAND, card, true, EOF);
         }
     }
 
     public void addCardToTableSection(Card card, Position position, boolean isEnemy) {
 //        TableSection tableSection = TableSection.getTableSectionByPosition(position, isEnemy ^ !isMyTurn);
 //        addCardToTable(card, gameMenu.getAllTables().get(tableSection));
-        mySession.sendToClientVoid(ADD_CARD_TO_TABLE_SECTION, card, position, isEnemy ^ !isMyTurn, EOF);
-        enemySession.sendToClientVoid(ADD_CARD_TO_TABLE_SECTION, card, position, isEnemy ^ isMyTurn, EOF);
+        System.out.println("GameServer addCardToTableSection 1");
+        mySession.sendToClient(ADD_CARD_TO_TABLE_SECTION, card, position, isEnemy ^ !isMyTurn, EOF);
+        System.out.println("GameServer addCardToTableSection 2");
+        enemySession.sendToClient(ADD_CARD_TO_TABLE_SECTION, card, position, isEnemy ^ isMyTurn, EOF);
     }
 
 //    public void addCardToTable(Card card, Table table) {
@@ -213,8 +236,9 @@ public class GameServer extends Thread {
 //        }
 //    }
 
-    public void passTurn() {
+    public boolean passTurn() {
         gameManager.endTurn();
+        return true;
     }
 
 //    public void handleCheat(String cheatCode) {
@@ -285,46 +309,56 @@ public class GameServer extends Thread {
 //    }
 
     private void sendToBoth(Object... inputs) {
-        System.out.println("Sent to me");
-        mySession.sendToClientVoid(inputs);
-        System.out.println("Sent to enemy");
-        enemySession.sendToClientVoid(inputs);
+        System.out.println("Sent to me: " + inputs[0].toString());
+        mySession.sendToClient(inputs);
+        System.out.println("Sent to enemy " + inputs[0].toString());
+        enemySession.sendToClient(inputs);
     }
 
     private void processCommand(Server mySession, Server enemySession, boolean isMyTurn) {
         ArrayList<Object> inputs = mySession.getInputs();
         GameServerCommand command = (GameServerCommand) inputs.get(0);
+        System.out.println(command.toString());
+        boolean sendOutput;
         switch (command) {
             case IS_MY_TURN:
                 mySession.sendToClientVoid(isMyTurn);
+                sendOutput = false;
                 break;
             case PASS_TURN:
-                passTurn();
+                sendOutput = passTurn();
                 break;
             case END_TURN:
-                endTurn();
+                sendOutput = endTurn();
                 break;
             case CAN_PLACE_CARD:
-                canPlaceCard(mySession, (Card) inputs.get(1), (Position) inputs.get(2));
+                sendOutput = canPlaceCard(mySession, (Card) inputs.get(1), (Position) inputs.get(2));
                 break;
             case CAN_PLACE_CARD_ENEMY:
-                canPlaceCardEnemy(mySession, (Card) inputs.get(1), (Position) inputs.get(2));
+                sendOutput = canPlaceCardEnemy(mySession, (Card) inputs.get(1), (Position) inputs.get(2));
                 break;
             case PLACE_CARD:
-                placeCard((Card) inputs.get(1));
+                sendOutput = placeCard((Card) inputs.get(1), (Position) inputs.get(2));
                 break;
             case PLACE_CARD_ENEMY:
-                placeCardEnemy((Card) inputs.get(1));
+                sendOutput = placeCardEnemy((Card) inputs.get(1));
                 break;
             case REMOVE_FROM_HAND:
-                removeFromHand((Card) inputs.get(1), isMyTurn);
+                sendOutput = removeFromHand((Card) inputs.get(1), isMyTurn);
                 break;
             case REMOVE_CARD:
-                removeCard((Card) inputs.get(1));
+                sendOutput = removeCard((Card) inputs.get(1));
                 break;
             case ADD_TO_HAND:
-                addToHand((Card) inputs.get(1), isMyTurn);
+                sendOutput = addToHand((Card) inputs.get(1), isMyTurn);
+                break;
+
+
+            default:
+                sendOutput = false;
                 break;
         }
+        System.out.println("GameServer finished processing command");
+        if (sendOutput) mySession.sendToClientVoid(1);
     }
 }
