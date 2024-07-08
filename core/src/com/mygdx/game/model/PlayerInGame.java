@@ -1,8 +1,8 @@
-package com.mygdx.game.model;
+package mygdx.game.model;
+
+import mygdx.game.model.card.Card;
 
 import java.util.ArrayList;
-
-import com.mygdx.game.model.card.Card;
 
 public class PlayerInGame {
 
@@ -42,6 +42,7 @@ public class PlayerInGame {
             hand.add(card);
         }
     }
+
     public void redrawCard(Card card) {
         Card newCard = drawRandomCardFromDeckInGame();
         deckInGame.add(card);
@@ -53,12 +54,15 @@ public class PlayerInGame {
     public int getRemainingLives() {
         return remainingLives;
     }
+
     public void setRemainingLives(int number) {
         remainingLives = number;
     }
+
     public int getPoint() {
         return point;
     }
+
     public void setPoint(int number) {
         point = number;
     }
@@ -92,39 +96,42 @@ public class PlayerInGame {
         remainingLives--;
     }
 
- 
+
     public boolean isPassed() {
         return isPassed;
     }
+
     public void setIsPassed(boolean bool) {
         isPassed = bool;
     }
-    
-
 
 
     public void addToMelee(Card unitCard) {
         melee.add(unitCard);
     }
+
     public void addToSiege(Card unitCard) {
         siege.add(unitCard);
     }
+
     public void addToRange(Card unitCard) {
         range.add(unitCard);
     }
+
     public void placeSpellMelee(Card specialCard) {
         this.meleeSpell = specialCard;
     }
+
     public void placeSpellSiege(Card specialCard) {
         this.siegeSpell = specialCard;
     }
+
     public void placeSpellRange(Card specialCard) {
         this.rangeSpell = specialCard;
     }
 
 
-
-    public void removeCard (Card card, Position position) {
+    public void removeCard(Card card, Position position) {
         if (position.equals(Position.Melee)) {
             removeFromMelee(card);
         } else if (position.equals(Position.Range)) {
@@ -138,105 +145,118 @@ public class PlayerInGame {
         } else if (position.equals(Position.SpellSiege)) {
             removeSpellSiege(card);
         } else {
-            
+
         }
     }
+
     public void removeFromMelee(Card card) {
         melee.remove(card);
     }
+
     public void removeFromRange(Card card) {
         range.remove(card);
     }
+
     public void removeFromSiege(Card card) {
         siege.remove(card);
     }
+
     public void removeSpellMelee(Card card) {
         meleeSpell = null;
     }
+
     public void removeSpellRange(Card card) {
         rangeSpell = null;
     }
+
     public void removeSpellSiege(Card card) {
         siegeSpell = null;
     }
 
     // Muster related functions
-    public ArrayList<Card> getCardsWithSameNameFromHand (Card card) {
+    public ArrayList<Card> getCardsWithSameNameFromHand(Card card) {
         ArrayList<Card> sample = new ArrayList<>();
         for (Card sampleCard : hand) {
-            if(card.musterEquality(sampleCard)) {
-                sample.add(card);
-            }
-        }
-        return sample;
-    }
-    public ArrayList<Card> getCardsWithSameNameFromDeckInGame (Card card) {
-        ArrayList<Card> sample = new ArrayList<>();
-        for (Card sampleCard : deckInGame) {
-            if(card.musterEquality(sampleCard)) {
-                sample.add(card);
-            }
-        }
-        return sample;
-    }
-    public ArrayList<Card> getCardsWithSameNameFromGraveyard (Card card) {
-        ArrayList<Card> sample = new ArrayList<>();
-        for (Card sampleCard : graveyard) {
-            if(card.musterEquality(sampleCard)) {
-                sample.add(card);
-            }
-        }
-        return sample;
-    }
-    public ArrayList<Card> getCardsWithSameNameFromMelee (Card card) {
-        ArrayList<Card> sample = new ArrayList<>();
-        for (Card sampleCard : melee) {
-            if(card.musterEquality(sampleCard)) {
-                sample.add(card);
-            }
-        }
-        return sample;
-    }
-    public ArrayList<Card> getCardsWithSameNameFromRange (Card card) {
-        ArrayList<Card> sample = new ArrayList<>();
-        for (Card sampleCard : range) {
-            if(card.musterEquality(sampleCard)) {
-                sample.add(card);
-            }
-        }
-        return sample;
-    }
-    public ArrayList<Card> getCardsWithSameNameFromSiege (Card card) {
-        ArrayList<Card> sample = new ArrayList<>();
-        for (Card sampleCard : siege) {
-            if(card.musterEquality(sampleCard)) {
+            if (card.musterEquality(sampleCard)) {
                 sample.add(card);
             }
         }
         return sample;
     }
 
+    public ArrayList<Card> getCardsWithSameNameFromDeckInGame(Card card) {
+        ArrayList<Card> sample = new ArrayList<>();
+        for (Card sampleCard : deckInGame) {
+            if (card.musterEquality(sampleCard)) {
+                sample.add(card);
+            }
+        }
+        return sample;
+    }
+
+    public ArrayList<Card> getCardsWithSameNameFromGraveyard(Card card) {
+        ArrayList<Card> sample = new ArrayList<>();
+        for (Card sampleCard : graveyard) {
+            if (card.musterEquality(sampleCard)) {
+                sample.add(card);
+            }
+        }
+        return sample;
+    }
+
+    public ArrayList<Card> getCardsWithSameNameFromMelee(Card card) {
+        ArrayList<Card> sample = new ArrayList<>();
+        for (Card sampleCard : melee) {
+            if (card.musterEquality(sampleCard)) {
+                sample.add(card);
+            }
+        }
+        return sample;
+    }
+
+    public ArrayList<Card> getCardsWithSameNameFromRange(Card card) {
+        ArrayList<Card> sample = new ArrayList<>();
+        for (Card sampleCard : range) {
+            if (card.musterEquality(sampleCard)) {
+                sample.add(card);
+            }
+        }
+        return sample;
+    }
+
+    public ArrayList<Card> getCardsWithSameNameFromSiege(Card card) {
+        ArrayList<Card> sample = new ArrayList<>();
+        for (Card sampleCard : siege) {
+            if (card.musterEquality(sampleCard)) {
+                sample.add(card);
+            }
+        }
+        return sample;
+    }
 
 
     // Commander's horn and Tight bond related functions
-    public void meleeCurrentHpTimesInt (int number) {
+    public void meleeCurrentHpTimesInt(int number) {
         for (Card card : melee) {
             card.setCurrentHP(card.getCurrentHP() * number);
         }
     }
-    public void rangeCurrentHpTimesInt (int number) {
+
+    public void rangeCurrentHpTimesInt(int number) {
         for (Card card : range) {
             card.setCurrentHP(card.getCurrentHP() * number);
         }
     }
-    public void siegeCurrentHpTimesInt (int number) {
+
+    public void siegeCurrentHpTimesInt(int number) {
         for (Card card : siege) {
             card.setCurrentHP(card.getCurrentHP() * number);
         }
     }
-    public void someCardsCurrentHpTimesInt (int number , ArrayList<Card> someCards) {
+
+    public void someCardsCurrentHpTimesInt(int number, ArrayList<Card> someCards) {
         for (Card card : someCards) {
-            card.setCurrentHP(card.getCurrentHP()*number);
+            card.setCurrentHP(card.getCurrentHP() * number);
         }
     }
 
@@ -244,9 +264,11 @@ public class PlayerInGame {
     public int getDeckInGameCount() {
         return deckInGame.size();
     }
+
     public int getGraveyardCount() {
         return graveyard.size();
     }
+
     public int getHandCount() {
         return hand.size();
     }
@@ -254,9 +276,11 @@ public class PlayerInGame {
     public ArrayList<Card> getGraveyard() {
         return graveyard;
     }
+
     public ArrayList<Card> getDeckInGame() {
         return deckInGame;
     }
+
     public ArrayList<Card> getHand() {
         return hand;
     }
@@ -264,18 +288,23 @@ public class PlayerInGame {
     public void addToGraveyard(Card card) {
         graveyard.add(card);
     }
+
     public void removeFromGraveyard(Card card) {
         graveyard.remove(card);
     }
+
     public void addToHand(Card card) {
         hand.add(card);
     }
+
     public void removeFromHand(Card card) {
         hand.remove(card);
     }
+
     public void addToDeckInGame(Card card) {
         deckInGame.add(card);
     }
+
     public void removeFromDeckInGame(Card card) {
         deckInGame.remove(card);
     }
@@ -287,18 +316,23 @@ public class PlayerInGame {
     public ArrayList<Card> getMelee() {
         return melee;
     }
+
     public ArrayList<Card> getSiege() {
         return siege;
     }
+
     public ArrayList<Card> getRange() {
         return range;
     }
+
     public Card getMeleeSpell() {
         return meleeSpell;
     }
+
     public Card getSiegeSpell() {
         return siegeSpell;
     }
+
     public Card getRangeSpell() {
         return rangeSpell;
     }
@@ -351,25 +385,28 @@ public class PlayerInGame {
         }
     }
 
-    public void setMeleeCardsIsWeather (boolean bool) {
+    public void setMeleeCardsIsWeather(boolean bool) {
         for (Card card : melee) {
             card.setIsWeathered(bool);
         }
     }
-    public void setRangeCardsIsWeather (boolean bool) {
+
+    public void setRangeCardsIsWeather(boolean bool) {
         for (Card card : range) {
             card.setIsWeathered(bool);
         }
     }
-    public void setSiegeCardsIsWeather (boolean bool) {
+
+    public void setSiegeCardsIsWeather(boolean bool) {
         for (Card card : siege) {
             card.setIsWeathered(bool);
         }
     }
-    
+
     public boolean getIsLeaderUsed() {
         return isLeaderUsed;
     }
+
     public void setIsLeaderUsed(boolean bool) {
         isLeaderUsed = bool;
     }

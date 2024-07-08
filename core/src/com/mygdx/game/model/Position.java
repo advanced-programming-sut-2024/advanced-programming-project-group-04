@@ -1,4 +1,4 @@
-package com.mygdx.game.model;
+package mygdx.game.model;
 
 public enum Position {
     Melee,
@@ -7,8 +7,8 @@ public enum Position {
     SpellMelee,
     SpellSiege,
     SpellRange,
-    WeatherPlace
-    ;
+    WeatherPlace;
+
     Position() {
-    } 
+    }
 }

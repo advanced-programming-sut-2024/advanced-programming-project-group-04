@@ -1,12 +1,12 @@
-package com.mygdx.game.model.faction;
+package mygdx.game.model.faction;
 
-import static com.mygdx.game.model.card.AllCards.*;
+import mygdx.game.model.card.AllCards;
 
 import java.util.ArrayList;
 
-import com.mygdx.game.model.card.AllCards;
+import static mygdx.game.model.card.AllCards.*;
 
-public class Nilfgaard extends Faction{
+public class Nilfgaard extends Faction {
 
     private final static ArrayList<AllCards> cards = new ArrayList<>();
 

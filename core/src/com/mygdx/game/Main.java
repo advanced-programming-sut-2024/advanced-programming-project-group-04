@@ -1,16 +1,16 @@
-package com.mygdx.game;
+package mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.mygdx.game.controller.Client;
-import com.mygdx.game.controller.ServerCommand;
-import com.mygdx.game.model.Player;
-import com.mygdx.game.model.message.Message;
-import com.mygdx.game.view.*;
+import mygdx.game.controller.Client;
+import mygdx.game.controller.ServerCommand;
+import mygdx.game.model.Player;
+import mygdx.game.model.message.Message;
+import mygdx.game.view.GameMenu;
+import mygdx.game.view.LoginMenu;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Main extends Game {
     public AssetManager assetManager;
@@ -65,7 +65,7 @@ public class Main extends Game {
         arvin2.addLP(115);
         // Set the initial screen
 
-        setScreen(new GameMenu(this));
+        setScreen(new LoginMenu(this));
 
     }
 
@@ -77,7 +77,9 @@ public class Main extends Game {
         return this.loggedInPlayer;
     }
 
-    public Client getClient() { return this.client; }
+    public Client getClient() {
+        return this.client;
+    }
 
     @Override
     public void render() {

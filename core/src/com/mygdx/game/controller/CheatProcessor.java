@@ -1,4 +1,4 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
 public interface CheatProcessor {
     void processCheat(String cheatCode);

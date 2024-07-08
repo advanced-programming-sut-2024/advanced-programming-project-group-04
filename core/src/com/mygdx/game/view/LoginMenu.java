@@ -1,23 +1,21 @@
-package com.mygdx.game.view;
+package mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.Input;
-import com.mygdx.game.AssetLoader;
-import com.mygdx.game.Main;
-import com.mygdx.game.controller.ControllerResponse;
-import com.mygdx.game.controller.LoginController;
+import mygdx.game.AssetLoader;
+import mygdx.game.Main;
+import mygdx.game.controller.ControllerResponse;
+import mygdx.game.controller.LoginController;
 
 public class LoginMenu extends Menu {
     private final LoginController loginController;
@@ -84,20 +82,19 @@ public class LoginMenu extends Menu {
 
 
         TextButton.TextButtonStyle textButtonStyle2 = new TextButton.TextButtonStyle();
-        textButtonStyle.font = AssetLoader.getFontWithCustomSize(44);
-        textButtonStyle.fontColor = Color.WHITE;
-        textButtonStyle.up = game.assetLoader.skin.getDrawable("button-c");
-        textButtonStyle.down = game.assetLoader.skin.getDrawable("button-pressed-c");
-        textButtonStyle.over = game.assetLoader.skin.getDrawable("button-over-c");
+        textButtonStyle2.font = AssetLoader.getFontWithCustomSize(44);
+        textButtonStyle2.fontColor = Color.WHITE;
+        textButtonStyle2.up = game.assetLoader.skin.getDrawable("button-c");
+        textButtonStyle2.down = game.assetLoader.skin.getDrawable("button-pressed-c");
+        textButtonStyle2.over = game.assetLoader.skin.getDrawable("button-over-c");
 
         TextButton forgetPassword = new TextButton("Forgot password?", textButtonStyle2);
-        createAccountButton.addListener(new ClickListener() {
+        forgetPassword.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setScreen(new PasswordRecoveryMenu(game));
             }
         });
-
 
 
         // Add input listener for Enter key

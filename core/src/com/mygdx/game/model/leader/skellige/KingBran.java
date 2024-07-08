@@ -1,8 +1,8 @@
-package com.mygdx.game.model.leader.skellige;
+package mygdx.game.model.leader.skellige;
 
-import com.mygdx.game.model.GameManager;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.leader.Leader;
+import mygdx.game.model.GameManager;
+import mygdx.game.model.PlayerInGame;
+import mygdx.game.model.leader.Leader;
 
 public class KingBran extends Leader {
     public KingBran() {

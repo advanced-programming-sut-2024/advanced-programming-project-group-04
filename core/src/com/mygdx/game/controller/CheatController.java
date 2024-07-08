@@ -1,8 +1,8 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.mygdx.game.view.GameMenu;
+import mygdx.game.view.GameMenu;
 
 public class CheatController implements InputProcessor {
     private GameMenu gameMenu;

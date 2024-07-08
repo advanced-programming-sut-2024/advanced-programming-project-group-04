@@ -1,6 +1,8 @@
-package com.mygdx.game;
+package mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -9,11 +11,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.mygdx.game.model.card.AllCards;
-
+import mygdx.game.model.card.AllCards;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +30,6 @@ public class AssetLoader {
     public static final String TABS = "tabs.png";
     public static final String ONLINE = "statusOnline.png";
     public static final String OFFLINE = "statusOffline.png";
-
 
 
     private AssetManager assetManager;

@@ -1,20 +1,20 @@
-package com.mygdx.game.model.leader.monsters;
+package mygdx.game.model.leader.monsters;
 
-import com.mygdx.game.model.GameManager;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.Position;
-import com.mygdx.game.model.card.AllCards;
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.leader.Leader;
+import mygdx.game.model.GameManager;
+import mygdx.game.model.PlayerInGame;
+import mygdx.game.model.Position;
+import mygdx.game.model.card.AllCards;
+import mygdx.game.model.card.Card;
+import mygdx.game.model.leader.Leader;
 
-public class BringerOfDeath extends Leader{
+public class BringerOfDeath extends Leader {
     public BringerOfDeath() {
         super("Bringer Of Death");
     }
 
     @Override
     public void run(GameManager gameManager) {
-        
+
         PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
         if (currentPlayer.getIsLeaderUsed()) {
             return;
@@ -22,7 +22,7 @@ public class BringerOfDeath extends Leader{
 
         Card newCard = new Card(AllCards.CommandersHorn);
         if (gameManager.canBePlacedToSpellMelee(newCard)) {
-            gameManager.placeCard(newCard , Position.SpellMelee);
+            gameManager.placeCard(newCard, Position.SpellMelee);
         }
         currentPlayer.setIsLeaderUsed(true);
     }

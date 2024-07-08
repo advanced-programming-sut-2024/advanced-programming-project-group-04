@@ -1,12 +1,12 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
-import com.mygdx.game.model.Player;
-import com.mygdx.game.model.card.AllCards;
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.faction.*;
-import com.mygdx.game.model.leader.Leader;
+import mygdx.game.model.Player;
+import mygdx.game.model.card.AllCards;
+import mygdx.game.model.card.Card;
+import mygdx.game.model.faction.Faction;
+import mygdx.game.model.leader.Leader;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -34,10 +34,12 @@ public class Server extends Thread {
     }
 
     private static void loadAllPlayers() {
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         File dataDir = new File("Data/Users");
         File[] subFiles = dataDir.listFiles();
 
         Gson gson = new Gson();
+        if (subFiles.length == 0) return;
         for (File file : subFiles) {
             FileHandle fileHandle = new FileHandle(file + "/login-data.json");
             String json = fileHandle.readString();
@@ -179,8 +181,7 @@ public class Server extends Thread {
                 GameServer gameServer = new GameServer(this, allSessions.get(receiver));
                 gameServer.start();
                 out.writeObject(true);
-            }
-            else {
+            } else {
                 out.writeObject(false);
             }
         } else {
@@ -228,7 +229,8 @@ public class Server extends Thread {
         String username = (String) in.readObject();
         String password = (String) in.readObject();
         Player player = findPlayerByUsername(username);
-        if (player != null && passwords.get(player) != null && passwords.get(player).equals(password)) out.writeObject(true);
+        if (player != null && passwords.get(player) != null && passwords.get(player).equals(password))
+            out.writeObject(true);
         else out.writeObject(false);
     }
 
@@ -264,10 +266,10 @@ public class Server extends Thread {
     private void selectFaction() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         String factionName = (String) in.readObject();
 
-        Class<?> factionClass = Class.forName("com.mygdx.game.model.faction." + factionName);
+        Class<?> factionClass = Class.forName(" mygdx.game.model.faction." + factionName);
         Object faction = factionClass.getConstructor().newInstance();
 
-        player.setFaction((Faction)faction);
+        player.setFaction((Faction) faction);
         player.createNewDeck();
         out.writeObject(faction);
     }
@@ -276,7 +278,7 @@ public class Server extends Thread {
         String leaderName = (String) in.readObject();
 
         Faction faction = player.getSelectedFaction();
-        Class<?> leaderClass = Class.forName("com.mygdx.game.model.leader." + faction.getAssetName().toLowerCase() + "." + leaderName);
+        Class<?> leaderClass = Class.forName(" mygdx.game.model.leader." + faction.getAssetName().toLowerCase() + "." + leaderName);
         Leader leader = (Leader) leaderClass.getConstructor().newInstance();
 
         System.out.println(leader.getName());
@@ -334,7 +336,9 @@ public class Server extends Thread {
         }
     }
 
-    public Socket getSocket() { return this.socket; }
+    public Socket getSocket() {
+        return this.socket;
+    }
 
     public static void main(String[] args) {
         ServerSocket serverSocket;
@@ -351,5 +355,7 @@ public class Server extends Thread {
         }
     }
 
-    public static Vector<Player> getAllPlayers() { return allPlayers; }
+    public static Vector<Player> getAllPlayers() {
+        return allPlayers;
+    }
 }

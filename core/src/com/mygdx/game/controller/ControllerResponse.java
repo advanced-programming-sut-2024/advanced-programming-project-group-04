@@ -1,4 +1,4 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
 public class ControllerResponse {
     private boolean isFail;
@@ -9,7 +9,11 @@ public class ControllerResponse {
         this.errorMessage = errorMessage;
     }
 
-    public boolean isFailed() { return this.isFail; }
+    public boolean isFailed() {
+        return this.isFail;
+    }
 
-    public String getError() { return this.errorMessage; }
+    public String getError() {
+        return this.errorMessage;
+    }
 }

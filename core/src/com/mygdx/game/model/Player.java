@@ -1,20 +1,11 @@
-package com.mygdx.game.model;
+package mygdx.game.model;
 
+
+import mygdx.game.model.faction.Faction;
+import mygdx.game.model.message.Message;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Random;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.google.gson.Gson;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
-
-import com.mygdx.game.model.faction.Faction;
-import com.mygdx.game.model.message.Message;
 
 
 public class Player implements Serializable {
@@ -91,8 +82,6 @@ public class Player implements Serializable {
     public int getMaxScore() {
         return this.maxScore;
     }
-
-    // TODO calculate rank somhow
 
     public int getGameCount() {
         return this.gameCount;

@@ -1,6 +1,6 @@
-package com.mygdx.game.model.leader;
+package mygdx.game.model.leader;
 
-import com.mygdx.game.model.GameManager;
+import mygdx.game.model.GameManager;
 
 import java.io.Serializable;
 

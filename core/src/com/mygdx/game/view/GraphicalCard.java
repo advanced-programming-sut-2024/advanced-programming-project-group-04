@@ -1,19 +1,17 @@
-package com.mygdx.game.view;
+package mygdx.game.view;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import com.mygdx.game.AssetLoader;
-import com.mygdx.game.model.card.AllCards;
-import com.mygdx.game.model.card.Card;
+import mygdx.game.AssetLoader;
+import mygdx.game.model.card.AllCards;
+import mygdx.game.model.card.Card;
 
-import javax.swing.*;
 import java.util.HashMap;
 
 public class GraphicalCard extends ImageButton {
@@ -76,9 +74,10 @@ public class GraphicalCard extends ImageButton {
             labelInsideCircle.setStyle(new Label.LabelStyle(font, Color.GREEN));
         } else if (card.getCurrentHP() < card.getPower()) {
             labelInsideCircle.setStyle(new Label.LabelStyle(font, Color.RED));
-        } else {}
+        } else {
+        }
 
-        float widthError = labelInsideCircle.getWidth() * (0.5f + 0.025f) ;
+        float widthError = labelInsideCircle.getWidth() * (0.5f + 0.025f);
         float heightError = labelInsideCircle.getHeight() * (0.5f - 0.1f);
         labelInsideCircle.setPosition(centerX - widthError, centerY - heightError);
         labelInsideCircle.setAlignment(Align.center);

@@ -1,9 +1,9 @@
-package com.mygdx.game.model.leader.nilfgaard;
+package mygdx.game.model.leader.nilfgaard;
 
-import com.mygdx.game.model.GameManager;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.leader.Leader;
+import mygdx.game.model.GameManager;
+import mygdx.game.model.PlayerInGame;
+import mygdx.game.model.card.Card;
+import mygdx.game.model.leader.Leader;
 
 public class InvaderOfTheNorth extends Leader {
     public InvaderOfTheNorth() {
@@ -18,7 +18,7 @@ public class InvaderOfTheNorth extends Leader {
         if (currentPlayer.getIsLeaderUsed()) {
             return;
         }
-        
+
         currentPlayer.addRandomCardToHandFromGrave();
         otherplayer.addRandomCardToHandFromGrave();
 
@@ -26,15 +26,15 @@ public class InvaderOfTheNorth extends Leader {
         if (card != null) {
             currentPlayer.addToHand(card);
             currentPlayer.removeFromGraveyard(card);
-            gameManager.addToHand(card ,true);
+            gameManager.addToHand(card, true);
         }
         Card anotherCard = otherplayer.drawRandomCardFromGraveyard();
         if (anotherCard != null) {
             otherplayer.addToHand(anotherCard);
             otherplayer.removeFromGraveyard(anotherCard);
-            gameManager.addToHand(anotherCard,false);
+            gameManager.addToHand(anotherCard, false);
         }
-        
+
         currentPlayer.setIsLeaderUsed(true);
     }
 }

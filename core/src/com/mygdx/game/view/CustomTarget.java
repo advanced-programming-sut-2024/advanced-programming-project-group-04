@@ -1,7 +1,7 @@
-package com.mygdx.game.view;
+package  mygdx.game.view;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import  com.badlogic.gdx.scenes.scene2d.Actor;
+import  com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
 public abstract class CustomTarget extends DragAndDrop.Target {
     private final GameMenu gameMenu;

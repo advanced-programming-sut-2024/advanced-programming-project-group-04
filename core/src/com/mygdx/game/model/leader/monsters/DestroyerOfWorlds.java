@@ -1,9 +1,9 @@
-package com.mygdx.game.model.leader.monsters;
+package mygdx.game.model.leader.monsters;
 
-import com.mygdx.game.model.GameManager;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.leader.Leader;
+import mygdx.game.model.GameManager;
+import mygdx.game.model.PlayerInGame;
+import mygdx.game.model.card.Card;
+import mygdx.game.model.leader.Leader;
 
 public class DestroyerOfWorlds extends Leader {
     public DestroyerOfWorlds() {

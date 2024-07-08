@@ -1,8 +1,8 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
-import com.mygdx.game.Main;
-import com.mygdx.game.model.Player;
-import com.mygdx.game.view.LoginMenu;
+import mygdx.game.Main;
+import mygdx.game.model.Player;
+import mygdx.game.view.LoginMenu;
 
 import java.util.Random;
 
@@ -28,9 +28,12 @@ public class LoginController {
         else if (password.isEmpty()) errorMessage = "Enter your password";
         else {
             Client client = game.getClient();
-            if (client.sendToServer(ServerCommand.DOES_USERNAME_EXIST, username).equals(false)) errorMessage = "No such player exists";
-            else if (client.sendToServer(ServerCommand.HAS_ACTIVE_SESSION, username)) errorMessage = "Player logged in another device";
-            else if (client.sendToServer(ServerCommand.VALIDATE_PASSWORD, username, password).equals(false)) errorMessage = "Wrong password";
+            if (client.sendToServer(ServerCommand.DOES_USERNAME_EXIST, username).equals(false))
+                errorMessage = "No such player exists";
+            else if (client.sendToServer(ServerCommand.HAS_ACTIVE_SESSION, username))
+                errorMessage = "Player logged in another device";
+            else if (client.sendToServer(ServerCommand.VALIDATE_PASSWORD, username, password).equals(false))
+                errorMessage = "Wrong password";
             else {
                 this.username = username;
                 this.password = password;
@@ -39,8 +42,7 @@ public class LoginController {
                     client.sendToServer(ServerCommand.LOGIN_PLAYER, player.getId());
                     game.setLoggedInPlayer(player);
                     isFail = false;
-                }
-                else {
+                } else {
                     Random random = new Random();
                     int verificationCode = 100000 + random.nextInt(900000);
                     String subject = "Email Verification";

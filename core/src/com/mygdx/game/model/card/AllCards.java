@@ -1,10 +1,10 @@
-package com.mygdx.game.model.card;
+package mygdx.game.model.card;
 
-import com.mygdx.game.model.ability.*;
+import mygdx.game.model.ability.*;
 
 import java.io.Serializable;
 
-import static com.mygdx.game.model.card.Type.*;
+import static mygdx.game.model.card.Type.*;
 
 public enum AllCards implements Serializable {
     // Skellige
@@ -245,10 +245,10 @@ public enum AllCards implements Serializable {
 
     public boolean isCardsAbilityPassive() {
         return ability instanceof CommanderHorn
-            || ability instanceof MoralBoost
-            || ability instanceof TightBond
-            || isWeather() || ability instanceof Mardroeme
-        ;
+                || ability instanceof MoralBoost
+                || ability instanceof TightBond
+                || isWeather() || ability instanceof Mardroeme
+                ;
 
     }
 

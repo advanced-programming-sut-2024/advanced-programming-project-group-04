@@ -1,11 +1,12 @@
-package com.mygdx.game.model.faction;
+package mygdx.game.model.faction;
+
+import mygdx.game.model.card.AllCards;
 
 import java.util.ArrayList;
 
-import com.mygdx.game.model.card.AllCards;
-import static com.mygdx.game.model.card.AllCards.*;
+import static mygdx.game.model.card.AllCards.*;
 
-public class Scoiatael extends Faction{
+public class Scoiatael extends Faction {
 
     private final static ArrayList<AllCards> cards = new ArrayList<>();
 

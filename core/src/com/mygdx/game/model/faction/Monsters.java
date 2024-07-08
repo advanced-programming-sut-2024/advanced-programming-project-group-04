@@ -1,9 +1,9 @@
-package com.mygdx.game.model.faction;
+package  mygdx.game.model.faction;
 
 import java.util.ArrayList;
 
-import com.mygdx.game.model.card.AllCards;
-import static com.mygdx.game.model.card.AllCards.*;
+import  mygdx.game.model.card.AllCards;
+import static  mygdx.game.model.card.AllCards.*;
 
 public class Monsters extends Faction{
     

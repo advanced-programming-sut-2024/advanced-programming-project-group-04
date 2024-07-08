@@ -1,14 +1,14 @@
-package com.mygdx.game.view;
+package mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.mygdx.game.Main;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import mygdx.game.Main;
 
-import static com.badlogic.gdx.Gdx.*;
+import static com.badlogic.gdx.Gdx.graphics;
+import static com.badlogic.gdx.Gdx.input;
 
 public abstract class Menu implements Screen {
     protected Stage stage;

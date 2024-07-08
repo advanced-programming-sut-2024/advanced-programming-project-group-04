@@ -1,7 +1,6 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
-import com.mygdx.game.Main;
-import com.mygdx.game.view.GameMenu;
+import mygdx.game.Main;
 
 public class StartGameController {
     private Main game;
@@ -15,7 +14,8 @@ public class StartGameController {
         boolean isFail = true;
         Client client = game.getClient();
         if (game.getLoggedInPlayer().getUsername().equals(username)) error = "You can't start a game with yourself";
-        else if (client.sendToServer(ServerCommand.DOES_USERNAME_EXIST, username).equals(false)) error = "Player not found";
+        else if (client.sendToServer(ServerCommand.DOES_USERNAME_EXIST, username).equals(false))
+            error = "Player not found";
         else if (client.sendToServer(ServerCommand.IS_ONLINE, username).equals(false)) error = "Player is offline";
         else isFail = client.sendToServer(ServerCommand.START_GAME_REQUEST, username);
 

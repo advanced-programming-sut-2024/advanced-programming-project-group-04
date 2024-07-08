@@ -1,15 +1,11 @@
-package com.mygdx.game.view;
+package mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -17,47 +13,34 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.*;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.mygdx.game.AssetLoader;
-import com.mygdx.game.Main;
-import com.mygdx.game.controller.CheatController;
-import com.mygdx.game.controller.CheatProcessor;
-import com.mygdx.game.controller.GameController;
-import com.mygdx.game.model.Deck;
-import com.mygdx.game.model.Player;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.Position;
-import com.mygdx.game.model.card.AllCards;
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.faction.*;
-import com.mygdx.game.model.leader.Leader;
-import com.mygdx.game.model.leader.monsters.BringerOfDeath;
-import com.mygdx.game.model.leader.monsters.DestroyerOfWorlds;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
-
+import mygdx.game.AssetLoader;
+import mygdx.game.Main;
+import mygdx.game.controller.CheatController;
+import mygdx.game.controller.CheatProcessor;
+import mygdx.game.controller.GameController;
+import mygdx.game.model.Deck;
+import mygdx.game.model.Player;
+import mygdx.game.model.PlayerInGame;
+import mygdx.game.model.Position;
+import mygdx.game.model.card.AllCards;
+import mygdx.game.model.card.Card;
+import mygdx.game.model.faction.Monsters;
+import mygdx.game.model.faction.Nilfgaard;
+import mygdx.game.model.leader.Leader;
+import mygdx.game.model.leader.monsters.BringerOfDeath;
+import mygdx.game.model.leader.monsters.DestroyerOfWorlds;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.mygdx.game.view.TableSection.*;
+import static mygdx.game.view.TableSection.*;
 
 public class GameMenu extends Menu implements CheatProcessor {
     public GraphicalCard selectedCard;
@@ -251,8 +234,6 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemyCardsCount = new Label("10", game.assetLoader.labelStyle);
 
         turnIndicator = new Label(!gameController.isMyTurn ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
-
-
 
 
         myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
