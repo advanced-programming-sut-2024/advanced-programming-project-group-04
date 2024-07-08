@@ -124,6 +124,7 @@ public class GameServer extends Thread {
     }
 
     public boolean endTurn() {
+        this.isMyTurn = !isMyTurn;
         gameManager.endTurn();
         return true;
     }
@@ -138,8 +139,8 @@ public class GameServer extends Thread {
         return false;
     }
 
-    public boolean removeFromHand(Card card, boolean isMyTurn) {
-        gameManager.removeFromHand(card, isMyTurn);
+    public boolean removeFromHand(Card card, boolean isMyHand) {
+        gameManager.removeFromHand(card, isMyHand ^ !isMyTurn);
         return false;
     }
 
@@ -148,8 +149,8 @@ public class GameServer extends Thread {
         return true;
     }
 
-    public boolean addToHand(Card card, boolean isMyTurn) {
-        gameManager.addToHand(card, isMyTurn);
+    public boolean addToHand(Card card, boolean isMyHand) {
+        gameManager.addToHand(card, isMyHand ^ !isMyTurn);
         return true;
     }
 
@@ -345,13 +346,13 @@ public class GameServer extends Thread {
                 sendOutput = placeCardEnemy((Card) inputs.get(1));
                 break;
             case REMOVE_FROM_HAND:
-                sendOutput = removeFromHand((Card) inputs.get(1), isMyTurn);
+                sendOutput = removeFromHand((Card) inputs.get(1), (boolean) inputs.get(2));
                 break;
             case REMOVE_CARD:
                 sendOutput = removeCard((Card) inputs.get(1));
                 break;
             case ADD_TO_HAND:
-                sendOutput = addToHand((Card) inputs.get(1), isMyTurn);
+                sendOutput = addToHand((Card) inputs.get(1), (boolean) inputs.get(2));
                 break;
 
 

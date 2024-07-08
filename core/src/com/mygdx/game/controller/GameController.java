@@ -53,7 +53,6 @@ public class GameController {
     }
 
     public void placeCard(Card card, TableSection tableSection) {
-        boolean result;
         if (tableSection.isEnemy()) {
             client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
         } else {
@@ -69,7 +68,7 @@ public class GameController {
 
     public boolean canPlaceCardToPosition(Card card, TableSection tableSection) {
         Position position = tableSection.getPosition();
-        if (tableSection.isEnemy() ^ !isMyTurn) return client.sendToServer(CAN_PLACE_CARD_ENEMY, card, position, EOF);
+        if (tableSection.isEnemy()) return client.sendToServer(CAN_PLACE_CARD_ENEMY, card, position, EOF);
         else return client.sendToServer(CAN_PLACE_CARD, card, position, EOF);
     }
 
@@ -80,7 +79,7 @@ public class GameController {
     }
 
     public boolean addCardToTableSection(Card card, Position position, boolean isEnemy) {
-        TableSection tableSection = TableSection.getTableSectionByPosition(position, isEnemy ^ !isMyTurn);
+        TableSection tableSection = TableSection.getTableSectionByPosition(position, isEnemy);
         addCardToTable(card, gameMenu.getAllTables().get(tableSection));
         return true;
     }
@@ -107,7 +106,7 @@ public class GameController {
     }
 
     public GraphicalCard removeCardFromView(Card card, Position position, boolean isEnemy) {
-        TableSection tableSection = TableSection.getTableSectionByPosition(position, isEnemy ^ !isMyTurn);
+        TableSection tableSection = TableSection.getTableSectionByPosition(position, isEnemy);
         CustomTable table = gameMenu.getAllTables().get(tableSection);
         return removeCardFromTable(table, card);
     }
@@ -126,8 +125,8 @@ public class GameController {
     public void removeGraphicalCardFromTable(GraphicalCard graphicalCard, CustomTable table) {
         TableSection tableSection = table.getTableSection();
         Card card = graphicalCard.getCard();
-        if (tableSection == TableSection.MY_HAND) client.sendToServer(REMOVE_FROM_HAND, card, isMyTurn, EOF);
-        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServer(REMOVE_FROM_HAND, card, !isMyTurn, EOF);
+        if (tableSection == TableSection.MY_HAND) client.sendToServerVoid(REMOVE_FROM_HAND, card, true, EOF);
+        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServerVoid(REMOVE_FROM_HAND, card, false, EOF);
         else if (tableSection.getPosition() != null) client.sendToServer(REMOVE_CARD, card, EOF);
     }
 
@@ -138,19 +137,20 @@ public class GameController {
 
         // TODO: check the bug where your cards can go to the enemy's hand
 
-        if (tableSection == TableSection.MY_HAND) client.sendToServer(ADD_TO_HAND, card, EOF);
+        if (tableSection == TableSection.MY_HAND) client.sendToServer(ADD_TO_HAND, card, true, EOF);
         else if (tableSection == TableSection.ENEMY_HAND) {
 //            client.sendToServer(ADD_TO_HAND, card, false, EOF);
             throw new RuntimeException("Can't add card to enemy hand");
         }
         else if (position != null) {
-            if (tableSection.isEnemy() ^ !isMyTurn) client.sendToServer(PLACE_CARD, card, position, EOF);
+            if (tableSection.isEnemy()) client.sendToServer(PLACE_CARD, card, position, EOF);
             else client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
         }
     }
 
     public void passTurn() {
 //        gameManager.endTurn();
+        this.isMyTurn = !isMyTurn();
         client.sendToServer(PASS_TURN, EOF);
     }
 

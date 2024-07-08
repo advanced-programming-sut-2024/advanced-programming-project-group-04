@@ -108,18 +108,13 @@ public class Client extends Thread {
                     this.obj = obj;
                     setClientCommandReceived(true);
                 } else if (obj instanceof GameClientCommand) {
-                    System.out.println("GameClientCommand 1");
                     inputs = new ArrayList<>();
                     inputs.add(obj);
-                    System.out.println("GameClientCommand 2");
                     while (obj != GameClientCommand.EOF) {
-                        System.out.println("GameClientCommand 3");
                         obj = in.readObject();
                         inputs.add(obj);
                     }
-                    System.out.println("GameClientCommand 4");
                     setGameCommandReceived(true);
-                    System.out.println("GameClientCommand 5");
                 } else if (obj instanceof GeneralCommand) {
                     this.obj = null;
                     setOutputReceived(true);
