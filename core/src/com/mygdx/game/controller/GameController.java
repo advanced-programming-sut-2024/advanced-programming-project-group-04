@@ -3,6 +3,7 @@ package com.mygdx.game.controller;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.game.controller.commands.GameClientCommand;
+import com.mygdx.game.controller.commands.GeneralCommand;
 import com.mygdx.game.model.Deck;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.PlayerInGame;
@@ -51,21 +52,19 @@ public class GameController {
         return true;
     }
 
-    public boolean placeCard(Card card, TableSection tableSection) {
+    public void placeCard(Card card, TableSection tableSection) {
         boolean result;
         if (tableSection.isEnemy()) {
-            result = client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
+            client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
         } else {
-            result = client.sendToServer(PLACE_CARD, card, tableSection.getPosition(), EOF);
+            client.sendToServer(PLACE_CARD, card, tableSection.getPosition(), EOF);
             System.out.println(tableSection.getTitle());
         }
 
-        if (result) client.sendToServer(END_TURN, EOF);
+        client.sendToServer(END_TURN, EOF);
         // TODO: @Arman send back update scores signal from the server
 //        if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
 //        else gameMenu.updateScores(gameManager.getOtherPlayer(), gameManager.getCurrentPlayer());
-
-        return result;
     }
 
     public boolean canPlaceCardToPosition(Card card, TableSection tableSection) {
@@ -289,7 +288,7 @@ public class GameController {
                 break;
         }
         System.out.println("GameController command processed");
-        if (sendOutput) client.sendToServerVoid(0);
+        if (sendOutput) client.sendToServerVoid(GeneralCommand.CLEAR);
     }
 
     private boolean setFaction(Faction faction) {

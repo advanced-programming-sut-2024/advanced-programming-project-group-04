@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.game.controller.commands.ClientCommand;
 import com.mygdx.game.controller.commands.GameServerCommand;
+import com.mygdx.game.controller.commands.GeneralCommand;
 import com.mygdx.game.model.GameManager;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.PlayerInGame;
@@ -139,7 +140,7 @@ public class GameServer extends Thread {
 
     public boolean removeFromHand(Card card, boolean isMyTurn) {
         gameManager.removeFromHand(card, isMyTurn);
-        return true;
+        return false;
     }
 
     public boolean removeCard(Card card) {
@@ -359,6 +360,6 @@ public class GameServer extends Thread {
                 break;
         }
         System.out.println("GameServer finished processing command");
-        if (sendOutput) mySession.sendToClientVoid(1);
+        if (sendOutput) mySession.sendToClientVoid(GeneralCommand.CLEAR);
     }
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.mygdx.game.controller.Client;
 import com.mygdx.game.controller.commands.ClientCommand;
+import com.mygdx.game.controller.commands.GeneralCommand;
 import com.mygdx.game.controller.commands.ServerCommand;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.message.Message;
@@ -106,9 +107,10 @@ public class Main extends Game {
     private void processCommand(ClientCommand command) {
         switch (command) {
             case START_GAME:
-                client.sendToServerVoid(1);
                 setScreen(new GameMenu(this));
+                client.sendToServerVoid(GeneralCommand.CLEAR);
                 break;
         }
+        System.out.println("Main finished processing command");
     }
 }

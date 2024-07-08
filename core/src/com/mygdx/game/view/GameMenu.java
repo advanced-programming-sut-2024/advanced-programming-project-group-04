@@ -256,9 +256,7 @@ public class GameMenu extends Menu implements CheatProcessor {
 
                 @Override
                 public void drop(Source source, Payload payload, float x, float y, int pointer) {
-                    if (getGameMenu().getGameController().placeCard(((GraphicalCard) payload.getObject()).getCard(), ((CustomTable) table).getTableSection())) {
-                        System.out.println(((CustomTable) table).getTableSection().getTitle());
-                    }
+                    getGameMenu().getGameController().placeCard(((GraphicalCard) payload.getObject()).getCard(), ((CustomTable) table).getTableSection());
                 }
             });
         }

@@ -2,11 +2,13 @@ package com.mygdx.game.controller;
 
 import com.mygdx.game.controller.commands.ClientCommand;
 import com.mygdx.game.controller.commands.GameClientCommand;
+import com.mygdx.game.controller.commands.GeneralCommand;
 import com.mygdx.game.controller.commands.ServerCommand;
 import com.mygdx.game.view.GameMenu;
 
 import java.io.*;
 import java.net.Socket;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 public class Client extends Thread {
@@ -51,6 +53,9 @@ public class Client extends Thread {
 
     public <T> T sendToServer(Object... inputs) {
         try {
+            setOutputReceived(false);
+            out.writeObject(GeneralCommand.CLEAR);
+
             for (Object obj : inputs) {
                 out.writeObject(obj);
             }
@@ -115,7 +120,10 @@ public class Client extends Thread {
                     System.out.println("GameClientCommand 4");
                     setGameCommandReceived(true);
                     System.out.println("GameClientCommand 5");
-                } else {
+                } else if (obj instanceof GeneralCommand) {
+                    this.obj = null;
+                    setOutputReceived(true);
+                }else {
                     this.obj = obj;
                     setOutputReceived(true);
                 }

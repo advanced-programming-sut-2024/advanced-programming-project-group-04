@@ -8,6 +8,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.mygdx.game.controller.commands.GameServerCommand;
+import com.mygdx.game.controller.commands.GeneralCommand;
 import com.mygdx.game.controller.commands.ServerCommand;
 import com.mygdx.game.model.Player;
 import com.mygdx.game.model.card.AllCards;
@@ -86,6 +87,9 @@ public class Server extends Thread {
     public <T> T sendToClient(Object... inputs) {
         T response;
         try {
+            setOutputReceived(false);
+            out.writeObject(GeneralCommand.CLEAR);
+
             for (Object obj : inputs) {
                 out.writeObject(obj);
             }
@@ -144,6 +148,12 @@ public class Server extends Thread {
                     setGameCommandReceived(true);
                 } else if (input instanceof ServerCommand) {
                     processCommand(input);
+                } else if (input instanceof GeneralCommand) {
+                    if (input == GeneralCommand.CLEAR) {
+                        System.out.println(Thread.currentThread().getName() + " Server received CLEAR");
+                        this.obj = null;
+                        setOutputReceived(true);
+                    }
                 } else {
                     this.obj = input;
                     setOutputReceived(true);
