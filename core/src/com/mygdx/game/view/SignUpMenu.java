@@ -1,23 +1,20 @@
-package com.mygdx.game.view;
+package mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.Input;
-import com.mygdx.game.AssetLoader;
-import com.mygdx.game.Main;
-import com.mygdx.game.controller.ControllerResponse;
-import com.mygdx.game.controller.SignUpController;
+import mygdx.game.Main;
+import mygdx.game.controller.ControllerResponse;
+import mygdx.game.controller.SignUpController;
 
 import java.security.SecureRandom;
 import java.util.Random;

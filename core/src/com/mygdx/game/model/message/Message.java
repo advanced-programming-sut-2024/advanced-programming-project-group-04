@@ -1,7 +1,6 @@
-package com.mygdx.game.model.message;
+package mygdx.game.model.message;
 
-import com.mygdx.game.model.Player;
-import java.sql.Time;
+import mygdx.game.model.Player;
 
 public class Message {
     private Player sender;

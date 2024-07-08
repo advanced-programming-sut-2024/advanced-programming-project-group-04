@@ -1,11 +1,12 @@
-package com.mygdx.game.model.faction;
+package mygdx.game.model.faction;
+
+import mygdx.game.model.card.AllCards;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-import com.mygdx.game.model.card.AllCards;
-import static com.mygdx.game.model.card.AllCards.*;
+import static mygdx.game.model.card.AllCards.*;
 
 public abstract class Faction implements Serializable {
     private final String name;
@@ -40,7 +41,7 @@ public abstract class Faction implements Serializable {
 
     public Faction(String name) {
         this.name = name;
-        
+
     }
 
     public String getAssetName() {

@@ -1,18 +1,16 @@
-package com.mygdx.game.model;
+package mygdx.game.model;
 
 
-import com.mygdx.game.controller.GameController;
-import com.mygdx.game.model.ability.Spy;
-import com.mygdx.game.model.card.*;
-import com.mygdx.game.model.faction.Faction;
-import com.mygdx.game.model.faction.Monsters;
-import com.mygdx.game.model.faction.Nilfgaard;
-import com.mygdx.game.model.faction.NorthernRealms;
-import org.w3c.dom.Notation;
+import mygdx.game.controller.GameController;
+import mygdx.game.model.ability.Spy;
+import mygdx.game.model.card.AllCards;
+import mygdx.game.model.card.Card;
+import mygdx.game.model.card.Type;
+import mygdx.game.model.faction.Monsters;
+import mygdx.game.model.faction.Nilfgaard;
+import mygdx.game.model.faction.NorthernRealms;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
 
 
 public class GameManager {
@@ -279,6 +277,7 @@ public class GameManager {
             throw new RuntimeException("Can't find card in game");
         }
     }
+
     public boolean removeCard(Card card) {
         for (Card sampleCard : weatherCards) {
             if (card.equals(sampleCard)) {
@@ -405,7 +404,7 @@ public class GameManager {
     }
 
     public boolean canBePlacedToSpellMelee(Card card) {
-        if (card.getType().equals(Type.Spell) && currentPlayer.getMeleeSpell() == null){
+        if (card.getType().equals(Type.Spell) && currentPlayer.getMeleeSpell() == null) {
             return true;
         }
         return false;
@@ -566,7 +565,7 @@ public class GameManager {
             otherPlayerAllCards.addAll(getOtherPlayer().getAllCards());
 
             for (Card sampleCard : currentPlayerAllCards) {
-                if (sampleCard.isUnitCard()){
+                if (sampleCard.isUnitCard()) {
                     currentPlayerUnitCards.add(sampleCard);
                 }
                 if (sampleCard.isTransformer()) {
@@ -583,7 +582,7 @@ public class GameManager {
                 gameController.removeCardFromView(sampleCard);
             }
             for (Card sampleCard : otherPlayerAllCards) {
-                if (sampleCard.isUnitCard()){
+                if (sampleCard.isUnitCard()) {
                     otherPlayerUnitCards.add(sampleCard);
                 }
                 if (sampleCard.isTransformer()) {
@@ -606,8 +605,8 @@ public class GameManager {
             if (currentPlayer.getPlayer().getSelectedFaction() instanceof Monsters) {
                 int index = (int) (Math.random() * currentPlayerUnitCards.size());
                 Card sampleCard = currentPlayerUnitCards.get(index);
-                if (sampleCard.getType().equals(Type.Agile)){
-                    placeCard(sampleCard , Position.Melee);
+                if (sampleCard.getType().equals(Type.Agile)) {
+                    placeCard(sampleCard, Position.Melee);
                     currentPlayer.removeFromGraveyard(sampleCard);
                 } else {
                     placeCard(sampleCard);
@@ -617,9 +616,9 @@ public class GameManager {
             if (getOtherPlayer().getPlayer().getSelectedFaction() instanceof Monsters) {
                 int index = (int) (Math.random() * otherPlayerUnitCards.size());
                 Card sampleCard = otherPlayerUnitCards.get(index);
-                if (sampleCard.getType().equals(Type.Agile)){
+                if (sampleCard.getType().equals(Type.Agile)) {
                     getOtherPlayer().addToMelee(sampleCard);
-                    gameController.addCardToTableSection(sampleCard , Position.Melee , true);
+                    gameController.addCardToTableSection(sampleCard, Position.Melee, true);
                     getOtherPlayer().removeFromGraveyard(sampleCard);
                 } else {
                     if (sampleCard.getType().equals(Type.Agile)) {
@@ -650,9 +649,9 @@ public class GameManager {
                     Card sampleCard = winner.getDeckInGame().get(index);
                     winner.removeFromDeckInGame(sampleCard);
                     if (winner == currentPlayer) {
-                        addToHand(sampleCard , true);
+                        addToHand(sampleCard, true);
                     } else if (winner == getOtherPlayer()) {
-                        addToHand(sampleCard , false);
+                        addToHand(sampleCard, false);
                     } else {
 
                     }
@@ -668,7 +667,7 @@ public class GameManager {
             }
 
             // Updating the Scores
-            gameController.updateScores(player1 , player2);
+            gameController.updateScores(player1, player2);
 
             // reset isPassed for players
             currentPlayer.setIsPassed(false);
@@ -790,7 +789,6 @@ public class GameManager {
         }
 
 
-        
         ArrayList<Card> theStrongests = new ArrayList<>();
 
         for (Card card : enemyCards) {
@@ -805,7 +803,7 @@ public class GameManager {
     }
 
     public void drawRandomCardFromDeck(int occurrence) {
-        for(int i = 0; i < occurrence; i++) {
+        for (int i = 0; i < occurrence; i++) {
             Card card = currentPlayer.drawRandomCardFromDeckInGame();
             gameController.addCardToHand(card, currentPlayer);
         }
@@ -853,7 +851,7 @@ public class GameManager {
         }
     }
 
-    public Card showSomeCardsAndSelectOne (ArrayList<Card> cards) {
+    public Card showSomeCardsAndSelectOne(ArrayList<Card> cards) {
         return gameController.showSomeCardsAndSelectOne(cards);
     }
 

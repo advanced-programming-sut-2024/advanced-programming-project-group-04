@@ -1,6 +1,8 @@
-package com.mygdx.game.model.card;
+package mygdx.game.model.card;
 
-import com.mygdx.game.model.ability.*;
+import mygdx.game.model.ability.Ability;
+import mygdx.game.model.ability.Berserker;
+import mygdx.game.model.ability.Transformers;
 
 import java.io.Serializable;
 
@@ -78,24 +80,34 @@ public class Card implements Serializable {
         this.howManyTightBond = 1;
     }
 
-    public String getName () {
+    public String getName() {
         return this.allCard.getName();
     }
 
-    public Ability getAbility () {
+    public Ability getAbility() {
         return this.allCard.getAbility();
     }
 
-    public String getDescription() { return this.allCard.getDescription(); }
+    public String getDescription() {
+        return this.allCard.getDescription();
+    }
 
-    public Type getType() { return this.allCard.getType(); }
+    public Type getType() {
+        return this.allCard.getType();
+    }
 
-    public boolean isUnitCard() { return this.allCard.isUnitCard(); }
+    public boolean isUnitCard() {
+        return this.allCard.isUnitCard();
+    }
 
-    public AllCards getAllCard() { return this.allCard; }
+    public AllCards getAllCard() {
+        return this.allCard;
+    }
 
     public boolean musterEquality(Card card) {
-        if (this.getName().equals(card.getName())) { return true; }
+        if (this.getName().equals(card.getName())) {
+            return true;
+        }
         if (getName().startsWith("Vampire") && card.getName().startsWith("Vampire")) {
             return true;
         }

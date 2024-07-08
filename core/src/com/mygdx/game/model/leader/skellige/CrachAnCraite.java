@@ -1,9 +1,8 @@
-package com.mygdx.game.model.leader.skellige;
+package mygdx.game.model.leader.skellige;
 
-import com.mygdx.game.model.GameManager;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.leader.Leader;
+import mygdx.game.model.GameManager;
+import mygdx.game.model.PlayerInGame;
+import mygdx.game.model.leader.Leader;
 
 public class CrachAnCraite extends Leader {
     public CrachAnCraite() {
@@ -18,7 +17,7 @@ public class CrachAnCraite extends Leader {
             return;
         }
 
-        for (int i = currentPlayer.getGraveyard().size() - 1; i >= 0; i--){
+        for (int i = currentPlayer.getGraveyard().size() - 1; i >= 0; i--) {
             currentPlayer.addToDeckInGame(currentPlayer.getGraveyard().get(i));
             currentPlayer.getGraveyard().remove(i);
         }

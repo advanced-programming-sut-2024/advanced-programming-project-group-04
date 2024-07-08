@@ -1,7 +1,7 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
-import com.mygdx.game.Main;
-import com.mygdx.game.model.Player;
+import mygdx.game.Main;
+import mygdx.game.model.Player;
 
 public class MainMenuController {
     private final Main game;

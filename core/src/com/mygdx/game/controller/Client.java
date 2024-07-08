@@ -1,11 +1,11 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
-import com.mygdx.game.Main;
-import com.mygdx.game.view.GameMenu;
+import mygdx.game.Main;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Client extends Thread {
     private final Main game;
@@ -50,7 +50,7 @@ public class Client extends Thread {
                 out.writeObject(obj);
             }
 
-            while (!isReceived());
+            while (!isReceived()) ;
 
 
             T response = (T) this.obj;
@@ -78,7 +78,7 @@ public class Client extends Thread {
                 if (!(obj instanceof ClientCommand)) setReceived(true);
 
                 else {
-                    switch ((ClientCommand)obj) {
+                    switch ((ClientCommand) obj) {
                         case START_GAME:
                             startGame();
                             break;

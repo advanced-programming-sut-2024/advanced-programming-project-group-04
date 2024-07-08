@@ -1,4 +1,4 @@
-package com.mygdx.game.model;
+package mygdx.game.model;
 
 public enum GameResult {
     Win,

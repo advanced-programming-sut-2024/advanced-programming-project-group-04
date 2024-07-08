@@ -1,11 +1,11 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
-import com.mygdx.game.Main;
-import com.mygdx.game.model.card.AllCards;
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.faction.Faction;
-import com.mygdx.game.model.leader.Leader;
-import com.mygdx.game.view.FactionAndLeaderMenu;
+import mygdx.game.Main;
+import mygdx.game.model.card.AllCards;
+import mygdx.game.model.card.Card;
+import mygdx.game.model.faction.Faction;
+import mygdx.game.model.leader.Leader;
+import mygdx.game.view.FactionAndLeaderMenu;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;

@@ -1,24 +1,21 @@
-package com.mygdx.game.view;
+package mygdx.game.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.mygdx.game.Main;
-import com.mygdx.game.AssetLoader;
-import com.mygdx.game.controller.Server;
-import com.mygdx.game.model.Player;
-import com.mygdx.game.model.Rank;
+import com.badlogic.gdx.utils.Align;
+import mygdx.game.AssetLoader;
+import mygdx.game.Main;
+import mygdx.game.controller.Server;
+import mygdx.game.model.Player;
 
 import java.util.Vector;
 
@@ -153,7 +150,6 @@ public class ProfileMenu extends Menu {
         allPlayers.get(4).addLP(78);
 
         allPlayers.sort((p1, p2) -> Integer.compare(p2.getLP(), p1.getLP()));
-
 
 
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);

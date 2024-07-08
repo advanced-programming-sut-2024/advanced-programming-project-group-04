@@ -1,10 +1,10 @@
-package com.mygdx.game.model.leader.scoiatael;
+package mygdx.game.model.leader.scoiatael;
 
-import com.mygdx.game.model.GameManager;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.leader.Leader;
+import mygdx.game.model.GameManager;
+import mygdx.game.model.PlayerInGame;
+import mygdx.game.model.leader.Leader;
 
-public class HopeOfTheAenSeidhe extends Leader{
+public class HopeOfTheAenSeidhe extends Leader {
     public HopeOfTheAenSeidhe() {
         super("Hope of the Aen Seidhe");
     }

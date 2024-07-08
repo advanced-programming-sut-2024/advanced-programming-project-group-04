@@ -1,17 +1,17 @@
-package com.mygdx.game.view;
+package  mygdx.game.view;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.mygdx.game.Main;
-import com.mygdx.game.controller.ControllerResponse;
-import com.mygdx.game.controller.StartGameController;
+import  com.badlogic.gdx.graphics.Color;
+import  com.badlogic.gdx.scenes.scene2d.Action;
+import  com.badlogic.gdx.scenes.scene2d.InputEvent;
+import  com.badlogic.gdx.scenes.scene2d.ui.Label;
+import  com.badlogic.gdx.scenes.scene2d.ui.Table;
+import  com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import  com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import  com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import  com.badlogic.gdx.utils.Align;
+import  mygdx.game.Main;
+import  mygdx.game.controller.ControllerResponse;
+import  mygdx.game.controller.StartGameController;
 
 public class StartGameMenu extends Menu {
     private final StartGameController controller;

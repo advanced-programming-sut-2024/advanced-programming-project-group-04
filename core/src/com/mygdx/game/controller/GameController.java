@@ -1,20 +1,19 @@
-package com.mygdx.game.controller;
+package mygdx.game.controller;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.mygdx.game.model.GameManager;
-import com.mygdx.game.model.Player;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.Position;
-import com.mygdx.game.model.card.AllCards;
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.faction.Monsters;
-import com.mygdx.game.view.CustomTable;
-import com.mygdx.game.view.GameMenu;
-import com.mygdx.game.view.GraphicalCard;
-import com.mygdx.game.view.TableSection;
+import mygdx.game.model.GameManager;
+import mygdx.game.model.Player;
+import mygdx.game.model.PlayerInGame;
+import mygdx.game.model.Position;
+import mygdx.game.model.card.AllCards;
+import mygdx.game.model.card.Card;
+import mygdx.game.model.faction.Monsters;
+import mygdx.game.view.CustomTable;
+import mygdx.game.view.GameMenu;
+import mygdx.game.view.GraphicalCard;
+import mygdx.game.view.TableSection;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -52,8 +51,7 @@ public class GameController {
         boolean result;
         if (tableSection.equals(TableSection.WEATHER)) {
             result = gameManager.placeCard(card);
-        }
-        else if (tableSection.isEnemy() ^ !isMyTurn) {
+        } else if (tableSection.isEnemy() ^ !isMyTurn) {
             result = gameManager.placeCardEnemy(card);
         } else {
             result = gameManager.placeCard(card, tableSection.getPosition());
@@ -70,8 +68,7 @@ public class GameController {
         Position position = tableSection.getPosition();
         if (tableSection.equals(TableSection.WEATHER)) {
             return gameManager.canPlaceCard(card, Position.WeatherPlace);
-        }
-        else if (tableSection.isEnemy() ^ !isMyTurn) return gameManager.canPlaceCardEnemy(card, position);
+        } else if (tableSection.isEnemy() ^ !isMyTurn) return gameManager.canPlaceCardEnemy(card, position);
         else return gameManager.canPlaceCard(card, position);
     }
 
@@ -146,7 +143,7 @@ public class GameController {
         }
     }
 
-    public Card showSomeCardsAndSelectOne (ArrayList<Card> cards){
+    public Card showSomeCardsAndSelectOne(ArrayList<Card> cards) {
         return gameMenu.showSomeCardsAndSelectOne(cards).getCard();
     }
 

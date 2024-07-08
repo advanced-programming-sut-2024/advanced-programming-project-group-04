@@ -1,10 +1,10 @@
-package com.mygdx.game.model.leader.monsters;
+package mygdx.game.model.leader.monsters;
 
-import com.mygdx.game.model.GameManager;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.card.Card;
-import com.mygdx.game.model.card.Type;
-import com.mygdx.game.model.leader.Leader;
+import mygdx.game.model.GameManager;
+import mygdx.game.model.PlayerInGame;
+import mygdx.game.model.card.Card;
+import mygdx.game.model.card.Type;
+import mygdx.game.model.leader.Leader;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ public class CommanderOfTheRedRiders extends Leader {
         }
 
         ArrayList<Card> weatherCardsInDeckInGame = new ArrayList<>();
-        for(Card sampleCard : currentPlayer.getDeckInGame()) {
+        for (Card sampleCard : currentPlayer.getDeckInGame()) {
             if (sampleCard.getType().equals(Type.Weather)) {
                 weatherCardsInDeckInGame.add(sampleCard);
             }

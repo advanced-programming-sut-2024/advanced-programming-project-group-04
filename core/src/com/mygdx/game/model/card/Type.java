@@ -1,4 +1,4 @@
-package com.mygdx.game.model.card;
+package mygdx.game.model.card;
 
 public enum Type {
     CloseCombat,
@@ -7,6 +7,7 @@ public enum Type {
     Siege,
     Spell,
     Weather;
+
     Type() {
     }
 }

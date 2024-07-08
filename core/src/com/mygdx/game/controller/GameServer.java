@@ -1,8 +1,4 @@
-package com.mygdx.game.controller;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.Socket;
+package mygdx.game.controller;
 
 public class GameServer extends Thread {
     Server mySession;

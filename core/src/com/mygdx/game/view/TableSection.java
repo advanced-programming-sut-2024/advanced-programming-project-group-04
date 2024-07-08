@@ -1,6 +1,6 @@
-package com.mygdx.game.view;
+package mygdx.game.view;
 
-import com.mygdx.game.model.Position;
+import mygdx.game.model.Position;
 
 public enum TableSection {
     MY_HAND("My Hand", false, false, null),
@@ -23,8 +23,7 @@ public enum TableSection {
     ENEMY_RANGE("Enemy Range", true, true, Position.Range),
     ENEMY_SIEGE("Enemy Siege", true, true, Position.Siege),
     ENEMY_MELEE("Enemy Melee", true, true, Position.Melee),
-    WEATHER("Weather", true, false, Position.WeatherPlace)
-    ;
+    WEATHER("Weather", true, false, Position.WeatherPlace);
     final String title;
     final boolean canCardBePlaced;
     final boolean isEnemy;
@@ -37,13 +36,21 @@ public enum TableSection {
         this.position = position;
     }
 
-    public boolean canPlaceCard() { return this.canCardBePlaced; }
+    public boolean canPlaceCard() {
+        return this.canCardBePlaced;
+    }
 
-    public boolean isEnemy() { return this.isEnemy; }
+    public boolean isEnemy() {
+        return this.isEnemy;
+    }
 
-    public Position getPosition() { return this.position; }
+    public Position getPosition() {
+        return this.position;
+    }
 
-    public String getTitle() { return this.title; }
+    public String getTitle() {
+        return this.title;
+    }
 
     public static TableSection getTableSectionByPosition(Position position, boolean isEnemy) {
         if (position == Position.WeatherPlace) return TableSection.WEATHER;

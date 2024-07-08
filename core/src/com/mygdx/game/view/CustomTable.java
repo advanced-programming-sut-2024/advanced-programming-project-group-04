@@ -1,8 +1,7 @@
-package com.mygdx.game.view;
+package mygdx.game.view;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CustomTable extends Table {
