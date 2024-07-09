@@ -60,7 +60,7 @@ public abstract class Faction implements Serializable {
         return neutralCards;
     }
 
-    public static ArrayList<AllCards> getCardsFromFaction(Faction faction) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public static ArrayList<AllCards> getCardsFromFaction(Faction faction) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException,  java.lang.reflect.InvocationTargetException {
         return (ArrayList<AllCards>) faction.getClass().getMethod("getCards").invoke(null);
     }
 }
