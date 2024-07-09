@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import mygdx.game.Main;
-import mygdx.game.controller.ServerCommand;
+import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
 
 public class PasswordRecoveryMenu extends Menu {

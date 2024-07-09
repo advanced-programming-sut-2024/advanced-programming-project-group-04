@@ -4,7 +4,7 @@ import mygdx.game.Main;
 import mygdx.game.controller.Client;
 import mygdx.game.controller.ControllerResponse;
 import mygdx.game.controller.MainMenuController;
-import mygdx.game.controller.ServerCommand;
+import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
 import org.junit.Before;
 import org.junit.Test;

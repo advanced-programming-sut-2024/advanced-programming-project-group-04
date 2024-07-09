@@ -356,7 +356,7 @@ public class Server extends Thread {
         String leaderName = (String) in.readObject();
 
         Faction faction = player.getSelectedFaction();
-        Class<?> leaderClass = Class.forName("com.mygdx.game.model.leader." + faction.getAssetName().toLowerCase() + "." + leaderName);
+        Class<?> leaderClass = Class.forName("mygdx.game.model.leader." + faction.getAssetName().toLowerCase() + "." + leaderName);
         Leader leader = (Leader) leaderClass.getConstructor().newInstance();
 
         System.out.println(leader.getName());

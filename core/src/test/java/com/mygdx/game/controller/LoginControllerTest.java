@@ -2,6 +2,7 @@ package com.mygdx.game.controller;
 
 import mygdx.game.Main;
 import mygdx.game.controller.*;
+import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
 import mygdx.game.view.LoginMenu;
 import org.junit.Before;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
+
 public class LoginControllerTest {
     private LoginController loginController;
     private Main mockGame;

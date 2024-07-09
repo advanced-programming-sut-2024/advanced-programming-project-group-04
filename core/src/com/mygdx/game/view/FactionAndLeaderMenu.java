@@ -103,6 +103,7 @@ public class FactionAndLeaderMenu extends Menu {
         heroCountLabel = new Label("Number of Hero Cards: 0", labelStyle);
         unitCountLabel = new Label("Number of Unit Cards: 0", labelStyle);
         spellCountLabel = new Label("Number of Spell Cards: 0", labelStyle);
+        updateStats();
     }
 
     private void showFactionSelection() {

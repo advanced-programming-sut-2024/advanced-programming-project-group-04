@@ -15,22 +15,23 @@ public class CommanderOfTheRedRiders extends Leader {
 
     @Override
     public void run(GameManager gameManager) {
-        PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
-        if (currentPlayer.getIsLeaderUsed()) {
-            return;
-        }
-
-        ArrayList<Card> weatherCardsInDeckInGame = new ArrayList<>();
-        for (Card sampleCard : currentPlayer.getDeckInGame()) {
-            if (sampleCard.getType().equals(Type.Weather)) {
-                weatherCardsInDeckInGame.add(sampleCard);
-            }
-        }
-        if (!weatherCardsInDeckInGame.isEmpty()) {
-            Card selectedWeatherCard = gameManager.showSomeCardsAndSelectOne(weatherCardsInDeckInGame);
-            currentPlayer.removeFromDeckInGame(selectedWeatherCard);
-            gameManager.placeToWeather(selectedWeatherCard);
-        }
-        currentPlayer.setIsLeaderUsed(true);
+        // TODO: @Arman
+//        PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
+//        if (currentPlayer.getIsLeaderUsed()) {
+//            return;
+//        }
+//
+//        ArrayList<Card> weatherCardsInDeckInGame = new ArrayList<>();
+//        for (Card sampleCard : currentPlayer.getDeckInGame()) {
+//            if (sampleCard.getType().equals(Type.Weather)) {
+//                weatherCardsInDeckInGame.add(sampleCard);
+//            }
+//        }
+//        if (!weatherCardsInDeckInGame.isEmpty()) {
+//            Card selectedWeatherCard = gameManager.showSomeCardsAndSelectOne(weatherCardsInDeckInGame);
+//            currentPlayer.removeFromDeckInGame(selectedWeatherCard);
+//            gameManager.placeToWeather(selectedWeatherCard);
+//        }
+//        currentPlayer.setIsLeaderUsed(true);
     }
 }

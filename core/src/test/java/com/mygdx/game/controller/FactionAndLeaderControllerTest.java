@@ -3,7 +3,7 @@ package com.mygdx.game.controller;
 import mygdx.game.Main;
 import mygdx.game.controller.Client;
 import mygdx.game.controller.FactionAndLeaderController;
-import mygdx.game.controller.ServerCommand;
+import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Deck;
 import mygdx.game.model.Player;
 import mygdx.game.model.card.AllCards;

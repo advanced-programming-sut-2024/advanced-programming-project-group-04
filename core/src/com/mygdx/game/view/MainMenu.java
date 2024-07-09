@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.Timer;
 import mygdx.game.AssetLoader;
 import mygdx.game.Main;
 import mygdx.game.controller.MainMenuController;
-import mygdx.game.controller.ServerCommand;
+import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
 import mygdx.game.model.message.Message;
 

@@ -2,7 +2,7 @@ package com.mygdx.game.controller;
 
 
 import com.badlogic.gdx.Input;
-import mygdx.game.controller.CheatController;
+import mygdx.game.controller.cheat.CheatController;
 import mygdx.game.view.GameMenu;
 import org.junit.Before;
 import org.junit.Test;

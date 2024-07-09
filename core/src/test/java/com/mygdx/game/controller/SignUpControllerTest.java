@@ -1,6 +1,7 @@
 package com.mygdx.game.controller;
 
 import mygdx.game.controller.*;
+import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
 import mygdx.game.view.SignUpMenu;
 import org.junit.Before;

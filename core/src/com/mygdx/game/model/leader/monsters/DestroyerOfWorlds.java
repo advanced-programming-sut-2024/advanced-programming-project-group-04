@@ -12,20 +12,21 @@ public class DestroyerOfWorlds extends Leader {
 
     @Override
     public void run(GameManager gameManager) {
-        PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
-        if (currentPlayer.getIsLeaderUsed()) {
-            return;
-        }
-
-        if (currentPlayer.getHandCount() > 1) {
-            Card card1 = gameManager.showSomeCardsAndSelectOne(currentPlayer.getHand());
-            gameManager.removeFromHand(card1);
-            Card card2 = gameManager.showSomeCardsAndSelectOne(currentPlayer.getHand());
-            gameManager.removeFromHand(card2);
-            Card card3 = gameManager.showSomeCardsAndSelectOne(currentPlayer.getDeckInGame());
-            currentPlayer.removeFromDeckInGame(card3);
-            gameManager.addToHand(card3);
-        }
-        currentPlayer.setIsLeaderUsed(true);
+        // TODO: @Arman
+//        PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
+//        if (currentPlayer.getIsLeaderUsed()) {
+//            return;
+//        }
+//
+//        if (currentPlayer.getHandCount() > 1) {
+//            Card card1 = gameManager.showSomeCardsAndSelectOne(currentPlayer.getHand());
+//            gameManager.removeFromHand(card1);
+//            Card card2 = gameManager.showSomeCardsAndSelectOne(currentPlayer.getHand());
+//            gameManager.removeFromHand(card2);
+//            Card card3 = gameManager.showSomeCardsAndSelectOne(currentPlayer.getDeckInGame());
+//            currentPlayer.removeFromDeckInGame(card3);
+//            gameManager.addToHand(card3);
+//        }
+//        currentPlayer.setIsLeaderUsed(true);
     }
 }
