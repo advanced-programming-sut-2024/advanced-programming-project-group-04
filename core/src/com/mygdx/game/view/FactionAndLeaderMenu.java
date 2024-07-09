@@ -17,6 +17,7 @@ import mygdx.game.AssetLoader;
 import mygdx.game.Main;
 import mygdx.game.controller.FactionAndLeaderController;
 import mygdx.game.model.card.AllCards;
+import mygdx.game.model.card.Card;
 
 import java.util.ArrayList;
 

@@ -1,6 +1,8 @@
 package mygdx.game.controller;
 
 import mygdx.game.Main;
+import mygdx.game.controller.commands.ServerCommand;
+import mygdx.game.model.Deck;
 import mygdx.game.model.card.AllCards;
 import mygdx.game.model.card.Card;
 import mygdx.game.model.faction.Faction;

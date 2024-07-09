@@ -1,12 +1,11 @@
 package mygdx.game.controller;
 
-import mygdx.game.Main;
+import mygdx.game.controller.commands.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 public class Client extends Thread {

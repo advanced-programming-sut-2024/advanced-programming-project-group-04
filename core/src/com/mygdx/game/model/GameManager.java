@@ -196,35 +196,36 @@ public class GameManager {
 
     public boolean placeCardEnemyButNotSpy(Card card) {
         // TODO @Arman: connect to server
-        Type theCardType = card.getType();
-
-        PlayerInGame otherPlayer = getOtherPlayer();
-        boolean flag;
-
-        if (theCardType.equals(Type.Agile)) {
-            otherPlayer.addToMelee(card);
-            gameController.addCardToTableSection(card, Position.Melee, true);
-            flag = true;
-        } else if (theCardType.equals(Type.CloseCombat)) {
-            otherPlayer.addToMelee(card);
-            gameController.addCardToTableSection(card, Position.Melee, true);
-            flag = true;
-        } else if (theCardType.equals(Type.RangedCombat)) {
-            otherPlayer.addToRange(card);
-            gameController.addCardToTableSection(card, Position.Range, true);
-            flag = true;
-        } else if (theCardType.equals(Type.Siege)) {
-            otherPlayer.addToSiege(card);
-            gameController.addCardToTableSection(card, Position.Siege, true);
-            flag = true;
-        } else if (theCardType.equals(Type.Spell)) {
-            flag = false;
-        } else if (theCardType.equals(Type.Weather)) {
-            flag = false;
-        } else {
-            throw new RuntimeException();
-        }
-        return flag;
+//        Type theCardType = card.getType();
+//
+//        PlayerInGame otherPlayer = getOtherPlayer();
+//        boolean flag;
+//
+//        if (theCardType.equals(Type.Agile)) {
+//            otherPlayer.addToMelee(card);
+//            gameController.addCardToTableSection(card, Position.Melee, true);
+//            flag = true;
+//        } else if (theCardType.equals(Type.CloseCombat)) {
+//            otherPlayer.addToMelee(card);
+//            gameController.addCardToTableSection(card, Position.Melee, true);
+//            flag = true;
+//        } else if (theCardType.equals(Type.RangedCombat)) {
+//            otherPlayer.addToRange(card);
+//            gameController.addCardToTableSection(card, Position.Range, true);
+//            flag = true;
+//        } else if (theCardType.equals(Type.Siege)) {
+//            otherPlayer.addToSiege(card);
+//            gameController.addCardToTableSection(card, Position.Siege, true);
+//            flag = true;
+//        } else if (theCardType.equals(Type.Spell)) {
+//            flag = false;
+//        } else if (theCardType.equals(Type.Weather)) {
+//            flag = false;
+//        } else {
+//            throw new RuntimeException();
+//        }
+//        return flag;
+        return false;
     }
 
     public boolean addToSiege(Card card) {
@@ -623,32 +624,32 @@ public class GameManager {
                 }
             }
             if (getOtherPlayer().getPlayer().getSelectedFaction() instanceof Monsters) {
-                int index = (int) (Math.random() * otherPlayerUnitCards.size());
-                Card sampleCard = otherPlayerUnitCards.get(index);
-                if (sampleCard.getType().equals(Type.Agile)) {
-                    getOtherPlayer().addToMelee(sampleCard);
-                    gameController.addCardToTableSection(sampleCard, Position.Melee, true);
-                    getOtherPlayer().removeFromGraveyard(sampleCard);
-                } else {
-                    if (sampleCard.getType().equals(Type.Agile)) {
-                    } else if (sampleCard.getType().equals(Type.CloseCombat)) {
-                        getOtherPlayer().addToMelee(sampleCard);
-                        gameController.addCardToTableSection(sampleCard, Position.Melee, true);
-                        getOtherPlayer().removeFromGraveyard(sampleCard);
-                    } else if (sampleCard.getType().equals(Type.RangedCombat)) {
-                        getOtherPlayer().addToRange(sampleCard);
-                        gameController.addCardToTableSection(sampleCard, Position.Range, true);
-                        getOtherPlayer().removeFromGraveyard(sampleCard);
-                    } else if (sampleCard.getType().equals(Type.Siege)) {
-                        getOtherPlayer().addToSiege(sampleCard);
-                        gameController.addCardToTableSection(sampleCard, Position.Siege, true);
-                        getOtherPlayer().removeFromGraveyard(sampleCard);
-                    } else if (sampleCard.getType().equals(Type.Spell)) {
-                    } else if (sampleCard.getType().equals(Type.Weather)) {
-                    } else {
-                        throw new RuntimeException();
-                    }
-                }
+//                int index = (int) (Math.random() * otherPlayerUnitCards.size());
+//                Card sampleCard = otherPlayerUnitCards.get(index);
+//                if (sampleCard.getType().equals(Type.Agile)) {
+//                    getOtherPlayer().addToMelee(sampleCard);
+//                    gameController.addCardToTableSection(sampleCard, Position.Melee, true);
+//                    getOtherPlayer().removeFromGraveyard(sampleCard);
+//                } else {
+//                    if (sampleCard.getType().equals(Type.Agile)) {
+//                    } else if (sampleCard.getType().equals(Type.CloseCombat)) {
+//                        getOtherPlayer().addToMelee(sampleCard);
+//                        gameController.addCardToTableSection(sampleCard, Position.Melee, true);
+//                        getOtherPlayer().removeFromGraveyard(sampleCard);
+//                    } else if (sampleCard.getType().equals(Type.RangedCombat)) {
+//                        getOtherPlayer().addToRange(sampleCard);
+//                        gameController.addCardToTableSection(sampleCard, Position.Range, true);
+//                        getOtherPlayer().removeFromGraveyard(sampleCard);
+//                    } else if (sampleCard.getType().equals(Type.Siege)) {
+//                        getOtherPlayer().addToSiege(sampleCard);
+//                        gameController.addCardToTableSection(sampleCard, Position.Siege, true);
+//                        getOtherPlayer().removeFromGraveyard(sampleCard);
+//                    } else if (sampleCard.getType().equals(Type.Spell)) {
+//                    } else if (sampleCard.getType().equals(Type.Weather)) {
+//                    } else {
+//                        throw new RuntimeException();
+//                    }
+//                }
             }
 
             // Northern Realms
@@ -676,9 +677,6 @@ public class GameManager {
                 // TODO : Skellige
             }
 
-            // Updating the Scores
-            gameController.updateScores(player1, player2);
-
             // reset isPassed for players
             currentPlayer.setIsPassed(false);
             getOtherPlayer().setIsPassed(false);
@@ -686,7 +684,6 @@ public class GameManager {
             gameServer.resetPassButtons();
             // delete the Cards
             // Transformer Cards
-            gameController.resetPassButtons();
 
             // Who's Turn Is it?
             if (turnNumber % 2 == 0) {
@@ -865,8 +862,9 @@ public class GameManager {
         }
     }
 
-    public Card showSomeCardsAndSelectOne(ArrayList<Card> cards) {
-        return gameController.showSomeCardsAndSelectOne(cards);
-    }
+//    public Card showSomeCardsAndSelectOne(ArrayList<Card> cards) {
+//        // TODO: @Arman
+//        return gameController.showSomeCardsAndSelectOne(cards);
+//    }
 
 }

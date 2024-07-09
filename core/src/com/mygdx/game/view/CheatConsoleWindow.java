@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import mygdx.game.AssetLoader;
-import mygdx.game.controller.CheatProcessor;
+import mygdx.game.controller.cheat.CheatProcessor;
 
 public class CheatConsoleWindow extends Window {
     private TextField cheatInputField;

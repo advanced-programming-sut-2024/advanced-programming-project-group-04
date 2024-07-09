@@ -1,6 +1,6 @@
-package com.mygdx.game.model;
+package mygdx.game.model;
 
-import com.mygdx.game.model.card.Card;
+import mygdx.game.model.card.Card;
 
 import java.util.ArrayList;
 

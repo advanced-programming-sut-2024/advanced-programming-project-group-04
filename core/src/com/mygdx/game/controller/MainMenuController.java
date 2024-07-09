@@ -1,6 +1,7 @@
 package mygdx.game.controller;
 
 import mygdx.game.Main;
+import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
 
 public class MainMenuController {

@@ -20,7 +20,7 @@ import mygdx.game.view.TableSection;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.mygdx.game.controller.commands.GameClientCommand.*;
+import static mygdx.game.controller.commands.GameClientCommand.*;
 
 public class GameServer extends Thread {
     private boolean isMyTurn;
@@ -87,8 +87,8 @@ public class GameServer extends Thread {
 //        gameMenu.updateScores(p1, p2);
         PlayerInGame p1 = gameManager.getPlayer1();
         PlayerInGame p2 = gameManager.getPlayer2();
-        mySession.sendToClient(UPDATE_SCORES, p1.getTotalHP(), p2.getTotalHP(), EOF);
-        enemySession.sendToClient(UPDATE_SCORES, p2.getTotalHP(), p1.getTotalHP(), EOF);
+        mySession.sendToClient(UPDATE_SCORES, p1, p2, EOF);
+        enemySession.sendToClient(UPDATE_SCORES, p2, p1, EOF);
     }
 
     public void resetPassButtons() {

@@ -222,7 +222,7 @@ public class GameMenu extends Menu implements CheatProcessor {
         myCardsCount = new Label("10", game.assetLoader.labelStyle);
         enemyCardsCount = new Label("10", game.assetLoader.labelStyle);
 
-        turnIndicator = new Label(!gameController.isMyTurn ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
+        turnIndicator = new Label(!gameController.isMyTurn() ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
 
 
         myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
@@ -625,7 +625,7 @@ public class GameMenu extends Menu implements CheatProcessor {
         myCardsCount.setText(self.getHandCount());
         enemyCardsCount.setText(enemy.getHandCount());
 
-        turnIndicator.setText(gameController.isMyTurn ? "Your Turn" : "Enemy's Turn");
+        turnIndicator.setText(gameController.isMyTurn() ? "Your Turn" : "Enemy's Turn");
     }
 
     public void resetPassedButtons() {

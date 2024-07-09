@@ -1,4 +1,4 @@
-package com.mygdx.game.controller.commands;
+package mygdx.game.controller.commands;
 
 public interface Command {
 }

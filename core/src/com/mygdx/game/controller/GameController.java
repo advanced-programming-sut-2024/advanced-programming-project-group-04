@@ -2,13 +2,16 @@ package mygdx.game.controller;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import mygdx.game.model.GameManager;
-import mygdx.game.model.Player;
-import mygdx.game.model.PlayerInGame;
-import mygdx.game.model.Position;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import mygdx.game.controller.commands.GameClientCommand;
+import mygdx.game.controller.commands.GeneralCommand;
+import mygdx.game.model.*;
 import mygdx.game.model.card.AllCards;
 import mygdx.game.model.card.Card;
+import mygdx.game.model.faction.Faction;
 import mygdx.game.model.faction.Monsters;
+import mygdx.game.model.leader.Leader;
 import mygdx.game.view.CustomTable;
 import mygdx.game.view.GameMenu;
 import mygdx.game.view.GraphicalCard;
@@ -18,7 +21,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.mygdx.game.controller.commands.GameServerCommand.*;
+import static mygdx.game.controller.commands.GameServerCommand.*;
 
 public class GameController {
     private boolean isMyTurn;
@@ -39,8 +42,8 @@ public class GameController {
         return true;
     }
 
-    public boolean updateScores(int selfTotalHP, int enemyTotalHP) {
-        gameMenu.updateScores(selfTotalHP, enemyTotalHP);
+    public boolean updateScores(PlayerInGame self, PlayerInGame enemy) {
+        gameMenu.updateScores(self, enemy);
         return true;
     }
 
@@ -271,7 +274,7 @@ public class GameController {
                 sendOutput = true;
                 break;
             case UPDATE_SCORES:
-                sendOutput = updateScores((int) inputs.get(1), (int) inputs.get(2));
+                sendOutput = updateScores((PlayerInGame) inputs.get(1), (PlayerInGame) inputs.get(2));
                 break;
             case RESET_PASS_BUTTONS:
                 sendOutput = resetPassButtons();

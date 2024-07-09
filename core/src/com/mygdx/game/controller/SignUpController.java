@@ -1,5 +1,6 @@
 package mygdx.game.controller;
 
+import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.view.SignUpMenu;
 
 import java.util.Random;
