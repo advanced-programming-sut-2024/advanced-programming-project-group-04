@@ -2,16 +2,16 @@ package com.mygdx.game.controller;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mygdx.game.controller.commands.ClientCommand;
 import com.mygdx.game.controller.commands.GameServerCommand;
 import com.mygdx.game.controller.commands.GeneralCommand;
-import com.mygdx.game.model.GameManager;
-import com.mygdx.game.model.Player;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.Position;
+import com.mygdx.game.model.*;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.Monsters;
+import com.mygdx.game.model.leader.Leader;
 import com.mygdx.game.view.CustomTable;
 import com.mygdx.game.view.GameMenu;
 import com.mygdx.game.view.GraphicalCard;
@@ -35,6 +35,8 @@ public class GameServer extends Thread {
         this.enemySession = enemySession;
         this.isMyTurn = true;
 
+        mySession.getPlayer().getDeck().shuffleIds();
+        enemySession.getPlayer().getDeck().shuffleIds();
         this.gameManager = new GameManager(mySession.getPlayer(), enemySession.getPlayer(), this);
     }
 
@@ -66,12 +68,17 @@ public class GameServer extends Thread {
         Player p2 = gameManager.getPlayer2().getPlayer();
         mySession.sendToClient(SET_FACTION, p1.getSelectedFaction(), EOF);
         enemySession.sendToClient(SET_FACTION, p2.getSelectedFaction(), EOF);
-        mySession.sendToClient(SET_DECK, p1.getDeck(), EOF);
-        enemySession.sendToClient(SET_DECK, p1.getDeck(), EOF);
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Leader.class, new Server.LeaderTypeAdapter());
+        Gson gson = builder.create();
+        mySession.sendToClient(SET_DECK, gson.toJson(p1.getDeck()), EOF);
+        enemySession.sendToClient(SET_DECK, gson.toJson(p2.getDeck()), EOF);
         mySession.sendToClient(SET_LEADERS, p1.getDeck().getLeader(), p2.getDeck().getLeader(), EOF);
         enemySession.sendToClient(SET_LEADERS, p2.getDeck().getLeader(), p1.getDeck().getLeader(), EOF);
-        mySession.sendToClient(SET_HANDS, gameManager.getCurrentPlayer().getHand(), gameManager.getOtherPlayer().getHand(), EOF);
-        enemySession.sendToClient(SET_HANDS, gameManager.getOtherPlayer().getHand(), gameManager.getCurrentPlayer().getHand(), EOF);
+        mySession.sendToClient(SET_HANDS, gson.toJson(new Hand(gameManager.getCurrentPlayer().getHand())),
+                gson.toJson(new Hand(gameManager.getOtherPlayer().getHand())), EOF);
+        enemySession.sendToClient(SET_HANDS, gson.toJson(new Hand(gameManager.getOtherPlayer().getHand())),
+                gson.toJson(new Hand(gameManager.getCurrentPlayer().getHand())), EOF);
         mySession.sendToClient(ADD_SOURCE, EOF);
         System.out.println("GameServer: Game initialized");
     }
@@ -141,7 +148,7 @@ public class GameServer extends Thread {
 
     public boolean removeFromHand(Card card, boolean isMyHand) {
         gameManager.removeFromHand(card, isMyHand ^ !isMyTurn);
-        return false;
+        return true;
     }
 
     public boolean removeCard(Card card) {

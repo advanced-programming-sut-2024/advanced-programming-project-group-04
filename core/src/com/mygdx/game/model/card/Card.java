@@ -3,6 +3,7 @@ package com.mygdx.game.model.card;
 import com.mygdx.game.model.ability.*;
 
 import java.io.Serializable;
+import java.util.Random;
 
 public class Card implements Serializable {
     private final AllCards allCard;
@@ -11,9 +12,11 @@ public class Card implements Serializable {
     private boolean isCommandersHornAffected;
     private boolean isWeathered;
     private int howManyTightBond;
-
+    private int id;
 
     public Card(AllCards allCard) {
+//        Random random = new Random(System.currentTimeMillis());
+//        this.id = random.nextInt();
         this.allCard = allCard;
         this.currentHP = getPower();
         this.howManyMoralBoostAffected = 0;
@@ -21,6 +24,10 @@ public class Card implements Serializable {
         this.isWeathered = false;
         this.howManyMoralBoostAffected = 1;
     }
+
+    public void setId(int id) { this.id = id; }
+
+    public int getId() { return this.id; }
 
     public int getHowManyTightBond() {
         return this.howManyTightBond;

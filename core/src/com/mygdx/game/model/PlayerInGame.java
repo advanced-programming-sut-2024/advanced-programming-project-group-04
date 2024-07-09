@@ -2,6 +2,7 @@ package com.mygdx.game.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.mygdx.game.model.card.Card;
 
@@ -31,6 +32,10 @@ public class PlayerInGame implements Serializable {
     public PlayerInGame(Player player) {
         this.player = player;
         this.deckInGame = player.getDeck().getCards();
+//        Random random = new Random();
+//        for (Card card : this.deckInGame) {
+//            card.setId(random.nextInt());
+//        }
         this.remainingLives = 2;
         isPassed = false;
         drawInitialCards();

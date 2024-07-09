@@ -16,6 +16,7 @@ public class Client extends Thread {
     private final ObjectOutputStream out;
     private final ObjectInputStream in;
     private boolean isRunning = true;
+    private boolean isWaiting = false;
     private boolean outputReceived = false;
     private boolean clientCommandReceived = false;
     private boolean gameCommandReceived = false;
@@ -54,13 +55,14 @@ public class Client extends Thread {
     public <T> T sendToServer(Object... inputs) {
         try {
             setOutputReceived(false);
+            setIsWaiting(true);
             out.writeObject(GeneralCommand.CLEAR);
 
             for (Object obj : inputs) {
                 out.writeObject(obj);
             }
 
-            while (!isOutputReceived());
+            while (isWaiting());
 
             T response = (T) this.obj;
             this.obj = null;
@@ -80,22 +82,6 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
     }
-
-    private synchronized boolean isOutputReceived() {
-        return this.outputReceived;
-    }
-
-    private synchronized void setOutputReceived(boolean outputReceived) {
-        this.outputReceived = outputReceived;
-    }
-
-    public synchronized boolean isClientCommandReceived() { return this.clientCommandReceived; }
-
-    public synchronized void setClientCommandReceived(boolean clientCommandReceived) { this.clientCommandReceived = clientCommandReceived; }
-
-    public synchronized boolean isGameCommandReceived() { return this.gameCommandReceived; }
-
-    public synchronized void setGameCommandReceived(boolean gameCommandReceived) { this.gameCommandReceived = gameCommandReceived; }
 
     @Override
     public void run() {
@@ -117,16 +103,37 @@ public class Client extends Thread {
                     setGameCommandReceived(true);
                 } else if (obj instanceof GeneralCommand) {
                     this.obj = null;
-                    setOutputReceived(true);
+                    setIsWaiting(false);
                 }else {
                     this.obj = obj;
                     setOutputReceived(true);
+                    setIsWaiting(false);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
     }
+
+    private synchronized boolean isOutputReceived() {
+        return this.outputReceived;
+    }
+
+    private synchronized void setOutputReceived(boolean outputReceived) {
+        this.outputReceived = outputReceived;
+    }
+
+    public synchronized boolean isClientCommandReceived() { return this.clientCommandReceived; }
+
+    public synchronized void setClientCommandReceived(boolean clientCommandReceived) { this.clientCommandReceived = clientCommandReceived; }
+
+    public synchronized boolean isGameCommandReceived() { return this.gameCommandReceived; }
+
+    public synchronized void setGameCommandReceived(boolean gameCommandReceived) { this.gameCommandReceived = gameCommandReceived; }
+
+    public synchronized boolean isWaiting() { return this.isWaiting; }
+
+    public synchronized void setIsWaiting(boolean isWaiting) { this.isWaiting = isWaiting; }
 
     public ClientCommand getClientCommand() { return (ClientCommand) this.obj; }
 

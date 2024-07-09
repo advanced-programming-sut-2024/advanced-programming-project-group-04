@@ -2,12 +2,12 @@ package com.mygdx.game.controller;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 import com.mygdx.game.controller.commands.GameClientCommand;
 import com.mygdx.game.controller.commands.GeneralCommand;
-import com.mygdx.game.model.Deck;
-import com.mygdx.game.model.Player;
-import com.mygdx.game.model.PlayerInGame;
-import com.mygdx.game.model.Position;
+import com.mygdx.game.model.*;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.Faction;
@@ -18,6 +18,7 @@ import com.mygdx.game.view.GameMenu;
 import com.mygdx.game.view.GraphicalCard;
 import com.mygdx.game.view.TableSection;
 
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -98,7 +99,7 @@ public class GameController {
     }
 
     public boolean removeCardFromView(Card card) {
-        System.out.println("GameController removeCardFromView 1");
+        System.out.println("GameController removeCardFromView: " + card.getId());
         for (CustomTable table : gameMenu.getAllTables().values()) {
             removeCardFromTable(table, card);
         }
@@ -114,7 +115,8 @@ public class GameController {
     public GraphicalCard removeCardFromTable(Table table, Card card) {
         System.out.println("GameController removeCardFromTable 1");
         for (Actor actor : table.getChildren()) {
-            if (actor instanceof GraphicalCard && ((GraphicalCard) actor).getCard().equals(card)) {
+            if (actor instanceof GraphicalCard && ((GraphicalCard) actor).getCard().getId() == card.getId()) {
+                System.out.println("GameController removeCardFromTable card found!");
                 table.removeActor(actor);
                 return (GraphicalCard) actor;
             }
@@ -253,13 +255,13 @@ public class GameController {
                 sendOutput = setFaction((Faction) inputs.get(1));
                 break;
             case SET_DECK:
-                sendOutput = setDeck((Deck) inputs.get(1));
+                sendOutput = setDeck((String) inputs.get(1));
                 break;
             case SET_LEADERS:
                 sendOutput = setLeaders((Leader) inputs.get(1), (Leader) inputs.get(2));
                 break;
             case SET_HANDS:
-                sendOutput = setHands((ArrayList<Card>) inputs.get(1), (ArrayList<Card>) inputs.get(2));
+                sendOutput = setHands((String) inputs.get(1), (String) inputs.get(2));
                 break;
             case ADD_SOURCE:
                 gameMenu.addSource();
@@ -296,8 +298,15 @@ public class GameController {
         return true;
     }
 
-    private boolean setDeck(Deck deck) {
+    private boolean setDeck(String deckJson) {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Leader.class, new Server.LeaderTypeAdapter());
+        Gson gson = builder.create();
+        Deck deck = gson.fromJson(deckJson, Deck.class);
         player.loadDeck(deck);
+        for (int i = 0; i < player.getDeck().getCards().size(); i++) {
+            System.out.println("Loaded deck ids: " + player.getDeck().getCards().get(i).getId());
+        }
         return true;
     }
 
@@ -306,9 +315,12 @@ public class GameController {
         return true;
     }
 
-    private boolean setHands(ArrayList<Card> myHand, ArrayList<Card> enemyHand) {
-        gameMenu.loadHand(myHand, false);
-        gameMenu.loadHand(enemyHand, true);
+    private boolean setHands(String myHandJson, String enemyHandJson) {
+        Gson gson = new Gson();
+        Hand myHand = gson.fromJson(myHandJson, Hand.class);
+        Hand enemyHand = gson.fromJson(enemyHandJson, Hand.class);
+        gameMenu.loadHand(myHand.getCards(), false);
+        gameMenu.loadHand(enemyHand.getCards(), true);
         return true;
     }
 }

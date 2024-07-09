@@ -2,6 +2,7 @@ package com.mygdx.game.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
@@ -86,5 +87,14 @@ public class Deck implements Serializable {
     public boolean isValid() {
         if (leader == null) return false;
         else return isNumberOfCardsValid();
+    }
+
+    public void shuffleIds() {
+        Random random = new Random();
+        for (Card card : this.cards) {
+            int newId = random.nextInt();
+            System.out.println("Generated id by deck: " + newId);
+            card.setId(newId);
+        }
     }
 }

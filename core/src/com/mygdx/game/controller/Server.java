@@ -22,16 +22,19 @@ import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarFile;
 
 public class Server extends Thread {
+    private static final Random random;
     private static final Vector<Player> allPlayers = new Vector<>();
     private static final ConcurrentHashMap<Player, String> passwords = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, Integer> gameRequests = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Player, Server> allSessions = new ConcurrentHashMap<>();
 
+    private boolean isWaiting;
     private boolean gameCommandReceived;
     private boolean outputReceived;
     private Object obj;
@@ -44,6 +47,7 @@ public class Server extends Thread {
 
     static {
         Server.loadAllPlayers();
+        random = new Random();
     }
 
     private static void loadAllPlayers() {
@@ -84,26 +88,6 @@ public class Server extends Thread {
         return null;
     }
 
-    public <T> T sendToClient(Object... inputs) {
-        T response;
-        try {
-            setOutputReceived(false);
-            out.writeObject(GeneralCommand.CLEAR);
-
-            for (Object obj : inputs) {
-                out.writeObject(obj);
-            }
-
-            while (!isOutputReceived());
-
-            response = (T) this.obj;
-            setOutputReceived(false);
-            return response;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void sendToClientVoid(Object... inputs) {
         try {
             for (Object obj : inputs) {
@@ -115,21 +99,26 @@ public class Server extends Thread {
         }
     }
 
-    public synchronized boolean isGameCommandReceived() {
-        return this.gameCommandReceived;
+    public <T> T sendToClient(Object... inputs) {
+        T response;
+        try {
+            setOutputReceived(false);
+            setIsWaiting(true);
+            out.writeObject(GeneralCommand.CLEAR);
+
+            for (Object obj : inputs) {
+                out.writeObject(obj);
+            }
+
+            while (isWaiting());
+
+            response = (T) this.obj;
+            setOutputReceived(false);
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-
-    public synchronized void setGameCommandReceived(boolean gameCommandReceived) {
-        this.gameCommandReceived = gameCommandReceived;
-    }
-
-    public ArrayList<Object> getInputs() {
-        return this.inputs;
-    }
-
-    private synchronized boolean isOutputReceived() { return this.outputReceived; }
-
-    private synchronized void setOutputReceived(boolean outputReceived) { this.outputReceived = outputReceived; }
 
     @Override
     public void run() {
@@ -152,11 +141,12 @@ public class Server extends Thread {
                     if (input == GeneralCommand.CLEAR) {
                         System.out.println(Thread.currentThread().getName() + " Server received CLEAR");
                         this.obj = null;
-                        setOutputReceived(true);
+                        setIsWaiting(false);
                     }
                 } else {
                     this.obj = input;
                     setOutputReceived(true);
+                    setIsWaiting(false);
                 }
 
             }
@@ -165,6 +155,26 @@ public class Server extends Thread {
             throw new RuntimeException(e);
         }
     }
+
+    public synchronized boolean isGameCommandReceived() {
+        return this.gameCommandReceived;
+    }
+
+    public synchronized void setGameCommandReceived(boolean gameCommandReceived) {
+        this.gameCommandReceived = gameCommandReceived;
+    }
+
+    public ArrayList<Object> getInputs() {
+        return this.inputs;
+    }
+
+    private synchronized boolean isOutputReceived() { return this.outputReceived; }
+
+    private synchronized void setOutputReceived(boolean outputReceived) { this.outputReceived = outputReceived; }
+
+    private synchronized boolean isWaiting() { return this.isWaiting; }
+
+    private synchronized void setIsWaiting(boolean isWaiting) { this.isWaiting = isWaiting; }
 
     private void processCommand(Object input) throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         ServerCommand cmd = (ServerCommand) input;
@@ -354,6 +364,8 @@ public class Server extends Thread {
     private void selectCard() throws IOException, ClassNotFoundException {
         AllCards allCard = (AllCards) in.readObject();
         Card card = new Card(allCard);
+        card.setId(random.nextInt());
+        System.out.println(card.getId());
         player.getDeck().addCard(card);
         updatePlayerData(player);
         out.writeObject(card);
