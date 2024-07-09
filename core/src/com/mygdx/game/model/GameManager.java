@@ -1,7 +1,5 @@
 package mygdx.game.model;
 
-
-import mygdx.game.controller.GameController;
 import mygdx.game.model.ability.Spy;
 import mygdx.game.model.card.AllCards;
 import mygdx.game.model.card.Card;
@@ -10,9 +8,6 @@ import mygdx.game.model.faction.Monsters;
 import mygdx.game.model.faction.Nilfgaard;
 import mygdx.game.model.faction.NorthernRealms;
 import mygdx.game.controller.GameServer;
-import mygdx.game.model.ability.Spy;
-import mygdx.game.model.card.*;
-import mygdx.game.model.faction.Nilfgaard;
 
 import java.util.ArrayList;
 

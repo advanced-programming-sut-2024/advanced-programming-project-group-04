@@ -21,6 +21,7 @@ import mygdx.game.model.Player;
 import mygdx.game.model.message.Message;
 
 import java.util.ArrayList;
+import java.util.TimerTask;
 
 public class MainMenu extends Menu {
     private final MainMenuController mainMenuController;
@@ -30,6 +31,7 @@ public class MainMenu extends Menu {
     private ImageButton friendRequestsButton;
     private Window friendsWindow;
     private Window friendRequestsWindow;
+    private Timer timer;
 
     public MainMenu(Main game) {
         super(game);
@@ -189,6 +191,7 @@ public class MainMenu extends Menu {
         for (Player friend : friends) {
             Table friendEntry = new Table();
             friendEntry.setBackground(blueBackground);
+            System.out.println("Main menu sent is online signal");
             boolean isOnline = game.getClient().sendToServer(ServerCommand.IS_ONLINE, friend.getUsername());
             Texture statusTexture = game.assetManager.get(isOnline ? AssetLoader.ONLINE : AssetLoader.OFFLINE, Texture.class);
             Image statusImage = new Image(statusTexture);
@@ -222,14 +225,19 @@ public class MainMenu extends Menu {
     }
 
     private void startFriendsListUpdater() {
-        Timer.schedule(new Timer.Task() {
+        this.timer = new Timer();
+        Timer.Task task = new Timer.Task() {
             @Override
             public void run() {
                 loadFriendsList();
             }
-        }, 0, 5); // update online status once every 5 seconds
+        };
+        timer.scheduleTask(task, 0, 5);
     }
 
+    private void stopUpdater() {
+        timer.stop();
+    }
 
     private void loadFriendRequestsList() {
         friendRequestsWindow.clear();
@@ -381,6 +389,12 @@ public class MainMenu extends Menu {
     @Override
     public void show() {
         startFriendsListUpdater();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        stopUpdater();
     }
 
 }
