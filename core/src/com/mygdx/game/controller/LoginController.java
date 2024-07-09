@@ -79,4 +79,8 @@ public class LoginController {
     public void setLoginMenu(LoginMenu loginMenu) {
         this.loginMenu = loginMenu;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

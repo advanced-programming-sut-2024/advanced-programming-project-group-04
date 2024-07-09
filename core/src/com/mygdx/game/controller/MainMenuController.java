@@ -20,7 +20,7 @@ public class MainMenuController {
         boolean isFail = true;
 
         Player player = game.getLoggedInPlayer();
-        if (player.canStartGame()) {
+        if (!player.canStartGame()) {
             errorMessage = "Please complete your deck first";
         } else {
             isFail = false;

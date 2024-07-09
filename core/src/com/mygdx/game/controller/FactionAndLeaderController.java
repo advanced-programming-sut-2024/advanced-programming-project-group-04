@@ -92,4 +92,24 @@ public class FactionAndLeaderController {
     public int getUnitCount() {
         return game.getLoggedInPlayer().getDeck().getNumberOfUnits();
     }
+
+    public Faction getFaction() {
+        return faction;
+    }
+
+    public Leader getLeader() {
+        return leader;
+    }
+
+    public void setFaction(Faction faction) {
+        this.faction = faction;
+    }
+
+    public void setLeader(Leader leader) {
+        this.leader = leader;
+    }
+
+    public Main getGame() {
+        return game;
+    }
 }
