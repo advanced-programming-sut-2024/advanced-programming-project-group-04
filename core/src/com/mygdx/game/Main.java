@@ -4,11 +4,12 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import mygdx.game.controller.Client;
-import mygdx.game.controller.ServerCommand;
+import mygdx.game.controller.commands.ClientCommand;
+import mygdx.game.controller.commands.GeneralCommand;
+import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
 import mygdx.game.model.message.Message;
-import mygdx.game.view.GameMenu;
-import mygdx.game.view.LoginMenu;
+import mygdx.game.view.*;
 
 import java.util.ArrayList;
 
@@ -29,11 +30,11 @@ public class Main extends Game {
 
 
         // Play background music
-        backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
-        backgroundMusic.setLooping(true);
-        backgroundMusic.play();
+//        backgroundMusic = this.assetManager.get(AssetLoader.MUSIC, Music.class);
+//        backgroundMusic.setLooping(true);
+//        backgroundMusic.play();
 
-        this.client = new Client(this, "127.0.0.1");
+        this.client = new Client("127.0.0.1");
 
         Player arman = getClient().sendToServer(ServerCommand.FETCH_USER, "arman");
         Player arvin2 = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin2");
@@ -84,6 +85,10 @@ public class Main extends Game {
     @Override
     public void render() {
         super.render();
+        if (client.isClientCommandReceived()) {
+            processCommand(client.getClientCommand());
+            client.setClientCommandReceived(false);
+        }
     }
 
     @Override
@@ -115,5 +120,15 @@ public class Main extends Game {
 
     public void startGame() {
         setScreen(new GameMenu(this));
+    }
+
+    private void processCommand(ClientCommand command) {
+        switch (command) {
+            case START_GAME:
+                setScreen(new GameMenu(this));
+                client.sendToServerVoid(GeneralCommand.CLEAR);
+                break;
+        }
+        System.out.println("Main finished processing command");
     }
 }

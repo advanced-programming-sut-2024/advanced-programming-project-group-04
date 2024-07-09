@@ -1,8 +1,8 @@
-package mygdx.game.controller;
+package mygdx.game.controller.commands;
 
 import java.io.Serializable;
 
-public enum ServerCommand implements Serializable {
+public enum ServerCommand implements Serializable, Command {
     DOES_USERNAME_EXIST,
     REGISTER_USER,
     FETCH_USER,

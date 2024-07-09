@@ -4,9 +4,11 @@ import mygdx.game.model.card.AllCards;
 import mygdx.game.model.card.Card;
 import mygdx.game.model.leader.Leader;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
-public class Deck {
+public class Deck implements Serializable {
     private Leader leader;
     private ArrayList<Card> cards = new ArrayList<>();
     private final int UNIT_MIN = 22, SPELL_MAX = 10;
@@ -85,5 +87,14 @@ public class Deck {
     public boolean isValid() {
         if (leader == null) return false;
         else return isNumberOfCardsValid();
+    }
+
+    public void shuffleIds() {
+        Random random = new Random();
+        for (Card card : this.cards) {
+            int newId = random.nextInt();
+            System.out.println("Generated id by deck: " + newId);
+            card.setId(newId);
+        }
     }
 }

@@ -13,7 +13,6 @@ import mygdx.game.controller.CheatProcessor;
 public class CheatConsoleWindow extends Window {
     private TextField cheatInputField;
     private BitmapFont font = AssetLoader.getFontWithCustomSize(48);
-
     public CheatConsoleWindow(String title, Skin skin, CheatProcessor cheatProcessor) {
         super(title, skin);
         cheatInputField = new TextField("", skin);

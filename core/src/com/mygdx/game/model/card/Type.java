@@ -1,6 +1,8 @@
 package mygdx.game.model.card;
 
-public enum Type {
+import java.io.Serializable;
+
+public enum Type implements Serializable {
     CloseCombat,
     Agile,
     RangedCombat,

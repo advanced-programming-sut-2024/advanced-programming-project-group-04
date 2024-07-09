@@ -18,7 +18,19 @@ public class FactionAndLeaderController {
     public FactionAndLeaderController(Main game, FactionAndLeaderMenu menu) {
         this.game = game;
         this.menu = menu;
+    }
+
+    public void loadData() {
         faction = game.getLoggedInPlayer().getSelectedFaction();
+        Deck deck = game.getLoggedInPlayer().getDeck();
+        if (faction != null) {
+            if (deck != null) {
+                leader = deck.getLeader();
+                menu.setCards(deck.getCards());
+            } else {
+                menu.setCards(new ArrayList<>());
+            }
+        }
     }
 
     public void factionButtonClicked(String factionName) {
@@ -40,14 +52,25 @@ public class FactionAndLeaderController {
         System.out.println("Selected Leader: " + leader.getName());
     }
 
-    public ArrayList<AllCards> getFactionCards() {
-        ArrayList<AllCards> factionCards = null;
+    public ArrayList<AllCards> getFactionCardsRepeated() {
+        ArrayList<AllCards> cards = null;
+        ArrayList<AllCards> factionCards = new ArrayList<>();
         try {
-            factionCards = Faction.getCardsFromFaction(faction);
+            cards = Faction.getCardsFromFaction(faction);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        factionCards.addAll(Faction.getNeutralCards());
+        for (AllCards allCard : cards) {
+            for (int i = 0; i < allCard.getNumber(); i++) {
+                factionCards.add(allCard);
+            }
+        }
+        cards = Faction.getNeutralCards();
+        for (AllCards allCard : cards) {
+            for (int i = 0; i < allCard.getNumber(); i++) {
+                factionCards.add(allCard);
+            }
+        }
 
         return factionCards;
     }

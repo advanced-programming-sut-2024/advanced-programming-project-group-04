@@ -22,8 +22,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import mygdx.game.AssetLoader;
 import mygdx.game.Main;
-import mygdx.game.controller.CheatController;
-import mygdx.game.controller.CheatProcessor;
+import mygdx.game.controller.cheat.CheatController;
+import mygdx.game.controller.cheat.CheatProcessor;
 import mygdx.game.controller.GameController;
 import mygdx.game.model.Deck;
 import mygdx.game.model.Player;
@@ -56,11 +56,12 @@ public class GameMenu extends Menu implements CheatProcessor {
     Deck myDeck, enemyDeck;
     AssetLoader assetLoader;
     HashMap<Card, GraphicalCard> allCardsCreated;
-    Source myHandSource, enemyHandSource;
+    Source myHandSource;
     DragAndDrop dnd;
     Skin skin;
     TextureRegionDrawable backgroundImage;
     Label myScore, enemyScore, myMeleeScore, enemyMeleeScore, myRangedScore, enemyRangedScore, mySiegeScore, enemySiegeScore, myCardsCount, enemyCardsCount, turnIndicator;
+    Leader myLeader, enemyLeader;
     ArrayList<PlayerInGame> players;
     private CheatConsoleWindow cheatConsole;
     private boolean cheatConsoleVisible = false;
@@ -73,8 +74,8 @@ public class GameMenu extends Menu implements CheatProcessor {
     public GameMenu(Main game) {
         super(game);
         this.game = game;
-        this.gameController = new GameController(this);
-        gameController.setGameMenu(this);
+        this.gameController = new GameController(this, game.getClient(), game.getLoggedInPlayer());
+        game.getClient().setGameController(gameController);
 
         this.cheatController = new CheatController(this);
 
@@ -97,43 +98,28 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         tableInit();
 
-        myDeck = new Deck();
-        for (AllCards allCard : Monsters.getCards()) {
-            for (int i = 0; i < allCard.getNumber(); i++)
-                myDeck.addCard(new Card(allCard));
-        }
-        myDeck.addCard(new Card(AllCards.BitingFrost));
-        myDeck.addCard(new Card(AllCards.Scorch));
+//        myDeck = new Deck();
+//        for (AllCards allCard : Monsters.getCards()) {
+//            for (int i = 0; i < allCard.getNumber(); i++)
+//                myDeck.addCard(new Card(allCard));
+//        }
+//        myDeck.addCard(new Card(AllCards.BitingFrost));
+//        enemyDeck = new Deck();
+//        for (AllCards allCard : Nilfgaard.getCards()) {
+//            for (int i = 0; i < allCard.getNumber(); i++)
+//                enemyDeck.addCard(new Card(allCard));
+//        }
+//
+//        Player matin = new Player("Matin", "matin@giga.com", "GigaChad");
+//        Player arvin = new Player("Arvin", "arvin@gay.com", "Simp");
+//        arvin.loadDeck(enemyDeck);
+//        matin.loadDeck(myDeck);
+//        players = gameController.startNewGame(matin, arvin);
+//
+//
+//        loadHand(players.get(0).getHand(), myHandTable);
+//        loadHand(players.get(1).getHand(), enemyHandTable);
 
-        enemyDeck = new Deck();
-        for (AllCards allCard : Nilfgaard.getCards()) {
-            for (int i = 0; i < allCard.getNumber(); i++)
-                enemyDeck.addCard(new Card(allCard));
-        }
-        enemyDeck.addCard(new Card(AllCards.Cow));
-        enemyDeck.addCard(new Card(AllCards.Cow));
-        enemyDeck.addCard(new Card(AllCards.Cow));
-        enemyDeck.addCard(new Card(AllCards.Cow));
-        enemyDeck.addCard(new Card(AllCards.Cow));
-
-
-        myDeck.setLeader(new BringerOfDeath());
-        enemyDeck.setLeader(new DestroyerOfWorlds());
-
-        Player matin = new Player("Matin", "matin@giga.com", "GigaChad");
-        matin.setFaction(new Monsters());
-        Player arvin = new Player("Arvin", "arvin@gay.com", "Simp");
-        arvin.setFaction(new Nilfgaard());
-
-        arvin.loadDeck(enemyDeck);
-        matin.loadDeck(myDeck);
-        players = gameController.startNewGame(matin, arvin);
-
-
-        loadHand(players.get(0).getHand(), myHandTable);
-        loadHand(players.get(1).getHand(), enemyHandTable);
-
-        loadLeaders();
 
         cheatConsole = new CheatConsoleWindow("Cheat Console", skin, new CheatProcessor() {
             @Override
@@ -159,7 +145,10 @@ public class GameMenu extends Menu implements CheatProcessor {
         }
     }
 
-    private void loadHand(ArrayList<Card> hand, Table table) {
+    public void loadHand(ArrayList<Card> hand, boolean isEnemy) {
+        Table table;
+        if (isEnemy) table = enemyHandTable;
+        else table = myHandTable;
         for (Card card : hand) {
             GraphicalCard graphicalCard = createNewGraphicalCard(card);
             table.add(graphicalCard);
@@ -333,28 +322,13 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         passButtonEnemy = new TextButton("PASS enemy", buttonStyle);
         passButtonEnemy.setPosition(300, 1200);
-        passButtonEnemy.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (!gameController.isMyTurn) {
-                    players.get(1).setIsPassed(true);
-                    passButtonEnemy.setText("PASSED");
-                    gameController.passTurn();
-                }
-
-            }
-        });
 
         passButtonSelf = new TextButton("PASS self", buttonStyle);
         passButtonSelf.setPosition(300, 400);
         passButtonSelf.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (gameController.isMyTurn) {
-                    players.get(0).setIsPassed(true);
-                    passButtonSelf.setText("PASSED");
-                    gameController.passTurn();
-                }
+                if (gameController.passButtonClicked()) passButtonSelf.setText("PASSED");
             }
         });
 
@@ -394,8 +368,6 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         dnd = new DragAndDrop();
         myHandSource = getSource(myHandTable);
-        enemyHandSource = getSource(enemyHandTable);
-        dnd.addSource(myHandSource);
 
         for (CustomTable table : allTables.values()) {
             if (!table.getTableSection().canPlaceCard()) continue;
@@ -407,9 +379,7 @@ public class GameMenu extends Menu implements CheatProcessor {
 
                 @Override
                 public void drop(Source source, Payload payload, float x, float y, int pointer) {
-                    if (getGameMenu().getGameController().placeCard(((GraphicalCard) payload.getObject()).getCard(), ((CustomTable) table).getTableSection())) {
-                        System.out.println(((CustomTable) table).getTableSection().getTitle());
-                    }
+                    getGameMenu().getGameController().placeCard(((GraphicalCard) payload.getObject()).getCard(), ((CustomTable) table).getTableSection());
                 }
             });
         }
@@ -593,10 +563,8 @@ public class GameMenu extends Menu implements CheatProcessor {
     public void changeTurn(boolean isMyTurn) {
         if (isMyTurn) {
             dnd.addSource(myHandSource);
-            dnd.removeSource(enemyHandSource);
         } else {
             dnd.removeSource(myHandSource);
-            dnd.addSource(enemyHandSource);
         }
     }
 
@@ -631,11 +599,17 @@ public class GameMenu extends Menu implements CheatProcessor {
                 }
             }
         }
+        if (game.getClient().isGameCommandReceived()) {
+            gameController.processCommand(game.getClient().getGameCommand());
+            game.getClient().setGameCommandReceived(false);
+        }
+//        System.out.println("render");
         stage.act(v);
         stage.draw();
     }
 
     public void updateScores(PlayerInGame self, PlayerInGame enemy) {
+        // TODO: @Arman connect to server
         myScore.setText(self.getTotalHP());
         enemyScore.setText(enemy.getTotalHP());
         myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
@@ -659,12 +633,10 @@ public class GameMenu extends Menu implements CheatProcessor {
         passButtonSelf.setText("PASS self");
     }
 
-
     @Override
     public void processCheat(String cheatCode) {
         gameController.handleCheat(cheatCode);
     }
-
 
     public void toggleCheatConsole() {
         if (cheatConsoleVisible) {
@@ -692,6 +664,15 @@ public class GameMenu extends Menu implements CheatProcessor {
 
     public boolean isCheatConsoleVisible() {
         return cheatConsoleVisible;
+    }
+
+    public void setLeaders(Leader myLeader, Leader enemyLeader) {
+        this.myLeader = myLeader;
+        this.enemyLeader = enemyLeader;
+    }
+
+    public void addSource() {
+        dnd.addSource(myHandSource);
     }
 
     public Main getMainInstance() {

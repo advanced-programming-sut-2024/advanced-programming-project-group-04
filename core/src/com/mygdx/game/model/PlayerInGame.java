@@ -30,6 +30,10 @@ public class PlayerInGame {
     public PlayerInGame(Player player) {
         this.player = player;
         this.deckInGame = player.getDeck().getCards();
+//        Random random = new Random();
+//        for (Card card : this.deckInGame) {
+//            card.setId(random.nextInt());
+//        }
         this.remainingLives = 2;
         isPassed = false;
         drawInitialCards();
@@ -105,7 +109,6 @@ public class PlayerInGame {
         isPassed = bool;
     }
 
-
     public void addToMelee(Card unitCard) {
         melee.add(unitCard);
     }
@@ -129,7 +132,6 @@ public class PlayerInGame {
     public void placeSpellRange(Card specialCard) {
         this.rangeSpell = specialCard;
     }
-
 
     public void removeCard(Card card, Position position) {
         if (position.equals(Position.Melee)) {
@@ -233,7 +235,6 @@ public class PlayerInGame {
         }
         return sample;
     }
-
 
     // Commander's horn and Tight bond related functions
     public void meleeCurrentHpTimesInt(int number) {

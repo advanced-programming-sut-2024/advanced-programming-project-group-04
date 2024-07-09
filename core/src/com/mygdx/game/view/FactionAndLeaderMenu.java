@@ -42,6 +42,7 @@ public class FactionAndLeaderMenu extends Menu {
     public FactionAndLeaderMenu(Main game) {
         super(game);
         this.controller = new FactionAndLeaderController(game, this);
+        controller.loadData();
 
         skin = game.assetLoader.skin;
         stage.addActor(game.assetLoader.backgroundImage);
@@ -241,8 +242,19 @@ public class FactionAndLeaderMenu extends Menu {
         )));
     }
 
+    public void setCards(ArrayList<Card> currentDeck) {
+        ArrayList<AllCards> factionCards = controller.getFactionCardsRepeated();
+        ArrayList<AllCards> selectedCards = new ArrayList<>();
+        for (Card card : currentDeck) {
+            factionCards.remove(card.getAllCard());
+            selectedCards.add(card.getAllCard());
+        }
+        addCardsToTable(factionCards, availableCardsTable);
+        addCardsToTable(selectedCards, selectedCardsTable);
+    }
+
     public void updateCards() {
-        ArrayList<AllCards> cards = controller.getFactionCards();
+        ArrayList<AllCards> cards = controller.getFactionCardsRepeated();
         availableCardsTable.clear();
         selectedCardsTable.clear();
         addCardsToTable(cards, availableCardsTable);
@@ -286,54 +298,53 @@ public class FactionAndLeaderMenu extends Menu {
 
     private void addCardsToTable(ArrayList<AllCards> cards, Table table) {
         for (AllCards card : cards) {
-            if (card.getNumber() > 0) {
-                for (int i = 0; i < card.getNumber(); i++) {
-                    String cardImagePath = card.getImageURL();
-                    Texture cardTexture = game.assetManager.get(cardImagePath, Texture.class);
-                    ImageButton cardButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(cardTexture)));
 
-                    cardButton.setUserObject(cardImagePath);
+            String cardImagePath = card.getImageURL();
+            Texture cardTexture = game.assetManager.get(cardImagePath, Texture.class);
+            ImageButton cardButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(cardTexture)));
 
-                    cardButton.getImageCell().size(buttonSize, buttonSize);
+            cardButton.setUserObject(cardImagePath);
 
-                    // Add hover and click effects
-                    cardButton.addListener(new ClickListener() {
-                        @Override
-                        public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                            cardButton.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
-                            explanationLabel.setText(card.getDescription());
-                        }
+            cardButton.getImageCell().size(buttonSize, buttonSize);
 
-                        @Override
-                        public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                            cardButton.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
-                            explanationLabel.setText("");
-                        }
-
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            Table parentTable = cardButton.getParent() instanceof Table ? (Table) cardButton.getParent() : null;
-
-                            if (parentTable != null && parentTable.equals(availableCardsTable)) {
-                                controller.selectCard(card);
-                                moveCardToTable(cardButton, availableCardsTable, selectedCardsTable, buttonSize);
-                            } else if (parentTable != null && parentTable.equals(selectedCardsTable)) {
-                                controller.deSelectCard(card);
-                                moveCardToTable(cardButton, selectedCardsTable, availableCardsTable, buttonSize);
-                            }
-                            updateStats();
-                        }
-                    });
-
-                    table.add(cardButton).pad(10).width(buttonSize).height(buttonSize);
-
-                    // Create a new row after every 3 cards
-                    if (table.getChildren().size % 3 == 0) {
-                        table.row();
-                    }
+            // Add hover and click effects
+            cardButton.addListener(new ClickListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    cardButton.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                    explanationLabel.setText(card.getDescription());
                 }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    cardButton.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+                    explanationLabel.setText("");
+                }
+
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Table parentTable = cardButton.getParent() instanceof Table ? (Table) cardButton.getParent() : null;
+
+                    if (parentTable != null && parentTable.equals(availableCardsTable)) {
+                        controller.selectCard(card);
+                        moveCardToTable(cardButton, availableCardsTable, selectedCardsTable, buttonSize);
+                    } else if (parentTable != null && parentTable.equals(selectedCardsTable)) {
+                        controller.deSelectCard(card);
+                        moveCardToTable(cardButton, selectedCardsTable, availableCardsTable, buttonSize);
+                    }
+                    updateStats();
+                }
+            });
+
+            table.add(cardButton).pad(10).width(buttonSize).height(buttonSize);
+
+            // Create a new row after every 3 cards
+            if (table.getChildren().size % 3 == 0) {
+                table.row();
             }
         }
+
+
     }
 
     private void moveCardToTable(ImageButton cardButton, Table fromTable, Table toTable, float buttonSize) {

@@ -1,6 +1,8 @@
 package mygdx.game.model;
 
-public enum Position {
+import java.io.Serializable;
+
+public enum Position implements Serializable {
     Melee,
     Siege,
     Range,
