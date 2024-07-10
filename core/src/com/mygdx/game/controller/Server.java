@@ -56,7 +56,12 @@ public class Server extends Thread {
     }
 
     private static void loadAllPlayers() {
-        File dataDir = new File("Data/Users");
+        String homeDir = System.getProperty("user.home");
+        File dataDir = new File(homeDir + "/advanced-programming-project-group-04/Data/Users");
+        System.out.println("Data directory path: " + dataDir.getAbsolutePath());
+        System.out.println("Directory exists: " + dataDir.exists());
+        System.out.println("Is directory: " + dataDir.isDirectory());
+        System.out.println(dataDir.getName());
         File[] subFiles = dataDir.listFiles();
 
         GsonBuilder builder = new GsonBuilder();
@@ -156,7 +161,15 @@ public class Server extends Thread {
             }
         } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
                  InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            if (this.player != null) {
+                try {
+                    logoutPlayer();
+                }
+                catch (Exception e2) {
+
+                }
+            }
         }
     }
 

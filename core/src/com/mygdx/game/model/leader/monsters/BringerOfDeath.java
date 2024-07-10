@@ -29,6 +29,6 @@ public class BringerOfDeath extends Leader {
 
     @Override
     public String getImageURL() {
-        return "images/factions/Monsters" + getAssetName() + ".jpg";
+        return "images/leaders/Monsters/" + getAssetName() + ".jpg";
     }
 }

@@ -31,7 +31,7 @@ public class TheSiegeMaster extends Leader {
 
     @Override
     public String getImageURL() {
-        return "images/factions/NorthernRealms" + getAssetName() + ".jpg";
+        return "images/leaders/NorthernRealms/" + getAssetName() + ".jpg";
     }
 
 }

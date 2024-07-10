@@ -25,6 +25,6 @@ public class HisImperialMajesty extends Leader {
 
     @Override
     public String getImageURL() {
-        return "images/factions/Nilfgaard" + getAssetName() + ".jpg";
+        return "images/leaders/Nilfgaard/" + getAssetName() + ".jpg";
     }
 }

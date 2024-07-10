@@ -204,6 +204,8 @@ public class GameMenu extends Menu implements CheatProcessor {
         return graphicalCard;
     }
 
+
+
     private void tableInit() {
         table = new Table();
 
@@ -211,7 +213,6 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemyScore = new Label("0", game.assetLoader.labelStyle);
 
         table.setBackground(backgroundImage);
-        loadLeaders();
         // TODO Add these motherfuckers to the screen where ever needed
         myMeleeScore = new Label("0", game.assetLoader.labelStyle);
         enemyMeleeScore = new Label("0", game.assetLoader.labelStyle);
@@ -248,7 +249,6 @@ public class GameMenu extends Menu implements CheatProcessor {
         table.addActor(mySiegeScore);
         table.addActor(enemySiegeScore);
         table.addActor(turnIndicator);
-        loadLeaders();
 
 
         myGraveyard = new TextButton("Graveyard", buttonStyle);

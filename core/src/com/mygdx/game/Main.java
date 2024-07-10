@@ -34,43 +34,43 @@ public class Main extends Game {
 //        backgroundMusic.setLooping(true);
 //        backgroundMusic.play();
 
-        this.client = new Client("127.0.0.1");
+        this.client = new Client("65.109.214.199");
 
-        Player arman = getClient().sendToServer(ServerCommand.FETCH_USER, "arman");
-        Player arvin2 = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin2");
-        Player matin = getClient().sendToServer(ServerCommand.FETCH_USER, "matin");
-        Player mahbod = getClient().sendToServer(ServerCommand.FETCH_USER, "mahbod");
-        Player arvin = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin");
+//        Player arman = getClient().sendToServer(ServerCommand.FETCH_USER, "arman");
+//        Player arvin2 = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin2");
+//        Player matin = getClient().sendToServer(ServerCommand.FETCH_USER, "matin");
+//        Player mahbod = getClient().sendToServer(ServerCommand.FETCH_USER, "mahbod");
+//        Player arvin = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin");
         Player ronaldo = getClient().sendToServer(ServerCommand.FETCH_USER, "ronaldo");
         Player messi = getClient().sendToServer(ServerCommand.FETCH_USER, "messi");
 
         ronaldo.sendFriendRequest(messi);
         messi.acceptFriendRequest(ronaldo);
 
-        arman.sendFriendRequest(mahbod);
-        matin.sendFriendRequest(mahbod);
-        arvin2.sendFriendRequest(mahbod);
-        mahbod.acceptFriendRequest(arman);
-        arman.sendFriendRequest(arvin2);
-        arman.sendFriendRequest(matin);
-        matin.acceptFriendRequest(arman);
-
-        mahbod.sendMessage(arman, "salam");
-        delay(100);
-        arman.sendMessage(mahbod, "naddafhafez");
-        delay(100);
-        arman.sendMessage(mahbod, "hahahaha");
-        delay(100);
-        mahbod.sendMessage(arman, "sirk");
-        delay(100);
-        ArrayList<Message> chatArmanVaMahbod = mahbod.getChatWithPlayer(arman);
-        matin.setForgetPasswordQuestion("Who do you worship?");
-        matin.setAnswerToQuestion("Naddaf");
-
-        mahbod.addLP(353);
-        arman.addLP(712);
-        matin.addLP(241);
-        arvin2.addLP(115);
+//        arman.sendFriendRequest(mahbod);
+//        matin.sendFriendRequest(mahbod);
+//        arvin2.sendFriendRequest(mahbod);
+//        mahbod.acceptFriendRequest(arman);
+//        arman.sendFriendRequest(arvin2);
+//        arman.sendFriendRequest(matin);
+//        matin.acceptFriendRequest(arman);
+//
+//        mahbod.sendMessage(arman, "salam");
+//        delay(100);
+//        arman.sendMessage(mahbod, "naddafhafez");
+//        delay(100);
+//        arman.sendMessage(mahbod, "hahahaha");
+//        delay(100);
+//        mahbod.sendMessage(arman, "sirk");
+//        delay(100);
+//        ArrayList<Message> chatArmanVaMahbod = mahbod.getChatWithPlayer(arman);
+//        matin.setForgetPasswordQuestion("Who do you worship?");
+//        matin.setAnswerToQuestion("Naddaf");
+//
+//        mahbod.addLP(353);
+//        arman.addLP(712);
+//        matin.addLP(241);
+//        arvin2.addLP(115);
         // Set the initial screen
 
         setScreen(new LoginMenu(this));

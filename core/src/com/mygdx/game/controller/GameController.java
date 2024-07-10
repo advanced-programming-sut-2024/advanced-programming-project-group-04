@@ -266,8 +266,8 @@ public class GameController {
                 sendOutput = setDeck((String) inputs.get(1));
                 break;
             case SET_LEADERS:
-                sendOutput = setLeaders((Leader) inputs.get(1), (Leader) inputs.get(2));
                 System.out.println("ASDASDASDADASDASDASD");
+                sendOutput = setLeaders((Leader) inputs.get(1), (Leader) inputs.get(2));
                 break;
             case SET_HANDS:
                 sendOutput = setHands((String) inputs.get(1), (String) inputs.get(2));
@@ -399,6 +399,7 @@ public class GameController {
     private boolean setLeaders(Leader myLeader, Leader enemyLeader) {
         this.myLeader = myLeader;
         this.enemyLeader = enemyLeader;
+        gameMenu.loadLeaders();
         return true;
     }
 

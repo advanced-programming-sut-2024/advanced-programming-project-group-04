@@ -28,6 +28,6 @@ public class TheBeautiful extends Leader {
 
     @Override
     public String getImageURL() {
-        return "images/factions/Scoiatael" + getAssetName() + ".jpg";
+        return "images/leaders/Scoiatael/" + getAssetName() + ".jpg";
     }
 }

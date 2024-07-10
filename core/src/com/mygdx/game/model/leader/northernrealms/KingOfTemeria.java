@@ -14,7 +14,7 @@ public class KingOfTemeria extends Leader {
 
     @Override
     public void run(GameManager gameManager) {
-
+        System.out.println("JAVA ESHGH");
         PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
         if (currentPlayer.getIsLeaderUsed()) {
             return;
@@ -29,7 +29,7 @@ public class KingOfTemeria extends Leader {
 
     @Override
     public String getImageURL() {
-        return "images/factions/NorthernRealms" + getAssetName() + ".jpg";
+        return "images/leaders/NorthernRealms/" + getAssetName() + ".jpg";
     }
 
 }

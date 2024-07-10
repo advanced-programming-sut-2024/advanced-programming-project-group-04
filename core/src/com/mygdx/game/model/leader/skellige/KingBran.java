@@ -22,6 +22,6 @@ public class KingBran extends Leader {
 
     @Override
     public String getImageURL() {
-        return "images/factions/Skellige" + getAssetName() + ".jpg";
+        return "images/leaders/Skellige/" + getAssetName() + ".jpg";
     }
 }
