@@ -28,4 +28,10 @@ public class TheSiegeMaster extends Leader {
         }
         currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/leaders/NorthernRealms/" + getAssetName() + ".jpg";
+    }
+
 }

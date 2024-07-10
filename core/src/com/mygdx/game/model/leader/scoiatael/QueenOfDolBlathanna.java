@@ -23,5 +23,11 @@ public class QueenOfDolBlathanna extends Leader {
 
         currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/leaders/Scoiatael/" + getAssetName() + ".jpg";
+    }
+
 }
     

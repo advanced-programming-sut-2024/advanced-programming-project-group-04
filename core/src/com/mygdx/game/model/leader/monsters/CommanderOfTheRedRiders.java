@@ -33,4 +33,10 @@ public class CommanderOfTheRedRiders extends Leader {
         }
         currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/leaders/Monsters/" + getAssetName() + ".jpg";
+    }
+
 }

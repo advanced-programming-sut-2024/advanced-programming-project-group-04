@@ -21,4 +21,10 @@ public class EmperorOfNilfgaard extends Leader {
         otherplayer.setIsLeaderUsed(true);
         currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/leaders/Nilfgaard/" + getAssetName() + ".jpg";
+    }
+
 }

@@ -47,6 +47,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.model.leader.Leader;
+import com.mygdx.game.model.leader.northernrealms.KingOfTemeria;
+import com.mygdx.game.model.leader.skellige.KingBran;
+
+
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -81,7 +86,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     TextButton myGraveyard, enemyGraveyard;
     TextButton passButtonEnemy, passButtonSelf;
     private CheatController cheatController;
-
+    private Leader myLeader , enemyLeader;
 
     public GameMenu(Main game) {
         super(game);
@@ -110,6 +115,8 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         tableInit();
 
+
+        ////////////////////////// THE HARD CODE PART //////////////////////
         myDeck = new Deck();
         for (AllCards allCard : Monsters.getCards()) {
             for (int i = 0; i < allCard.getNumber(); i++)
@@ -134,7 +141,10 @@ public class GameMenu extends Menu implements CheatProcessor {
         matin.setFaction(new Monsters());
         Player arvin = new Player("Arvin", "arvin@gay.com", "Simp");
         arvin.setFaction(new Nilfgaard());
+        setLeaders(new KingOfTemeria() , new KingOfTemeria());
+        ////////////////////////// THE HARD CODE PART //////////////////////
 
+        
         arvin.loadDeck(enemyDeck);
         matin.loadDeck(myDeck);
         players = gameController.startNewGame(matin, arvin);
@@ -142,7 +152,7 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         loadHand(players.get(0).getHand(), myHandTable);
         loadHand(players.get(1).getHand(), enemyHandTable);
-
+        loadLeaders();
 
         cheatConsole = new CheatConsoleWindow("Cheat Console", skin, new CheatProcessor() {
             @Override
@@ -460,6 +470,11 @@ public class GameMenu extends Menu implements CheatProcessor {
         weatherTable.setSize(375, 190);
         weatherTable.setPosition(195, 660);
 
+        myLeaderTable.setSize(140, 180);
+        enemyLeaderTable.setSize(140, 180);
+        myLeaderTable.setPosition(190, 160);
+        enemyLeaderTable.setPosition(190, 1155);
+
         for (CustomTable table : myRowsTables) {
             table.setDebug(true);
         }
@@ -469,6 +484,8 @@ public class GameMenu extends Menu implements CheatProcessor {
         myHandTable.setDebug(true);
         enemyHandTable.setDebug(true);
         weatherTable.setDebug(true);
+        myLeaderTable.setDebug(true);
+        enemyLeaderTable.setDebug(true);
 
         table.addActor(myRowsTables[2]);
         table.addActor(myRowsTables[1]);
@@ -485,6 +502,8 @@ public class GameMenu extends Menu implements CheatProcessor {
         table.addActor(myHandTable);
         table.addActor(enemyHandTable);
         table.addActor(weatherTable);
+        table.addActor(myLeaderTable);
+        table.addActor(enemyLeaderTable);
 
 
         stage.addActor(table);
@@ -695,7 +714,71 @@ public class GameMenu extends Menu implements CheatProcessor {
         return cheatConsoleVisible;
     }
 
+    public void setLeaders(Leader myLeader, Leader enemyLeader) {
+        this.myLeader = myLeader;
+        this.enemyLeader = enemyLeader;
+    }
+
+    public void addSource() {
+        dnd.addSource(myHandSource);
+    }
+
     public Main getMainInstance() {
         return game;
+    }
+
+    public void loadLeaders() {
+
+        String myLeaderPath = myLeader.getImageURL();
+        String enemyLeaderPath = enemyLeader.getImageURL();
+
+        System.out.println("SIRK SIRK SIRK" + myLeaderPath);
+        System.out.println(enemyLeaderPath);
+        ImageButton myLeaderImage = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get(myLeaderPath, Texture.class))));
+        ImageButton enemyLeaderImage = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get(enemyLeaderPath, Texture.class))));
+        myLeaderImage.setSize(140, 180);
+        enemyLeaderImage.setSize(140, 180);
+        myLeaderImage.getImageCell().size(140, 180);
+        enemyLeaderImage.getImageCell().size(140, 180);
+        myLeaderTable.addActor(myLeaderImage);
+        enemyLeaderTable.addActor(enemyLeaderImage);
+
+        myLeaderImage.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                myLeaderImage.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                myLeaderImage.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // TODO @Arvin ina ro kamel kon ke vaghti leader click shod chi beshe
+                gameController.runMyLeader(myLeader);
+            }
+        });
+
+        enemyLeaderImage.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                enemyLeaderImage.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                enemyLeaderImage.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // TODO @Arvin ina ro kamel kon ke vaghti leader click shod chi beshe
+                gameController.runEnemyLeader(enemyLeader);
+            }
+        });
+
     }
 }

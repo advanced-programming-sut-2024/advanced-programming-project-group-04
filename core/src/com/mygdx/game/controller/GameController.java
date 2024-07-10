@@ -9,6 +9,7 @@ import com.mygdx.game.model.Position;
 import com.mygdx.game.model.card.AllCards;
 import com.mygdx.game.model.card.Card;
 import com.mygdx.game.model.faction.Monsters;
+import com.mygdx.game.model.leader.Leader;
 import com.mygdx.game.view.CustomTable;
 import com.mygdx.game.view.GameMenu;
 import com.mygdx.game.view.GraphicalCard;
@@ -236,4 +237,22 @@ public class GameController {
 
     }
 
+    public void runMyLeader(Leader myLeader) {
+        if (gameManager.getCurrentPlayer().equals(gameManager.getPlayer1())){
+            if (gameManager.getCurrentPlayer().getIsLeaderUsed()) {
+                return;
+            }
+            myLeader.run(gameManager);
+            gameManager.endTurn();
+        }
+    }
+    public void runEnemyLeader(Leader enemyLeader) {
+        if (gameManager.getCurrentPlayer().equals(gameManager.getPlayer2())){
+            if (gameManager.getCurrentPlayer().getIsLeaderUsed()) {
+                return;
+            }
+            enemyLeader.run(gameManager);
+            gameManager.endTurn();
+        }
+    }
 }

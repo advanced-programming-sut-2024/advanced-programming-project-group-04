@@ -19,4 +19,10 @@ public class DaisyOfTheValley extends Leader {
         // TODO : This leader is Kinda Wierd
         currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/leaders/Scoiatael/" + getAssetName() + ".jpg";
+    }
+
 }

@@ -8,14 +8,12 @@ import com.mygdx.game.model.card.Card;
 public class CommanderHorn implements Ability {
     @Override
     public void run(GameManager gameManager , Card callerCard){
-        Position positionOfCallerCard = gameManager.findCardInGameForCurrentPlayer(callerCard);
-
         if (callerCard.getAllCard().equals(AllCards.CommandersHorn)) {
-            for (Card sampleCard : gameManager.getCardRowFromPosition(positionOfCallerCard)) {
+            for (Card sampleCard : gameManager.getRowFromCard(callerCard)) {
                 sampleCard.setIsCommandersHornAffected(true);
             }
         } else {
-            for (Card sampleCard : gameManager.getCardRowFromPosition(positionOfCallerCard)) {
+            for (Card sampleCard : gameManager.getRowFromCard(callerCard)) {
                 if (!sampleCard.equals(callerCard)) {
                     sampleCard.setIsCommandersHornAffected(true);
                 }

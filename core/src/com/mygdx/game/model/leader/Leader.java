@@ -19,9 +19,7 @@ public abstract class Leader implements Serializable {
         return getClass().getSimpleName();
     }
 
-    public String getImageURL() {
-        return "images/factions/" + getAssetName() + ".jpg";
-    }
+    abstract public String getImageURL();
 
     public abstract void run(GameManager gameManager);
 }
