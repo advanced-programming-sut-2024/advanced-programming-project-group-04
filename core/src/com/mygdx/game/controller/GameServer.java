@@ -363,6 +363,10 @@ public class GameServer extends Thread {
                 sendOutput = addToHand((Card) inputs.get(1), ((boolean) inputs.get(2)) ^ !isMe);
                 break;
 
+            case ACTIVATE_LEADER:
+                ((Leader) inputs.get(1)).run(gameManager);
+                sendOutput = true;
+                break;
 
             default:
                 sendOutput = false;

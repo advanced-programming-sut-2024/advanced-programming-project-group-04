@@ -37,4 +37,9 @@ public class InvaderOfTheNorth extends Leader {
 
         currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/factions/Nilfgaard" + getAssetName() + ".jpg";
+    }
 }

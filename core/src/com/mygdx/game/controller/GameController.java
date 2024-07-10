@@ -25,9 +25,11 @@ import static mygdx.game.controller.commands.GameServerCommand.*;
 
 public class GameController {
     private boolean isMyTurn;
-    public final GameMenu gameMenu;
+    public GameMenu gameMenu;
     private Client client;
     private Player player;
+    private Leader myLeader;
+    private Leader enemyLeader;
 
     public GameController(GameMenu gameMenu, Client client, Player player) {
         this.gameMenu = gameMenu;
@@ -265,6 +267,7 @@ public class GameController {
                 break;
             case SET_LEADERS:
                 sendOutput = setLeaders((Leader) inputs.get(1), (Leader) inputs.get(2));
+                System.out.println("ASDASDASDADASDASDASD");
                 break;
             case SET_HANDS:
                 sendOutput = setHands((String) inputs.get(1), (String) inputs.get(2));
@@ -394,8 +397,21 @@ public class GameController {
     }
 
     private boolean setLeaders(Leader myLeader, Leader enemyLeader) {
-
+        this.myLeader = myLeader;
+        this.enemyLeader = enemyLeader;
         return true;
+    }
+
+    public Leader getMyLeader() {
+        return myLeader;
+    }
+
+    public Leader getEnemyLeader() {
+        return enemyLeader;
+    }
+
+    public void runLeader(Leader leader) {
+        client.sendToServer(ACTIVATE_LEADER, leader, EOF);
     }
 
     private boolean setHands(String myHandJson, String enemyHandJson) {
@@ -405,5 +421,9 @@ public class GameController {
         gameMenu.loadHand(myHand.getCards(), false);
         gameMenu.loadHand(enemyHand.getCards(), true);
         return true;
+    }
+
+    public void setGameMenu(GameMenu gameMenu) {
+        this.gameMenu = gameMenu;
     }
 }

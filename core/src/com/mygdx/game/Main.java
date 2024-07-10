@@ -40,6 +40,13 @@ public class Main extends Game {
         Player arvin2 = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin2");
         Player matin = getClient().sendToServer(ServerCommand.FETCH_USER, "matin");
         Player mahbod = getClient().sendToServer(ServerCommand.FETCH_USER, "mahbod");
+        Player arvin = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin");
+        Player ronaldo = getClient().sendToServer(ServerCommand.FETCH_USER, "ronaldo");
+        Player messi = getClient().sendToServer(ServerCommand.FETCH_USER, "messi");
+
+        ronaldo.sendFriendRequest(messi);
+        messi.acceptFriendRequest(ronaldo);
+
         arman.sendFriendRequest(mahbod);
         matin.sendFriendRequest(mahbod);
         arvin2.sendFriendRequest(mahbod);

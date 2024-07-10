@@ -26,4 +26,9 @@ public class KingOfTheWildHunt extends Leader {
 
         currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/factions/Monsters" + getAssetName() + ".jpg";
+    }
 }

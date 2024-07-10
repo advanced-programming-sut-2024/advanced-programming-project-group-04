@@ -29,4 +29,9 @@ public class DestroyerOfWorlds extends Leader {
 //        }
 //        currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/factions/Monsters" + getAssetName() + ".jpg";
+    }
 }

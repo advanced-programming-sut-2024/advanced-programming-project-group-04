@@ -211,7 +211,7 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemyScore = new Label("0", game.assetLoader.labelStyle);
 
         table.setBackground(backgroundImage);
-
+        loadLeaders();
         // TODO Add these motherfuckers to the screen where ever needed
         myMeleeScore = new Label("0", game.assetLoader.labelStyle);
         enemyMeleeScore = new Label("0", game.assetLoader.labelStyle);
@@ -248,6 +248,7 @@ public class GameMenu extends Menu implements CheatProcessor {
         table.addActor(mySiegeScore);
         table.addActor(enemySiegeScore);
         table.addActor(turnIndicator);
+        loadLeaders();
 
 
         myGraveyard = new TextButton("Graveyard", buttonStyle);
@@ -681,44 +682,51 @@ public class GameMenu extends Menu implements CheatProcessor {
     }
 
     public void loadLeaders() {
-        Leader leader1 = players.get(0).getPlayer().getDeck().getLeader();
-        Leader leader2 = players.get(1).getPlayer().getDeck().getLeader();
-        ImageButton myLeader = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get("images/leaders/Monsters/BringerOfDeath.jpg", Texture.class))));
-        ImageButton enemyLeader = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get("images/leaders/Monsters/DestroyerOfWorlds.jpg", Texture.class))));
-        myLeader.setSize(140, 180);
-        enemyLeader.setSize(140, 180);
-        myLeader.getImageCell().size(140, 180);
-        enemyLeader.getImageCell().size(140, 180);
-        myLeaderTable.addActor(myLeader);
-        enemyLeaderTable.addActor(enemyLeader);
+        Leader myLeader = gameController.getMyLeader();
+        Leader enemyLeader = gameController.getEnemyLeader();
 
-        myLeader.addListener(new ClickListener() {
+        String myLeaderPath = myLeader.getImageURL();
+        String enemyLeaderPath = enemyLeader.getImageURL();
+
+        System.out.println("SIRK SIRK SIRK" + myLeaderPath);
+        System.out.println(enemyLeaderPath);
+        ImageButton myLeaderImage = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get(myLeaderPath, Texture.class))));
+        ImageButton enemyLeaderImage = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get(enemyLeaderPath, Texture.class))));
+        myLeaderImage.setSize(140, 180);
+        enemyLeaderImage.setSize(140, 180);
+        myLeaderImage.getImageCell().size(140, 180);
+        enemyLeaderImage.getImageCell().size(140, 180);
+        myLeaderTable.addActor(myLeaderImage);
+        enemyLeaderTable.addActor(enemyLeaderImage);
+
+        myLeaderImage.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                myLeader.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                myLeaderImage.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                myLeader.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+                myLeaderImage.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // TODO @Arvin ina ro kamel kon ke vaghti leader click shod chi beshe
+                gameController.runLeader(gameController.getMyLeader());
             }
         });
 
-        enemyLeader.addListener(new ClickListener() {
+        enemyLeaderImage.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                enemyLeader.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                enemyLeaderImage.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
 
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                enemyLeader.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+                enemyLeaderImage.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
 
             @Override

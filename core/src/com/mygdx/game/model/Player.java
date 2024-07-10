@@ -41,6 +41,7 @@ public class Player implements Serializable {
         this.username = username;
         this.email = email;
         this.nickname = nickname;
+        this.deck = new Deck();
 
         Random random = new Random();
         this.id = Math.abs(random.nextInt());

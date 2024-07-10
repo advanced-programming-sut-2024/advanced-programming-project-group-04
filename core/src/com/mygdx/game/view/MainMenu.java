@@ -184,45 +184,61 @@ public class MainMenu extends Menu {
         pixmap.dispose();
         Drawable blueBackground = new TextureRegionDrawable(new TextureRegion(texture));
 
-
         if (friends == null) return;
-
 
         for (Player friend : friends) {
             Table friendEntry = new Table();
             friendEntry.setBackground(blueBackground);
-            System.out.println("Main menu sent is online signal");
             boolean isOnline = game.getClient().sendToServer(ServerCommand.IS_ONLINE, friend.getUsername());
             Texture statusTexture = game.assetManager.get(isOnline ? AssetLoader.ONLINE : AssetLoader.OFFLINE, Texture.class);
             Image statusImage = new Image(statusTexture);
 
             Label.LabelStyle labelStyle = new Label.LabelStyle();
             labelStyle.font = AssetLoader.getFontWithCustomSize(38);
-            Label friendLabel = new Label(friend.getUsername(), labelStyle);
 
-            friendEntry.add(friendLabel).padRight(10);
-            friendEntry.add(statusImage).size(30, 30).padRight(10);
-
-            TextButton.TextButtonStyle textButtonStyle;
-            textButtonStyle = new TextButton.TextButtonStyle();
+            // Create the friendLabel as a button instead of a label to keep the chat functionality
+            TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
             textButtonStyle.font = AssetLoader.getFontWithCustomSize(38);
             textButtonStyle.fontColor = Color.WHITE;
             textButtonStyle.up = game.assetLoader.skin.getDrawable("button-c");
             textButtonStyle.down = game.assetLoader.skin.getDrawable("button-pressed-c");
             textButtonStyle.over = game.assetLoader.skin.getDrawable("button-over-c");
-            TextButton chatButton = new TextButton("Chat", textButtonStyle);
-            chatButton.addListener(new ClickListener() {
+
+            TextButton friendButton = new TextButton(friend.getUsername(), textButtonStyle);
+            friendButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     showMessageDialog(game.getLoggedInPlayer(), friend);
                 }
             });
-            friendEntry.add(chatButton).padRight(10);
 
-            friendsWindow.add(friendEntry).width(buttonWidth).pad(5);
+            friendEntry.add(friendButton).padRight(10).width(buttonWidth).height(60);
+            friendEntry.add(statusImage).size(30, 30).padRight(10);
+            friendsWindow.add(friendEntry).pad(5);
+            friendsWindow.row();
+
+            TextButton viewProfileButton = new TextButton("View Profile", textButtonStyle);
+            viewProfileButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    game.setScreen(new RestrictedProfileMenu(game, friend));
+                }
+            });
+            friendsWindow.add(viewProfileButton).pad(5).width(buttonWidth).height(60);
+            friendsWindow.row();
+
+            TextButton challengeButton = new TextButton("Challenge", textButtonStyle);
+            challengeButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    mainMenuController.challengeFriend(friend.getUsername());
+                }
+            });
+            friendsWindow.add(challengeButton).pad(5).width(buttonWidth).height(60);
             friendsWindow.row();
         }
     }
+
 
     private void startFriendsListUpdater() {
         this.timer = new Timer();
