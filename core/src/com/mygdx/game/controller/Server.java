@@ -153,7 +153,6 @@ public class Server extends Thread {
                     setOutputReceived(true);
                     setIsWaiting(false);
                 }
-
             }
         } catch (IOException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
                  InstantiationException | IllegalAccessException e) {
@@ -223,14 +222,12 @@ public class Server extends Thread {
             case DE_SELECT_CARD:
                 deSelectCard();
                 break;
-
             case IS_ONLINE:
                 isOnline();
                 break;
             case START_GAME_REQUEST:
                 sendGameRequest();
                 break;
-
             case CLOSE_CONNECTION:
                 closeConnection();
                 return;

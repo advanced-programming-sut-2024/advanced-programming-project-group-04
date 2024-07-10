@@ -50,6 +50,7 @@ public class Client extends Thread {
     }
 
     public <T> T sendToServer(Object... inputs) {
+        System.out.println("Client sent: " + inputs[0].toString());
         try {
             setOutputReceived(false);
             setIsWaiting(true);

@@ -21,7 +21,6 @@ public enum GameServerCommand implements Serializable, Command {
 
     ACTIVATE_LEADER,
 
-    DONE,
     EOF,
     ;
 }
