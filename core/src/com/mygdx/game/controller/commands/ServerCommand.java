@@ -12,6 +12,16 @@ public enum ServerCommand implements Serializable, Command {
     LOGIN_PLAYER,
     LOGOUT_PLAYER,
 
+    VALIDATE_ANSWER,
+    FETCH_QUESTION,
+    RESET_PASSWORD,
+    CHANGE_PASSWORD,
+    CHANGE_USERNAME,
+    CHANGE_EMAIL,
+    TOGGLE_2FA,
+    SET_QUESTION,
+    getRankData,
+
     SELECT_FACTION,
     SELECT_LEADER,
     SELECT_CARD,

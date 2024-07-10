@@ -1,0 +1,42 @@
+package mygdx.game.controller;
+
+import com.google.gson.Gson;
+import mygdx.game.controller.commands.ServerCommand;
+import mygdx.game.model.data.PlayerRankData;
+import mygdx.game.model.data.RankData;
+
+import java.util.ArrayList;
+
+public class ProfileController {
+    private Client client;
+
+    public ProfileController(Client client) {
+        this.client = client;
+    }
+
+    public ArrayList<PlayerRankData> getAllPlayersRankData() {
+        String dataJson = client.sendToServer(ServerCommand.getRankData);
+        Gson gson = new Gson();
+        RankData rankData = gson.fromJson(dataJson, RankData.class);
+        return rankData.getAllPlayers();
+    }
+
+    public void toggleTwoFA() {
+        client.sendToServer(ServerCommand.TOGGLE_2FA);
+    }
+
+    public void changeCredentials(String fieldType, String input) {
+        if (fieldType.equals("Username")) {
+            client.sendToServer(ServerCommand.CHANGE_USERNAME, input);
+        } else if (fieldType.equals("Password")) {
+            client.sendToServer(ServerCommand.CHANGE_PASSWORD, input);
+        } else if (fieldType.equals("Email")) {
+            client.sendToServer(ServerCommand.CHANGE_EMAIL, input);
+        }
+    }
+
+    public void setQuestion(String question, String answer) {
+        client.sendToServer(ServerCommand.SET_QUESTION, question, answer);
+    }
+
+}

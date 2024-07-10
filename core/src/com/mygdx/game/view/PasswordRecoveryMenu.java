@@ -12,16 +12,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import mygdx.game.Main;
-import mygdx.game.controller.commands.ServerCommand;
-import mygdx.game.model.Player;
+import mygdx.game.controller.ControllerResponse;
+import mygdx.game.controller.PasswordRecoveryController;
 
 public class PasswordRecoveryMenu extends Menu {
+    private PasswordRecoveryController controller;
     private Label errorLabel;
-    private Player player;
     private TextField usernameField;
 
     public PasswordRecoveryMenu(Main game) {
         super(game);
+        this.controller = new PasswordRecoveryController(game.getClient());
 
         stage.addActor(game.assetLoader.backgroundImage);
 
@@ -43,11 +44,12 @@ public class PasswordRecoveryMenu extends Menu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 String username = usernameField.getText();
-                player = game.getClient().sendToServer(ServerCommand.FETCH_USER, username);
-                if (player != null) {
-                    showSecurityQuestionDialog(player);
+                ControllerResponse response = controller.confirmButtonClicked(username);
+                if (!response.isFailed()) {
+                    showSecurityQuestionDialog();
                 } else {
-                    errorLabel.setText("User not found!");
+                    errorLabel.setText(response.getError());
+                    errorLabel.setColor(Color.RED);
                 }
             }
         });
@@ -70,12 +72,12 @@ public class PasswordRecoveryMenu extends Menu {
         table.add(backButton).pad(10).width(400).height(120);
     }
 
-    private void showSecurityQuestionDialog(Player player) {
+    private void showSecurityQuestionDialog() {
         Dialog dialog = new Dialog("Security Question", game.assetLoader.skin) {
             {
                 setBackground(createNewBackground());
 
-                Label questionLabel = new Label(player.getForgetPasswordQuestion(), game.assetLoader.labelStyle);
+                Label questionLabel = new Label(controller.getForgetPasswordQuestion(), game.assetLoader.labelStyle);
                 TextField answerField = new TextField("", game.assetLoader.textFieldStyle);
                 answerField.setMessageText("Enter your answer");
 
@@ -84,10 +86,12 @@ public class PasswordRecoveryMenu extends Menu {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         String answer = answerField.getText();
-                        if (player.validateAnswerToQuestion(answer)) {
+                        ControllerResponse response = controller.submitAnswerButtonClicked(answer);
+                        if (!response.isFailed()) {
                             showNewPasswordDialog();
                         } else {
-                            errorLabel.setText("Incorrect answer!");
+                            errorLabel.setText(response.getError());
+                            errorLabel.setColor(Color.RED);
                         }
                         hide();
                     }
@@ -118,7 +122,7 @@ public class PasswordRecoveryMenu extends Menu {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         String newPassword = passwordField.getText();
-                        // TODO @Arman make it the new password in controller(or maybe here there is not much going on in the controller)
+                        controller.changePassword(newPassword);
                         hide();
                         setScreen(new LoginMenu(game));
                     }

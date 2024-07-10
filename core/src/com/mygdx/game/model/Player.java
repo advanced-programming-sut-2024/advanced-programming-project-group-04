@@ -64,6 +64,7 @@ public class Player implements Serializable {
     }
 
     public boolean validateAnswerToQuestion(String answer) {
+        if (answerToQuestion == null) return false;
         return this.answerToQuestion.equals(answer);
     }
 

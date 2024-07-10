@@ -210,6 +210,16 @@ public class Server extends Thread {
                 logoutPlayer();
                 break;
 
+            case VALIDATE_ANSWER:
+                validateAnswer();
+                break;
+            case FETCH_QUESTION:
+                fetchQuestion();
+                break;
+            case RESET_PASSWORD:
+                changePassword();
+                break;
+
             case SELECT_FACTION:
                 selectFaction();
                 break;
@@ -335,6 +345,33 @@ public class Server extends Thread {
             this.player = null;
             out.writeObject(null);
         }
+    }
+
+    private void validateAnswer() throws IOException, ClassNotFoundException {
+        String answer = (String) in.readObject();
+        String username = (String) in.readObject();
+        Player player = findPlayerByUsername(username);
+        out.writeObject(player.validateAnswerToQuestion(answer));
+    }
+
+    private void fetchQuestion() throws IOException, ClassNotFoundException {
+        String username = (String) in.readObject();
+        Player player = findPlayerByUsername(username);
+        out.writeObject(player.getForgetPasswordQuestion());
+    }
+
+    private void changePassword() throws IOException, ClassNotFoundException {
+        String newPassword = (String) in.readObject();
+        String username = (String) in.readObject();
+        Player player = findPlayerByUsername(username);
+        passwords.remove(player);
+        passwords.put(player, newPassword);
+
+        File file = new File("Data/Users/" + player.getId() + "/password");
+        FileWriter writer = new FileWriter(file);
+        Gson gson = new Gson();
+        gson.toJson(newPassword, writer);
+        writer.close();
     }
 
     private void selectFaction() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {

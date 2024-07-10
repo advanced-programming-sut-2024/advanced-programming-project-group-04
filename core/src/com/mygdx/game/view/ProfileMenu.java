@@ -14,12 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import mygdx.game.AssetLoader;
 import mygdx.game.Main;
-import mygdx.game.controller.Server;
-import mygdx.game.model.Player;
+import mygdx.game.controller.ProfileController;
+import mygdx.game.model.data.PlayerRankData;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class ProfileMenu extends Menu {
+    private ProfileController controller;
     private final Skin skin;
     private final Image backgroundImage;
 
@@ -34,6 +35,7 @@ public class ProfileMenu extends Menu {
 
     public ProfileMenu(Main game) {
         super(game);
+        this.controller = new ProfileController(game.getClient());
 
         this.skin = game.assetLoader.skin;
 
@@ -142,15 +144,14 @@ public class ProfileMenu extends Menu {
     private void createStatisticsContent() {
         Table mainTable = new Table();
 
-        Vector<Player> allPlayers = Server.getAllPlayers();
-        allPlayers.get(0).addLP(353);
-        allPlayers.get(1).addLP(712);
-        allPlayers.get(2).addLP(241);
-        allPlayers.get(3).addLP(115);
-        allPlayers.get(4).addLP(78);
+        ArrayList<PlayerRankData> allPlayers = controller.getAllPlayersRankData();
+//        allPlayers.get(0).addLP(353);
+//        allPlayers.get(1).addLP(712);
+//        allPlayers.get(2).addLP(241);
+//        allPlayers.get(3).addLP(115);
+//        allPlayers.get(4).addLP(78);
 
         allPlayers.sort((p1, p2) -> Integer.compare(p2.getLP(), p1.getLP()));
-
 
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(new Color(0.5f, 0.7f, 1f, 1f)); // Light blue color
@@ -163,7 +164,7 @@ public class ProfileMenu extends Menu {
         int previousLP = -1;
 
         for (int i = 0; i < allPlayers.size(); i++) {
-            Player player = allPlayers.get(i);
+            PlayerRankData player = allPlayers.get(i);
 
             if (player.getLP() != previousLP) {
                 currentRank = i + 1;
@@ -249,6 +250,7 @@ public class ProfileMenu extends Menu {
 
     private class ChangeCredentialsClickListener extends ClickListener {
         private final String fieldType;
+        private TextField textField;
 
         public ChangeCredentialsClickListener(String fieldType) {
             this.fieldType = fieldType;
@@ -262,7 +264,7 @@ public class ProfileMenu extends Menu {
 
                     getContentTable().add(new Label("New " + fieldType + ":", labelStyle)).pad(20);
 
-                    TextField textField = new TextField("", textFieldStyle);
+                    textField = new TextField("", textFieldStyle);
                     if (fieldType.equals("Password")) {
                         textField.setPasswordMode(true);
                         textField.setPasswordCharacter('*');
@@ -276,7 +278,8 @@ public class ProfileMenu extends Menu {
                 @Override
                 protected void result(Object object) {
                     if ((Boolean) object) {
-                        // TODO Handle the confirmation of the new credentials here
+                        String input = textField.getText();
+                        controller.changeCredentials(fieldType, input);
                     }
                     hide();
                 }
@@ -286,6 +289,9 @@ public class ProfileMenu extends Menu {
     }
 
     private class PasswordRecoveryClickListener extends ClickListener {
+        private TextField questionField;
+        private TextField answerField;
+
         @Override
         public void clicked(InputEvent event, float x, float y) {
             Dialog dialog = new Dialog("Password Recovery", skin) {
@@ -294,13 +300,13 @@ public class ProfileMenu extends Menu {
 
                     getContentTable().add(new Label("Question:", labelStyle)).pad(20);
 
-                    TextField questionField = new TextField("", textFieldStyle);
+                    questionField = new TextField("", textFieldStyle);
                     getContentTable().add(questionField).width(300).pad(20);
                     getContentTable().row();
 
                     getContentTable().add(new Label("Answer:", labelStyle)).pad(20);
 
-                    TextField answerField = new TextField("", textFieldStyle);
+                    answerField = new TextField("", textFieldStyle);
                     answerField.setPasswordMode(true);
                     answerField.setPasswordCharacter('*');
                     getContentTable().add(answerField).width(300).pad(20);
@@ -311,7 +317,9 @@ public class ProfileMenu extends Menu {
                 @Override
                 protected void result(Object object) {
                     if ((Boolean) object) {
-                        // TODO Handle the confirmation of the new credentials here
+                        String question = questionField.getText();
+                        String answer = answerField.getText();
+                        controller.setQuestion(question, answer);
                     }
                     hide();
                 }
@@ -331,7 +339,7 @@ public class ProfileMenu extends Menu {
         public void clicked(InputEvent event, float x, float y) {
             game.getLoggedInPlayer().toggleTwoFA();
             String twoFAButtonString = (game.getLoggedInPlayer().getTwoFAEnabled()) ? "Disable 2FA" : "Enable 2FA";
-            // TODO @arman move this part to controller
+            controller.toggleTwoFA();
             button.setText(twoFAButtonString);
         }
     }
