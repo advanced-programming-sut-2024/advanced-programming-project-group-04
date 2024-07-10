@@ -25,7 +25,7 @@ import static mygdx.game.controller.commands.GameServerCommand.*;
 
 public class GameController {
     private boolean isMyTurn;
-    public final GameMenu gameMenu;
+    public GameMenu gameMenu;
     private Client client;
     private Player player;
 
@@ -405,5 +405,9 @@ public class GameController {
         gameMenu.loadHand(myHand.getCards(), false);
         gameMenu.loadHand(enemyHand.getCards(), true);
         return true;
+    }
+
+    public void setGameMenu(GameMenu gameMenu) {
+        this.gameMenu = gameMenu;
     }
 }

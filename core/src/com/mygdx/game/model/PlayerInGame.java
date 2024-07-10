@@ -2,9 +2,10 @@ package mygdx.game.model;
 
 import mygdx.game.model.card.Card;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PlayerInGame {
+public class PlayerInGame implements Serializable {
 
     private Player player;
 
