@@ -28,6 +28,8 @@ public class GameController {
     public GameMenu gameMenu;
     private Client client;
     private Player player;
+    private Leader myLeader;
+    private Leader enemyLeader;
 
     public GameController(GameMenu gameMenu, Client client, Player player) {
         this.gameMenu = gameMenu;
@@ -394,10 +396,16 @@ public class GameController {
     }
 
     private boolean setLeaders(Leader myLeader, Leader enemyLeader) {
-
+        this.myLeader = myLeader;
+        this.enemyLeader = enemyLeader;
         return true;
     }
 
+    public Leader getMyLeader() { return myLeader; }
+    public Leader getEnemyLeader() { return enemyLeader; }
+    public void runLeader(Leader leader) {
+        client.sendToServer(ACTIVATE_LEADER, leader, EOF);
+    }
     private boolean setHands(String myHandJson, String enemyHandJson) {
         Gson gson = new Gson();
         Hand myHand = gson.fromJson(myHandJson, Hand.class);
