@@ -267,6 +267,7 @@ public class GameController {
                 break;
             case SET_LEADERS:
                 sendOutput = setLeaders((Leader) inputs.get(1), (Leader) inputs.get(2));
+                System.out.println("ASDASDASDADASDASDASD");
                 break;
             case SET_HANDS:
                 sendOutput = setHands((String) inputs.get(1), (String) inputs.get(2));
@@ -401,11 +402,18 @@ public class GameController {
         return true;
     }
 
-    public Leader getMyLeader() { return myLeader; }
-    public Leader getEnemyLeader() { return enemyLeader; }
+    public Leader getMyLeader() {
+        return myLeader;
+    }
+
+    public Leader getEnemyLeader() {
+        return enemyLeader;
+    }
+
     public void runLeader(Leader leader) {
         client.sendToServer(ACTIVATE_LEADER, leader, EOF);
     }
+
     private boolean setHands(String myHandJson, String enemyHandJson) {
         Gson gson = new Gson();
         Hand myHand = gson.fromJson(myHandJson, Hand.class);

@@ -19,4 +19,9 @@ public class KingBran extends Leader {
         // TODO : ye boolean is bran dar karta bezarim
         currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/factions/Skellige" + getAssetName() + ".jpg";
+    }
 }

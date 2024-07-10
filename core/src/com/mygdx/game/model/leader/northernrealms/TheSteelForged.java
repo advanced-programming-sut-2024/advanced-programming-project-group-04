@@ -24,4 +24,8 @@ public class TheSteelForged extends Leader {
         currentPlayer.setIsLeaderUsed(true);
     }
 
+    @Override
+    public String getImageURL() {
+        return "images/factions/NorthernRealms" + getAssetName() + ".jpg";
+    }
 }

@@ -30,4 +30,9 @@ public class TheTreacherous extends Leader {
         // TODO : What the hell Should I do Here
         currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/factions/Monsters" + getAssetName() + ".jpg";
+    }
 }
