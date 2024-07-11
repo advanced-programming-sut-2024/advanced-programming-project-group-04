@@ -393,6 +393,9 @@ public class ProfileMenu extends Menu {
         Label unitCardsLabel = new Label("Unit Cards: " + unitCards, infoLabelStyle);
         Label spellCardsLabel = new Label("Spell Cards: " + spellCards, infoLabelStyle);
         Label heroCardsLabel = new Label("Hero Cards: " + heroCards, infoLabelStyle);
+        Label winLabel = new Label("Wins: " + player.getWinCount(), infoLabelStyle);
+        Label drawLabel = new Label("Draws: " + player.getDrawCount(), infoLabelStyle);
+        Label lossLabel = new Label("Losses: " + player.getLossCount(), infoLabelStyle);
 
         contentTable.add(usernameLabel).pad(10).center();
         contentTable.row();
@@ -409,5 +412,10 @@ public class ProfileMenu extends Menu {
         contentTable.add(spellCardsLabel).pad(10).center();
         contentTable.row();
         contentTable.add(heroCardsLabel).pad(10).center();
+        contentTable.add(winLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(drawLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(lossLabel).pad(10).center();
     }
 }

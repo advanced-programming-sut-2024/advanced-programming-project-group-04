@@ -34,7 +34,7 @@ public class Main extends Game {
 //        backgroundMusic.setLooping(true);
 //        backgroundMusic.play();
 
-        this.client = new Client("127.0.0.1");
+        this.client = new Client("65.109.214.199");
 
 //        Player arman = getClient().sendToServer(ServerCommand.FETCH_USER, "arman");
 //        Player arvin2 = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin2");
