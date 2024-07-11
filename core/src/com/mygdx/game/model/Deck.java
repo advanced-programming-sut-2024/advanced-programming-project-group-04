@@ -53,7 +53,7 @@ public class Deck implements Serializable {
     }
 
     public boolean isNumberOfCardsValid() {
-        return getNumberOfUnits() >= UNIT_MIN && getNumberOfSpecialCards() >= SPELL_MAX;
+        return getNumberOfUnits() >= UNIT_MIN && getNumberOfSpecialCards() <= SPELL_MAX;
     }
 
     public int getNumberOfUnits() {
