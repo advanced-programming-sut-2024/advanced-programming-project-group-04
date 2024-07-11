@@ -3,21 +3,19 @@ package mygdx.game.controller;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import mygdx.game.controller.commands.GameClientCommand;
 import mygdx.game.controller.commands.GeneralCommand;
 import mygdx.game.model.*;
-import mygdx.game.model.card.AllCards;
 import mygdx.game.model.card.Card;
+import mygdx.game.model.data.CardsInBoard;
+import mygdx.game.model.data.Hand;
 import mygdx.game.model.faction.Faction;
-import mygdx.game.model.faction.Monsters;
 import mygdx.game.model.leader.Leader;
 import mygdx.game.view.CustomTable;
 import mygdx.game.view.GameMenu;
 import mygdx.game.view.GraphicalCard;
 import mygdx.game.view.TableSection;
 
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 

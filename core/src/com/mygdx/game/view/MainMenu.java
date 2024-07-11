@@ -19,6 +19,7 @@ import mygdx.game.controller.ControllerResponse;
 import mygdx.game.controller.MainMenuController;
 import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
+import mygdx.game.model.data.MessageData;
 import mygdx.game.model.data.PlayerFriendData;
 import mygdx.game.model.message.Message;
 
@@ -224,7 +225,7 @@ public class MainMenu extends Menu {
             viewProfileButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    game.setScreen(new RestrictedProfileMenu(game, friend));
+                    game.setScreen(new RestrictedProfileMenu(game, friend.getId()));
                 }
             });
             friendsWindow.add(viewProfileButton).pad(5).width(buttonWidth).height(60);
@@ -321,14 +322,14 @@ public class MainMenu extends Menu {
         scrollPaneStyle.background = new TextureRegionDrawable(new TextureRegion(texture));
 
         Table messageTable = new Table();
-        ArrayList<Message> messages = mainMenuController.getChatWithFriend(friend.getId());
-        for (Message message : messages) {
+        ArrayList<MessageData> messages = mainMenuController.getChatWithFriend(friend.getId());
+        for (MessageData message : messages) {
             Label messageLabel = new Label(message.getContent(), game.assetLoader.labelStyle);
             messageLabel.setWrap(true);
-            messageLabel.setAlignment(message.getSender().equals(loggedInPlayer) ? Align.left : Align.right);
+            messageLabel.setAlignment(message.getSenderId() == loggedInPlayer.getId() ? Align.left : Align.right);
 
             Cell<Label> cell = messageTable.add(messageLabel).width(700);
-            if (message.getSender().equals(loggedInPlayer)) {
+            if (message.getSenderId() == loggedInPlayer.getId()) {
                 cell.left();
             } else {
                 cell.right();

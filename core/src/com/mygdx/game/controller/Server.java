@@ -6,6 +6,8 @@ import mygdx.game.model.Player;
 import mygdx.game.model.Rank;
 import mygdx.game.model.card.AllCards;
 import mygdx.game.model.card.Card;
+import mygdx.game.model.data.ChatData;
+import mygdx.game.model.data.FriendData;
 import mygdx.game.model.data.RankData;
 import mygdx.game.model.faction.Faction;
 import mygdx.game.model.leader.Leader;
@@ -16,6 +18,7 @@ import com.google.gson.stream.JsonWriter;
 import mygdx.game.controller.commands.GameServerCommand;
 import mygdx.game.controller.commands.GeneralCommand;
 import mygdx.game.controller.commands.ServerCommand;
+import mygdx.game.model.message.Message;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -242,6 +245,28 @@ public class Server extends Thread {
                 getRankData();
                 break;
 
+            case GET_FRIENDS:
+                getFriends();
+                break;
+            case GET_INCOMING_FRIEND_REQUESTS:
+                getIncomingFriendRequests();
+                break;
+            case ACCEPT_FRIEND_REQUEST:
+                acceptFriendRequest();
+                break;
+            case REJECT_FRIEND_REQUEST:
+                rejectFriendRequest();
+                break;
+            case GET_MESSAGES:
+                getMessages();
+                break;
+            case SEND_MESSAGE:
+                sendMessage();
+                break;
+            case SEND_FRIEND_REQUEST:
+                sendFriendRequest();
+                break;
+
             case SELECT_FACTION:
                 selectFaction();
                 break;
@@ -441,6 +466,53 @@ public class Server extends Thread {
         RankData rankData = new RankData(allPlayers);
         Gson gson = new Gson();
         out.writeObject(gson.toJson(rankData));
+    }
+
+    private void getFriends() throws IOException, ClassNotFoundException {
+        Gson gson = CustomGson.getGson();
+        FriendData friendData = new FriendData(player.getFriends());
+        out.writeObject(gson.toJson(friendData));
+    }
+
+    private void getIncomingFriendRequests() throws IOException, ClassNotFoundException {
+        Gson gson = CustomGson.getGson();
+        FriendData friendData = new FriendData(player.getIncomingFriendRequests());
+        out.writeObject(gson.toJson(friendData));
+    }
+
+    private void acceptFriendRequest() throws IOException, ClassNotFoundException {
+        int id = (int) in.readObject();
+        Player friendPlayer = findPlayerById(id);
+        player.acceptFriendRequest(friendPlayer);
+        out.writeObject(null);
+    }
+
+    private void rejectFriendRequest() throws IOException, ClassNotFoundException {
+        int id = (int) in.readObject();
+        Player friendPlayer = findPlayerById(id);
+        player.rejectFriendRequest(friendPlayer);
+    }
+
+    private void getMessages() throws IOException, ClassNotFoundException {
+        int id = (int) in.readObject();
+        Player friendPlayer = findPlayerById(id);
+        Gson gson = CustomGson.getGson();
+        ChatData chatData = new ChatData(player.getChatWithPlayer(friendPlayer));
+        out.writeObject(gson.toJson(chatData));
+    }
+
+    private void sendMessage() throws IOException, ClassNotFoundException {
+        String messageContent = (String) in.readObject();
+        int id = (int) in.readObject();
+        player.sendMessage(findPlayerById(id), messageContent);
+        out.writeObject(null);
+    }
+
+    private void sendFriendRequest() throws IOException, ClassNotFoundException {
+        String playerUsername = (String) in.readObject();
+        Player friend = findPlayerByUsername(playerUsername);
+        player.sendFriendRequest(friend);
+        out.writeObject(null);
     }
 
     private void selectFaction() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {

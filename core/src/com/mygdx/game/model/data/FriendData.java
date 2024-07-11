@@ -13,4 +13,6 @@ public class FriendData {
             this.friends.add(new PlayerFriendData(player));
         }
     }
+
+    public ArrayList<PlayerFriendData> getFriends() { return this.friends; }
 }
