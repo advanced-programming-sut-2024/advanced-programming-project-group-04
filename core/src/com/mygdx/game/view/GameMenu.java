@@ -47,14 +47,12 @@ public class GameMenu extends Menu implements CheatProcessor {
     public GraphicalCard selectedCard;
     public static float SCALE = 0.15f, offset = 30;
 
-
     GameController gameController;
 
-    Table table, upperSectionTable, middleSectionTable, lowerSectionTable;
+    Table table;
     CustomTable weatherTable, myHandTable, myLeaderTable, enemyLeaderTable, myGraveyardTable, enemyHandTable, enemyGraveyardTable;
     CustomTable[] myRowsTables, enemyRowsTables;
     HashMap<TableSection, CustomTable> allTables;
-    Deck myDeck, enemyDeck;
     AssetLoader assetLoader;
     HashMap<Card, GraphicalCard> allCardsCreated;
     Source myHandSource;
@@ -76,7 +74,6 @@ public class GameMenu extends Menu implements CheatProcessor {
         super(game);
         this.game = game;
         this.gameController = new GameController(this, game.getClient(), game.getLoggedInPlayer());
-        game.getClient().setGameController(gameController);
 
         this.cheatController = new CheatController(this);
 
@@ -386,7 +383,9 @@ public class GameMenu extends Menu implements CheatProcessor {
 
                 @Override
                 public void drop(Source source, Payload payload, float x, float y, int pointer) {
-                    getGameMenu().getGameController().placeCard(((GraphicalCard) payload.getObject()).getCard(), ((CustomTable) table).getTableSection());
+                    GraphicalCard selectedCard = (GraphicalCard) payload.getObject();
+                    selectedCard.remove();
+                    getGameMenu().getGameController().placeCard(selectedCard.getCard(), ((CustomTable) table).getTableSection());
                 }
             });
         }
@@ -474,6 +473,7 @@ public class GameMenu extends Menu implements CheatProcessor {
             public Payload dragStart(InputEvent event, float x, float y, int pointer) {
                 payload.setObject(selectedCard);
                 payload.setDragActor(selectedCard);
+                stage.addActor(selectedCard);
                 getGameController().removeGraphicalCardFromTable(selectedCard, table);
 
                 return payload;
@@ -482,7 +482,9 @@ public class GameMenu extends Menu implements CheatProcessor {
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
                 if (target == null) {
-                    getGameController().addGraphicalCardToTable((GraphicalCard) payload.getObject(), table);
+                    GraphicalCard selectedCard = (GraphicalCard) payload.getObject();
+                    selectedCard.remove();
+                    getGameController().addGraphicalCardToTable(selectedCard, table);
                 }
             }
         };

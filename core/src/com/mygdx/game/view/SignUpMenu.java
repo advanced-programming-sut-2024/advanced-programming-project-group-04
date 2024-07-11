@@ -30,15 +30,12 @@ public class SignUpMenu extends Menu {
         signUpController.setSignUpView(this);
         stage.addActor(game.assetLoader.backgroundImage);
 
-        // Set up table for UI layout
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
 
-        // Error label
         errorLabel = new Label("", game.assetLoader.labelStyle);
 
-        // Username, email and Password fields
         TextField.TextFieldStyle textFieldStyle = game.assetLoader.textFieldStyle;
 
         TextField usernameField = new TextField("", textFieldStyle);
@@ -59,7 +56,6 @@ public class SignUpMenu extends Menu {
         nicknameField.setMessageText("Nickname");
         nicknameField.setAlignment(Align.center);
 
-        // Sign Up button
         TextButton.TextButtonStyle textButtonStyle = game.assetLoader.textButtonStyle;
 
         TextButton signUpButton = new TextButton("Sign Up", textButtonStyle);
@@ -126,7 +122,6 @@ public class SignUpMenu extends Menu {
             }
         });
 
-        // Add input listener for Enter key
         nicknameField.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
@@ -162,12 +157,10 @@ public class SignUpMenu extends Menu {
     public void verifyVerificationCode(String actualCode) {
         Dialog dialog = new Dialog("Verify Email", game.assetLoader.skin);
 
-        // Set dialog size
         float dialogWidth = Gdx.graphics.getWidth() * 0.8f;
         float dialogHeight = Gdx.graphics.getHeight() * 0.6f;
         dialog.setSize(dialogWidth, dialogHeight);
 
-        // Set dark blue background
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f)); // Dark blue color
         pixmap.fill();
