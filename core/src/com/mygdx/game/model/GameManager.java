@@ -70,6 +70,7 @@ public class GameManager {
     /// Functions for Placing the Cards with position
     public boolean placeCard(Card card, Position position) {
         System.out.println("GameManager placeCard 1: " + card.getName() + " " + position.toString());
+        System.out.println("GameManager: " + card.getType());
         boolean flag;
         if (position.equals(Position.Melee)) {
             flag = addToMelee(card);
@@ -104,6 +105,7 @@ public class GameManager {
     public boolean placeCard(Card card) {
         //Kartaii ke faghat ye ja mitoonan place beshan ro place kon
         Type theCardType = card.getType();
+        System.out.println("GameManager: " + card.getName() + " " + theCardType.toString());
         boolean flag;
         if (!(card.getAbility() instanceof Spy)) {
             if (theCardType.equals(Type.Agile)) {
@@ -698,7 +700,6 @@ public class GameManager {
             return;
         }
         switchTurn();
-
     }
 
     public boolean isOtherPlayerPassed() {

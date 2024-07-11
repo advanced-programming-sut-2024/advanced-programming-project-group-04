@@ -57,17 +57,14 @@ public class Server extends Thread {
 
     private static void loadAllPlayers() {
         String homeDir = System.getProperty("user.home");
-        File dataDir = new File(homeDir + "/advanced-programming-project-group-04/Data/Users");
+        File dataDir = new File(homeDir + "/ap-project/Data/Users");
         System.out.println("Data directory path: " + dataDir.getAbsolutePath());
         System.out.println("Directory exists: " + dataDir.exists());
         System.out.println("Is directory: " + dataDir.isDirectory());
         System.out.println(dataDir.getName());
         File[] subFiles = dataDir.listFiles();
 
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Leader.class, new LeaderTypeAdapter());
-        builder.registerTypeAdapter(Faction.class, new FactionTypeAdapter());
-        Gson gson = builder.create();
+        Gson gson = CustomGson.getGson();
         for (File file : subFiles) {
             FileHandle fileHandle = new FileHandle(file + "/login-data.json");
             String json = fileHandle.readString();
@@ -422,77 +419,13 @@ public class Server extends Thread {
     private void updatePlayerData(Player player) {
         File file = new File("Data/Users/" + player.getId() + "/login-data.json");
 
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Faction.class, new FactionTypeAdapter());
-        builder.registerTypeAdapter(Leader.class, new LeaderTypeAdapter());
-        Gson gson = builder.create();
+        Gson gson = CustomGson.getGson();
         try {
             FileWriter writer = new FileWriter(file);
             gson.toJson(player, writer);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    static class LeaderTypeAdapter extends TypeAdapter<Leader> {
-
-        @Override
-        public void write(JsonWriter jsonWriter, Leader leader) throws IOException {
-            if (leader == null) {
-                jsonWriter.beginObject();
-                jsonWriter.name("className");
-                jsonWriter.value("");
-                jsonWriter.endObject();
-                return;
-            }
-            jsonWriter.beginObject();
-            jsonWriter.name("className");
-            jsonWriter.value(leader.getClass().getCanonicalName());
-            jsonWriter.endObject();
-        }
-
-        @Override
-        public Leader read(JsonReader jsonReader) throws IOException {
-            jsonReader.beginObject();
-            jsonReader.nextName();
-            String leaderClassName = jsonReader.nextString();
-            if (leaderClassName.isEmpty()) return null;
-            else {
-                try {
-                    Class<?> clazz = Class.forName(leaderClassName);
-                    Object obj = clazz.getConstructor().newInstance();
-                    jsonReader.endObject();
-                    return (Leader) obj;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-    }
-
-    static class FactionTypeAdapter extends TypeAdapter<Faction> {
-        @Override
-        public void write(JsonWriter writer, Faction faction) throws IOException {
-            if (faction == null) return;
-            writer.beginObject();
-            writer.name("clasName");
-            writer.value(faction.getClass().getCanonicalName());
-            writer.endObject();
-        }
-
-        @Override
-        public Faction read(JsonReader reader) throws IOException {
-            try {
-                reader.beginObject();
-                reader.nextName();
-                Class<?> clazz = Class.forName(reader.nextString());
-                reader.endObject();
-                return (Faction) clazz.getConstructor().newInstance();
-            } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
-                     InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 

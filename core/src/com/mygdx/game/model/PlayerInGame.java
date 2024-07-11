@@ -300,7 +300,14 @@ public class PlayerInGame implements Serializable {
     }
 
     public void removeFromHand(Card card) {
-        hand.remove(card);
+        Card cardToBeRemoved= null;
+        for (Card handCard : hand) {
+            if (handCard.getId() == card.getId()) {
+                cardToBeRemoved = handCard;
+            }
+        }
+        if (cardToBeRemoved == null) throw new RuntimeException("CArd not FouNDS BUT: " + card.getId());
+        hand.remove(cardToBeRemoved);
     }
 
     public void addToDeckInGame(Card card) {
