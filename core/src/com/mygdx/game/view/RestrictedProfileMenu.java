@@ -34,7 +34,7 @@ public class RestrictedProfileMenu extends Menu {
     Label.LabelStyle labelStyle = game.assetLoader.labelStyle;
     TextField.TextFieldStyle textFieldStyle = game.assetLoader.textFieldStyle;
 
-    public RestrictedProfileMenu(Main game, Player player) {
+    public RestrictedProfileMenu(Main game, int playerId) {
         super(game);
         this.displayedPlayer = player;
 

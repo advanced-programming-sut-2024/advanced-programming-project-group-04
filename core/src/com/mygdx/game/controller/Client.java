@@ -17,7 +17,6 @@ public class Client extends Thread {
     private boolean outputReceived = false;
     private boolean clientCommandReceived = false;
     private boolean gameCommandReceived = false;
-    private GameController gameController;
     private Object obj;
     private ArrayList<Object> inputs;
 
@@ -30,10 +29,6 @@ public class Client extends Thread {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
     }
 
     public void closeConnection() {

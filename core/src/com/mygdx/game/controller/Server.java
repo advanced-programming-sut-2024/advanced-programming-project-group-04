@@ -3,34 +3,31 @@ package mygdx.game.controller;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
 import mygdx.game.model.Player;
+import mygdx.game.model.Rank;
 import mygdx.game.model.card.AllCards;
 import mygdx.game.model.card.Card;
+import mygdx.game.model.data.ChatData;
+import mygdx.game.model.data.FriendData;
+import mygdx.game.model.data.RankData;
 import mygdx.game.model.faction.Faction;
 import mygdx.game.model.leader.Leader;
 import com.google.gson.GsonBuilder;
-import com.google.gson.InstanceCreator;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import mygdx.game.controller.commands.GameServerCommand;
 import mygdx.game.controller.commands.GeneralCommand;
 import mygdx.game.controller.commands.ServerCommand;
-import mygdx.game.model.Player;
-import mygdx.game.model.card.AllCards;
-import mygdx.game.model.card.Card;
-import mygdx.game.model.faction.*;
-import mygdx.game.model.leader.Leader;
+import mygdx.game.model.message.Message;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.jar.JarFile;
 
 public class Server extends Thread {
     private static final Random random;
@@ -57,7 +54,7 @@ public class Server extends Thread {
 
     private static void loadAllPlayers() {
         String homeDir = System.getProperty("user.home");
-        File dataDir = new File(homeDir + "/ap-project/Data/Users");
+        File dataDir = new File(homeDir + "/Desktop/ApProjectWithShabake/advanced-programming-project-group-04/Data/Users");
         System.out.println("Data directory path: " + dataDir.getAbsolutePath());
         System.out.println("Directory exists: " + dataDir.exists());
         System.out.println("Is directory: " + dataDir.isDirectory());
@@ -220,6 +217,56 @@ public class Server extends Thread {
                 logoutPlayer();
                 break;
 
+            case VALIDATE_ANSWER:
+                validateAnswer();
+                break;
+            case FETCH_QUESTION:
+                fetchQuestion();
+                break;
+            case RESET_PASSWORD:
+                resetPassword();
+                break;
+            case CHANGE_USERNAME:
+                changeUsername();
+                break;
+            case CHANGE_PASSWORD:
+                changePassword();
+                break;
+            case CHANGE_EMAIL:
+                changeEmail();
+                break;
+            case TOGGLE_2FA:
+                toggleTwoFA();
+                break;
+            case SET_QUESTION:
+                setQuestion();
+                break;
+            case GET_RANK_DATA:
+                getRankData();
+                break;
+
+            case GET_FRIENDS:
+                getFriends();
+                break;
+            case GET_INCOMING_FRIEND_REQUESTS:
+                getIncomingFriendRequests();
+                break;
+            case ACCEPT_FRIEND_REQUEST:
+                acceptFriendRequest();
+                break;
+            case REJECT_FRIEND_REQUEST:
+                rejectFriendRequest();
+                break;
+            case GET_MESSAGES:
+                getMessages();
+                break;
+            case SEND_MESSAGE:
+                sendMessage();
+                break;
+            case SEND_FRIEND_REQUEST:
+                sendFriendRequest();
+                break;
+
             case SELECT_FACTION:
                 selectFaction();
                 break;
@@ -345,6 +392,127 @@ public class Server extends Thread {
             this.player = null;
             out.writeObject(null);
         }
+    }
+
+    private void validateAnswer() throws IOException, ClassNotFoundException {
+        String answer = (String) in.readObject();
+        String username = (String) in.readObject();
+        Player player = findPlayerByUsername(username);
+        out.writeObject(player.validateAnswerToQuestion(answer));
+    }
+
+    private void fetchQuestion() throws IOException, ClassNotFoundException {
+        String username = (String) in.readObject();
+        Player player = findPlayerByUsername(username);
+        out.writeObject(player.getForgetPasswordQuestion());
+    }
+
+    private void resetPassword() throws IOException, ClassNotFoundException {
+        String newPassword = (String) in.readObject();
+        String username = (String) in.readObject();
+        Player player = findPlayerByUsername(username);
+        passwords.remove(player);
+        passwords.put(player, newPassword);
+
+        File file = new File("Data/Users/" + player.getId() + "/password.json");
+        FileWriter writer = new FileWriter(file);
+        Gson gson = new Gson();
+        gson.toJson(newPassword, writer);
+        writer.close();
+    }
+
+    private void changeUsername() throws IOException, ClassNotFoundException {
+        String username = (String) in.readObject();
+        player.setUsername(username);
+        updatePlayerData(player);
+        out.writeObject(null);
+    }
+
+    private void changePassword() throws IOException, ClassNotFoundException {
+        String password = (String) in.readObject();
+        passwords.remove(player);
+        passwords.put(player, password);
+        File file = new File("Data/Users/" + player.getId() + "/password.json");
+        Gson gson = new Gson();
+        FileWriter writer = new FileWriter(file);
+        gson.toJson(password, writer);
+        writer.close();
+        out.writeObject(null);
+    }
+
+    private void changeEmail() throws IOException, ClassNotFoundException {
+        String email = (String) in.readObject();
+        player.setEmail(email);
+        updatePlayerData(player);
+        out.writeObject(null);
+    }
+
+    private void toggleTwoFA() throws IOException {
+        player.toggleTwoFA();
+        updatePlayerData(player);
+        out.writeObject(null);
+    }
+
+    private void setQuestion() throws IOException, ClassNotFoundException {
+        String question = (String) in.readObject();
+        String answer = (String) in.readObject();
+        player.setForgetPasswordQuestion(question);
+        player.setAnswerToQuestion(answer);
+        updatePlayerData(player);
+        out.writeObject(null);
+    }
+
+    private void getRankData() throws IOException {
+        RankData rankData = new RankData(allPlayers);
+        Gson gson = new Gson();
+        out.writeObject(gson.toJson(rankData));
+    }
+
+    private void getFriends() throws IOException, ClassNotFoundException {
+        Gson gson = CustomGson.getGson();
+        FriendData friendData = new FriendData(player.getFriends());
+        out.writeObject(gson.toJson(friendData));
+    }
+
+    private void getIncomingFriendRequests() throws IOException, ClassNotFoundException {
+        Gson gson = CustomGson.getGson();
+        FriendData friendData = new FriendData(player.getIncomingFriendRequests());
+        out.writeObject(gson.toJson(friendData));
+    }
+
+    private void acceptFriendRequest() throws IOException, ClassNotFoundException {
+        int id = (int) in.readObject();
+        Player friendPlayer = findPlayerById(id);
+        player.acceptFriendRequest(friendPlayer);
+        out.writeObject(null);
+    }
+
+    private void rejectFriendRequest() throws IOException, ClassNotFoundException {
+        int id = (int) in.readObject();
+        Player friendPlayer = findPlayerById(id);
+        player.rejectFriendRequest(friendPlayer);
+    }
+
+    private void getMessages() throws IOException, ClassNotFoundException {
+        int id = (int) in.readObject();
+        Player friendPlayer = findPlayerById(id);
+        Gson gson = CustomGson.getGson();
+        ChatData chatData = new ChatData(player.getChatWithPlayer(friendPlayer));
+        out.writeObject(gson.toJson(chatData));
+    }
+
+    private void sendMessage() throws IOException, ClassNotFoundException {
+        String messageContent = (String) in.readObject();
+        int id = (int) in.readObject();
+        player.sendMessage(findPlayerById(id), messageContent);
+        out.writeObject(null);
+    }
+
+    private void sendFriendRequest() throws IOException, ClassNotFoundException {
+        String playerUsername = (String) in.readObject();
+        Player friend = findPlayerByUsername(playerUsername);
+        player.sendFriendRequest(friend);
+        out.writeObject(null);
     }
 
     private void selectFaction() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
