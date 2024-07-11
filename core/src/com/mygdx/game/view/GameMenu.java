@@ -226,6 +226,8 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         turnIndicator = new Label(!gameController.isMyTurn() ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
 
+        myCardsCount.setPosition(300, 700);
+        enemyCardsCount.setPosition(300, 900);
 
         myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
         enemyScore.setPosition(610 - enemyScore.getWidth() / 2f, 1005 - enemyScore.getHeight() / 2f);
@@ -238,6 +240,9 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemySiegeScore.setPosition(718 - enemySiegeScore.getWidth() / 2f, 1345 - enemySiegeScore.getHeight() / 2f);
         turnIndicator.setPosition(400 - turnIndicator.getWidth() / 2f, 1400 - turnIndicator.getHeight() / 2f);
         TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
+
+        table.addActor(myCardsCount);
+        table.addActor(enemyCardsCount);
 
         table.addActor(myScore);
         table.addActor(enemyScore);
@@ -611,7 +616,6 @@ public class GameMenu extends Menu implements CheatProcessor {
     }
 
     public void updateScores(PlayerInGame self, PlayerInGame enemy) {
-        // TODO: @Arman connect to server
         myScore.setText(self.getTotalHP());
         enemyScore.setText(enemy.getTotalHP());
         myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
@@ -735,5 +739,9 @@ public class GameMenu extends Menu implements CheatProcessor {
             }
         });
 
+    }
+
+    public void setTurnIndicator(boolean isMyTurn) {
+        if (!isMyTurn) turnIndicator.setText("Enemy's Turn");
     }
 }

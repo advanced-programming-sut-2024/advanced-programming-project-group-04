@@ -34,18 +34,18 @@ public class Main extends Game {
 //        backgroundMusic.setLooping(true);
 //        backgroundMusic.play();
 
-        this.client = new Client("65.109.214.199");
+        this.client = new Client("127.0.0.1");
 
 //        Player arman = getClient().sendToServer(ServerCommand.FETCH_USER, "arman");
 //        Player arvin2 = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin2");
 //        Player matin = getClient().sendToServer(ServerCommand.FETCH_USER, "matin");
 //        Player mahbod = getClient().sendToServer(ServerCommand.FETCH_USER, "mahbod");
 //        Player arvin = getClient().sendToServer(ServerCommand.FETCH_USER, "arvin");
-        Player ronaldo = getClient().sendToServer(ServerCommand.FETCH_USER, "ronaldo");
-        Player messi = getClient().sendToServer(ServerCommand.FETCH_USER, "messi");
-
-        ronaldo.sendFriendRequest(messi);
-        messi.acceptFriendRequest(ronaldo);
+//        Player ronaldo = getClient().sendToServer(ServerCommand.FETCH_USER, "ronaldo");
+//        Player messi = getClient().sendToServer(ServerCommand.FETCH_USER, "messi");
+//
+//        ronaldo.sendFriendRequest(messi);
+//        messi.acceptFriendRequest(ronaldo);
 
 //        arman.sendFriendRequest(mahbod);
 //        matin.sendFriendRequest(mahbod);

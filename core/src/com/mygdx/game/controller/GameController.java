@@ -41,11 +41,26 @@ public class GameController {
 
     public boolean setIsMyTurn(boolean isMyTurn) {
         this.isMyTurn = isMyTurn;
+        gameMenu.setTurnIndicator(isMyTurn);
         return true;
     }
 
-    public boolean updateScores(PlayerInGame self, PlayerInGame enemy) {
+    public boolean updateScores(String selfJson, String enemyJson, String allCardsJson) {
+        Gson gson = CustomGson.getGson();
+        PlayerInGame self = gson.fromJson(selfJson, PlayerInGame.class);
+        PlayerInGame enemy = gson.fromJson(enemyJson, PlayerInGame.class);
         gameMenu.updateScores(self, enemy);
+        CardsInBoard cardsInBoard = gson.fromJson(allCardsJson, CardsInBoard.class);
+        ArrayList<Card> allCards = cardsInBoard.getAllCardsInGame();
+        for (CustomTable table : gameMenu.getAllTables().values()) {
+            if (table.getTableSection().canPlaceCard()) {
+                for (Actor actor : table.getChildren()) {
+                    if (actor instanceof GraphicalCard) {
+                        ((GraphicalCard) actor).update(allCards);
+                    }
+                }
+            }
+        }
         return true;
     }
 
@@ -56,17 +71,15 @@ public class GameController {
 
     public void placeCard(Card card, TableSection tableSection) {
         // TODO: @Arman add weather
+        Gson gson = CustomGson.getGson();
         if (tableSection.isEnemy()) {
-            client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
+            client.sendToServer(PLACE_CARD_ENEMY, gson.toJson(card), EOF);
         } else {
-            client.sendToServer(PLACE_CARD, card, tableSection.getPosition(), EOF);
+            client.sendToServer(PLACE_CARD, gson.toJson(card), tableSection.getPosition(), EOF);
             System.out.println(tableSection.getTitle());
         }
 
         client.sendToServer(END_TURN, EOF);
-        // TODO: @Arman send back update scores signal from the server
-//        if (isMyTurn) gameMenu.updateScores(gameManager.getCurrentPlayer(), gameManager.getOtherPlayer());
-//        else gameMenu.updateScores(gameManager.getOtherPlayer(), gameManager.getCurrentPlayer());
     }
 
     public boolean canPlaceCardToPosition(Card card, TableSection tableSection) {
@@ -131,8 +144,9 @@ public class GameController {
     public void removeGraphicalCardFromTable(GraphicalCard graphicalCard, CustomTable table) {
         TableSection tableSection = table.getTableSection();
         Card card = graphicalCard.getCard();
-        if (tableSection == TableSection.MY_HAND) client.sendToServerVoid(REMOVE_FROM_HAND, card, true, EOF);
-        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServerVoid(REMOVE_FROM_HAND, card, false, EOF);
+        Gson gson = CustomGson.getGson();
+        if (tableSection == TableSection.MY_HAND) client.sendToServerVoid(REMOVE_FROM_HAND, gson.toJson(card), true, EOF);
+        else if (tableSection == TableSection.ENEMY_HAND) client.sendToServerVoid(REMOVE_FROM_HAND, gson.toJson(card), false, EOF);
         else if (tableSection.getPosition() != null) client.sendToServer(REMOVE_CARD, card, EOF);
     }
 
@@ -140,6 +154,7 @@ public class GameController {
         TableSection tableSection = table.getTableSection();
         Card card = graphicalCard.getCard();
         Position position = tableSection.getPosition();
+        Gson gson = CustomGson.getGson();
 
         // TODO: check the bug where your cards can go to the enemy's hand
 
@@ -149,8 +164,8 @@ public class GameController {
             throw new RuntimeException("Can't add card to enemy hand");
         }
         else if (position != null) {
-            if (tableSection.isEnemy()) client.sendToServer(PLACE_CARD, card, position, EOF);
-            else client.sendToServer(PLACE_CARD_ENEMY, card, EOF);
+            if (tableSection.isEnemy()) client.sendToServer(PLACE_CARD, gson.toJson(card), position, EOF);
+            else client.sendToServer(PLACE_CARD_ENEMY, gson.toJson(card), EOF);
         }
     }
 
@@ -277,7 +292,7 @@ public class GameController {
                 sendOutput = true;
                 break;
             case UPDATE_SCORES:
-                sendOutput = updateScores((PlayerInGame) inputs.get(1), (PlayerInGame) inputs.get(2));
+                sendOutput = updateScores((String) inputs.get(1), (String) inputs.get(2), (String) inputs.get(3));
                 break;
             case RESET_PASS_BUTTONS:
                 sendOutput = resetPassButtons();
@@ -385,9 +400,7 @@ public class GameController {
     }
 
     private boolean setDeck(String deckJson) {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Leader.class, new Server.LeaderTypeAdapter());
-        Gson gson = builder.create();
+        Gson gson = CustomGson.getGson();
         Deck deck = gson.fromJson(deckJson, Deck.class);
         player.loadDeck(deck);
         for (int i = 0; i < player.getDeck().getCards().size(); i++) {
