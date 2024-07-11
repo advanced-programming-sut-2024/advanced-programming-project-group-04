@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import mygdx.game.AssetLoader;
 import mygdx.game.Main;
+import mygdx.game.controller.ControllerResponse;
 import mygdx.game.controller.MainMenuController;
 import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
@@ -51,10 +52,15 @@ public class MainMenu extends Menu {
         startNewGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                ControllerResponse response = mainMenuController.startNewGame();
-//                errorLabel.setText(response.getError());
-//                errorLabel.setColor(Color.RED);
-                setScreen(new StartGameMenu(game));
+                ControllerResponse response = mainMenuController.startNewGame();
+                if (response.isFailed()) {
+                    errorLabel.setText(response.getError());
+                    errorLabel.setColor(Color.RED);
+                }
+                else {
+                    setScreen(new StartGameMenu(game));
+                }
+
             }
         });
 

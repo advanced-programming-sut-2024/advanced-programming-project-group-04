@@ -61,7 +61,7 @@ public class GameMenu extends Menu implements CheatProcessor {
     DragAndDrop dnd;
     Skin skin;
     TextureRegionDrawable backgroundImage;
-    Label myScore, enemyScore, myMeleeScore, enemyMeleeScore, myRangedScore, enemyRangedScore, mySiegeScore, enemySiegeScore, myCardsCount, enemyCardsCount, turnIndicator;
+    Label myScore, enemyScore, myMeleeScore, enemyMeleeScore, myRangedScore, enemyRangedScore, mySiegeScore, enemySiegeScore, myCardsCount, enemyCardsCount, turnIndicator, myLives, enemyLives;
     Leader myLeader, enemyLeader;
     ArrayList<PlayerInGame> players;
     private CheatConsoleWindow cheatConsole;
@@ -241,6 +241,14 @@ public class GameMenu extends Menu implements CheatProcessor {
         turnIndicator.setPosition(400 - turnIndicator.getWidth() / 2f, 1400 - turnIndicator.getHeight() / 2f);
         TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
 
+        myLives = new Label("<3<3", game.assetLoader.labelStyle);
+        enemyLives = new Label("<3<3", game.assetLoader.labelStyle);
+        myLives.setPosition(300, 400);
+        myLives.setPosition(300, 1200);
+
+        myCardsCount.setPosition(300, 700);
+        enemyCardsCount.setPosition(300, 900);
+
         table.addActor(myCardsCount);
         table.addActor(enemyCardsCount);
 
@@ -254,6 +262,9 @@ public class GameMenu extends Menu implements CheatProcessor {
         table.addActor(mySiegeScore);
         table.addActor(enemySiegeScore);
         table.addActor(turnIndicator);
+
+        table.addActor(myLives);
+        table.addActor(enemyLives);
 
 
         myGraveyard = new TextButton("Graveyard", buttonStyle);
@@ -632,6 +643,8 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemyCardsCount.setText(enemy.getHandCount());
 
         turnIndicator.setText(gameController.isMyTurn() ? "Your Turn" : "Enemy's Turn");
+
+        updateLives(self, enemy);
     }
 
     public void resetPassedButtons() {
@@ -743,5 +756,19 @@ public class GameMenu extends Menu implements CheatProcessor {
 
     public void setTurnIndicator(boolean isMyTurn) {
         if (!isMyTurn) turnIndicator.setText("Enemy's Turn");
+    }
+
+    public void updateLives(PlayerInGame self, PlayerInGame enemy) {
+        // TODO @Arman connect to server
+        myLives.setText(repeatString("<3", self.getRemainingLives()));
+        enemyLives.setText(repeatString("<3", enemy.getRemainingLives()));
+    }
+
+    public static String repeatString(String input, int times) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < times; i++) {
+            result.append(input);
+        }
+        return result.toString();
     }
 }
