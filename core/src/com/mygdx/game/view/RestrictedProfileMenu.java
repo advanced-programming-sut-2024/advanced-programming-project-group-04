@@ -42,6 +42,7 @@ public class RestrictedProfileMenu extends Menu {
     public RestrictedProfileMenu(Main game, int playerId) {
         super(game);
         this.controller = new RestrictedProfileController(game, playerId);
+        this.profileController = new ProfileController(game.getClient());
 
         this.skin = game.assetLoader.skin;
 
@@ -237,6 +238,9 @@ public class RestrictedProfileMenu extends Menu {
         Label unitCardsLabel = new Label("Unit Cards: " + unitCards, infoLabelStyle);
         Label spellCardsLabel = new Label("Spell Cards: " + spellCards, infoLabelStyle);
         Label heroCardsLabel = new Label("Hero Cards: " + heroCards, infoLabelStyle);
+        Label winLabel = new Label("Wins: " + player.getWin(), infoLabelStyle);
+        Label drawLabel = new Label("Draws: " + player.getDraw(), infoLabelStyle);
+        Label lossLabel = new Label("Losses: " + player.getLoss(), infoLabelStyle);
 
         contentTable.add(usernameLabel).pad(10).center();
         contentTable.row();
@@ -253,5 +257,11 @@ public class RestrictedProfileMenu extends Menu {
         contentTable.add(spellCardsLabel).pad(10).center();
         contentTable.row();
         contentTable.add(heroCardsLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(winLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(drawLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(lossLabel).pad(10).center();
     }
 }

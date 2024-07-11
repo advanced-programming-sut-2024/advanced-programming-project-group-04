@@ -21,6 +21,7 @@ import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
 import mygdx.game.model.data.MessageData;
 import mygdx.game.model.data.PlayerFriendData;
+import mygdx.game.model.data.PlayerProfileData;
 import mygdx.game.model.message.Message;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class MainMenu extends Menu {
     private Window friendsWindow;
     private Window friendRequestsWindow;
     private Timer timer;
+    private PlayerFriendData currentChat;
 
     public MainMenu(Main game) {
         super(game);
@@ -158,6 +160,7 @@ public class MainMenu extends Menu {
         friendsWindow.setSize(600, 1200);
         friendsWindow.setPosition(100, (float) Gdx.graphics.getHeight() / 2 - friendsWindow.getHeight() / 2); // Centered on the left
         friendsWindow.setVisible(false);
+        currentChat = null;
         friendsWindow.setBackground(new TextureRegionDrawable(new TextureRegion(tabsTexture)));
     }
 
@@ -253,6 +256,7 @@ public class MainMenu extends Menu {
             @Override
             public void run() {
                 loadFriendsList();
+                if (currentChat != null) showMessageDialog(game.getLoggedInPlayer(), currentChat);
             }
         };
         timer.scheduleTask(task, 0, 5);
