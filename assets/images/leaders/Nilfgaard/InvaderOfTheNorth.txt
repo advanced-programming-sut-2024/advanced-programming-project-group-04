@@ -1,2 +1,0 @@
-Abilities that restore a unit to the battle field restore a randomly-chosen unit.
-Affects both players.

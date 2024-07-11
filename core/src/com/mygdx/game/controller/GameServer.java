@@ -12,10 +12,6 @@ import mygdx.game.model.card.AllCards;
 import mygdx.game.model.card.Card;
 import mygdx.game.model.faction.Monsters;
 import mygdx.game.model.leader.Leader;
-import mygdx.game.view.CustomTable;
-import mygdx.game.view.GameMenu;
-import mygdx.game.view.GraphicalCard;
-import mygdx.game.view.TableSection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
