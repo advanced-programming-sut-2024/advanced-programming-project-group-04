@@ -255,4 +255,8 @@ public class GameController {
             gameManager.endTurn();
         }
     }
+
+    public void setWinnerLabel(String winnerLabel) {
+        gameMenu.setVictoryLabel(winnerLabel);
+    }
 }

@@ -550,10 +550,10 @@ public class GameManager {
                 System.out.println("TIED");
                 return;
             } else if (currentPlayer.getRemainingLives() <= 0) {
-                System.out.println(getOtherPlayer().getPlayer().getUsername() + "VICTORY");
+                gameController.setWinnerLabel(getOtherPlayer().getPlayer().getUsername());
                 return;
             } else if (getOtherPlayer().getRemainingLives() <= 0) {
-                System.out.println(currentPlayer.getPlayer().getUsername() + "VICTORY");
+                gameController.setWinnerLabel(currentPlayer.getPlayer().getUsername());
                 return;
             }
 

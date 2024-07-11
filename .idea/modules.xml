@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/ApForRealProject.advanced-programming-project-group-04.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/ApForRealProject.advanced-programming-project-group-04.core.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/advanced-programming-project-group-04.iml" filepath="$PROJECT_DIR$/.idea/modules/advanced-programming-project-group-04.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/advanced-programming-project-group-04.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/advanced-programming-project-group-04.core.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/advanced-programming-project-group-04.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/advanced-programming-project-group-04.core.main.iml" />

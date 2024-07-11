@@ -78,7 +78,9 @@ public class GameMenu extends Menu implements CheatProcessor {
     DragAndDrop dnd;
     Skin skin;
     TextureRegionDrawable backgroundImage;
-    Label myScore, enemyScore, myMeleeScore, enemyMeleeScore, myRangedScore, enemyRangedScore, mySiegeScore, enemySiegeScore, myCardsCount, enemyCardsCount, turnIndicator;
+    Label myScore, enemyScore, myMeleeScore, enemyMeleeScore, myRangedScore,
+            enemyRangedScore, mySiegeScore, enemySiegeScore, myCardsCount,
+            enemyCardsCount, turnIndicator, myLives, enemyLives, victoryLabel;
     ArrayList<PlayerInGame> players;
     private CheatConsoleWindow cheatConsole;
     private boolean cheatConsoleVisible = false;
@@ -248,13 +250,17 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemyRangedScore = new Label("0", game.assetLoader.labelStyle);
         mySiegeScore = new Label("0", game.assetLoader.labelStyle);
         enemySiegeScore = new Label("0", game.assetLoader.labelStyle);
-
+        Label.LabelStyle victoryLabelStyle = new Label.LabelStyle();
+        victoryLabelStyle.font = AssetLoader.getFontWithCustomSize(200);
+        victoryLabel = new Label("" , victoryLabelStyle);
+        victoryLabel.setPosition(600 , 700);
         myCardsCount = new Label("10", game.assetLoader.labelStyle);
         enemyCardsCount = new Label("10", game.assetLoader.labelStyle);
 
         turnIndicator = new Label(gameController.isMyTurn ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
-
-
+        turnIndicator.setPosition(400 - turnIndicator.getWidth() / 2f, 1400 - turnIndicator.getHeight() / 2f);
+        myCardsCount.setPosition(300, 600);
+        enemyCardsCount.setPosition(300, 900);
 
 
         myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
@@ -267,6 +273,11 @@ public class GameMenu extends Menu implements CheatProcessor {
         mySiegeScore.setPosition(718 - mySiegeScore.getWidth() / 2f, 431 - mySiegeScore.getHeight() / 2f);
         enemySiegeScore.setPosition(718 - enemySiegeScore.getWidth() / 2f, 1345 - enemySiegeScore.getHeight() / 2f);
 
+        myLives = new Label("<3<3", game.assetLoader.labelStyle);
+        enemyLives = new Label("<3<3", game.assetLoader.labelStyle);
+        myLives.setPosition(300, 500);
+        enemyLives.setPosition(300, 1000);
+
         TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
 
         table.addActor(myScore);
@@ -278,7 +289,12 @@ public class GameMenu extends Menu implements CheatProcessor {
         table.addActor(enemyRangedScore);
         table.addActor(mySiegeScore);
         table.addActor(enemySiegeScore);
-
+        table.addActor(turnIndicator);
+        table.addActor(myLives);
+        table.addActor(enemyLives);
+        table.addActor(myCardsCount);
+        table.addActor(enemyCardsCount);
+        table.addActor(victoryLabel);
 
         myGraveyard = new TextButton("Graveyard", buttonStyle);
         enemyGraveyard = new TextButton("Graveyard", buttonStyle);
@@ -531,6 +547,10 @@ public class GameMenu extends Menu implements CheatProcessor {
         };
     }
 
+    public void setVictoryLabel(String userName) {
+        victoryLabel.setText("WINNER " + userName);
+    }
+
     public GraphicalCard showSomeCardsAndSelectOne(ArrayList<Card> cards) {
         final int[] currentIndex = {0};
         final GraphicalCard[] selectedCard = {null};
@@ -672,6 +692,20 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemyCardsCount.setText(enemy.getHandCount());
 
         turnIndicator.setText(gameController.isMyTurn ? "Your Turn" : "Enemy's Turn");
+
+        updateLives(self, enemy);
+    }
+    public void updateLives(PlayerInGame self, PlayerInGame enemy) {
+        myLives.setText(repeatString("<3", self.getRemainingLives()));
+        enemyLives.setText(repeatString("<3", enemy.getRemainingLives()));
+    }
+
+    public static String repeatString(String input, int times) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < times; i++) {
+            result.append(input);
+        }
+        return result.toString();
     }
 
     public void resetPassedButtons() {
@@ -712,6 +746,9 @@ public class GameMenu extends Menu implements CheatProcessor {
 
     public boolean isCheatConsoleVisible() {
         return cheatConsoleVisible;
+    }
+    public void setTurnIndicator(boolean isMyTurn) {
+        if (!isMyTurn) turnIndicator.setText("Enemy's Turn");
     }
 
     public void setLeaders(Leader myLeader, Leader enemyLeader) {
