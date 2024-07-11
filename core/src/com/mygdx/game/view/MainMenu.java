@@ -356,6 +356,8 @@ public class MainMenu extends Menu {
         friendNameField.setMessageText("Enter friend's username");
         friendNameField.setWidth(160);
 
+        Label errorLabel = new Label("", game.assetLoader.labelStyle);
+
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         Skin skin = game.assetLoader.skin;
         textButtonStyle.font = game.assetLoader.font;
@@ -370,13 +372,20 @@ public class MainMenu extends Menu {
             public void clicked(InputEvent event, float x, float y) {
                 String friendName = friendNameField.getText();
                 ControllerResponse response = mainMenuController.sendFriendRequest(friendName);
-                // TODO: @Arman
+                errorLabel.setText(response.getError());
+                if (response.isFailed()) {
+                    errorLabel.setColor(Color.RED);
+                } else {
+                    errorLabel.setColor(Color.GREEN);
+                }
             }
         });
 
         sendButton.setSize(120, 80);
 
         Table inputTable = new Table();
+        inputTable.add(errorLabel).pad(10);
+        inputTable.row();
         inputTable.add(friendNameField).width(300).pad(10);
         inputTable.row();
         inputTable.add(sendButton).width(120).height(80).pad(10);
