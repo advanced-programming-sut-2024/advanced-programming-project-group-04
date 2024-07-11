@@ -732,7 +732,9 @@ public class GameMenu extends Menu implements CheatProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // TODO @Arvin ina ro kamel kon ke vaghti leader click shod chi beshe
-                gameController.runLeader(gameController.getMyLeader());
+                if (gameController.isMyTurn()){
+                    gameController.runLeader(gameController.getMyLeader());
+                }
             }
         });
 

@@ -363,10 +363,7 @@ public class GameServer extends Thread {
                 break;
 
             case ACTIVATE_LEADER:
-                ((Leader) inputs.get(1)).run(gameManager);
-                gameManager.endTurn();
-                updateScores();
-                sendOutput = true;
+                sendOutput = activateLeader((Leader) inputs.get(1));
                 break;
 
             default:
@@ -375,5 +372,15 @@ public class GameServer extends Thread {
         }
         System.out.println("GameServer finished processing command");
         if (sendOutput) mySession.sendToClientVoid(GeneralCommand.CLEAR);
+    }
+
+    public boolean activateLeader(Leader leader) {
+        if (gameManager.getCurrentPlayer().getIsLeaderUsed()) {
+            return true;
+        }
+        leader.run(gameManager);
+        gameManager.endTurn();
+        updateScores();
+        return true;
     }
 }
