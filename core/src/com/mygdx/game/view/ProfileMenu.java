@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import mygdx.game.AssetLoader;
 import mygdx.game.Main;
 import mygdx.game.controller.ProfileController;
+import mygdx.game.model.Player;
 import mygdx.game.model.data.PlayerRankData;
 
 import java.util.ArrayList;
@@ -373,8 +374,6 @@ public class ProfileMenu extends Menu {
         Label.LabelStyle infoLabelStyle = new Label.LabelStyle();
         infoLabelStyle.font = font;
         infoLabelStyle.fontColor = Color.WHITE;
-
-
 
         String factionName;
         String leaderName;

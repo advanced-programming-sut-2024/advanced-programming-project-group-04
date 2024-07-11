@@ -54,7 +54,7 @@ public class Server extends Thread {
 
     private static void loadAllPlayers() {
         String homeDir = System.getProperty("user.home");
-        File dataDir = new File(homeDir + "/Desktop/ApProjectWithShabake/advanced-programming-project-group-04/Data/Users");
+        File dataDir = new File(homeDir + "/ap-project/Data/Users");
         System.out.println("Data directory path: " + dataDir.getAbsolutePath());
         System.out.println("Directory exists: " + dataDir.exists());
         System.out.println("Is directory: " + dataDir.isDirectory());
@@ -244,10 +244,10 @@ public class Server extends Thread {
             case GET_RANK_DATA:
                 getRankData();
                 break;
-
             case GET_FRIENDS:
                 getFriends();
                 break;
+
             case GET_INCOMING_FRIEND_REQUESTS:
                 getIncomingFriendRequests();
                 break;
@@ -265,6 +265,9 @@ public class Server extends Thread {
                 break;
             case SEND_FRIEND_REQUEST:
                 sendFriendRequest();
+                break;
+            case GET_PROFILE_DATA:
+                getProfileData();
                 break;
 
             case SELECT_FACTION:
@@ -513,6 +516,13 @@ public class Server extends Thread {
         Player friend = findPlayerByUsername(playerUsername);
         player.sendFriendRequest(friend);
         out.writeObject(null);
+    }
+
+    private void getProfileData() throws IOException, ClassNotFoundException {
+        int id = (int) in.readObject();
+        Player friendPlayer = findPlayerById(id);
+        Gson gson = CustomGson.getGson();
+        out.writeObject(gson.toJson(friendPlayer));
     }
 
     private void selectFaction() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {

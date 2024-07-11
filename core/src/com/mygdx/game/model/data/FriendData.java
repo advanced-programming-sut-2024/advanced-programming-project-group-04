@@ -9,8 +9,10 @@ public class FriendData {
 
     public FriendData(ArrayList<Player> friends) {
         this.friends = new ArrayList<>();
-        for (Player player : friends) {
-            this.friends.add(new PlayerFriendData(player));
+        if (friends != null) {
+            for (Player player : friends) {
+                this.friends.add(new PlayerFriendData(player));
+            }
         }
     }
 

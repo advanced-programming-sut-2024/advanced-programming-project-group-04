@@ -29,6 +29,7 @@ public enum ServerCommand implements Serializable, Command {
     GET_MESSAGES,
     SEND_MESSAGE,
     SEND_FRIEND_REQUEST,
+    GET_PROFILE_DATA,
 
     SELECT_FACTION,
     SELECT_LEADER,
