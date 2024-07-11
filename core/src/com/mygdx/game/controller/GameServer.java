@@ -364,6 +364,8 @@ public class GameServer extends Thread {
 
             case ACTIVATE_LEADER:
                 ((Leader) inputs.get(1)).run(gameManager);
+                gameManager.endTurn();
+                updateScores();
                 sendOutput = true;
                 break;
 
