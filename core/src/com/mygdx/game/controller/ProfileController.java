@@ -15,7 +15,7 @@ public class ProfileController {
     }
 
     public ArrayList<PlayerRankData> getAllPlayersRankData() {
-        String dataJson = client.sendToServer(ServerCommand.getRankData);
+        String dataJson = client.sendToServer(ServerCommand.GET_RANK_DATA);
         Gson gson = new Gson();
         RankData rankData = gson.fromJson(dataJson, RankData.class);
         return rankData.getAllPlayers();
