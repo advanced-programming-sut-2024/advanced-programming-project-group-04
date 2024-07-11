@@ -41,6 +41,7 @@ public enum ServerCommand implements Serializable, Command {
     START_GAME_REQUEST,
     RANDOM_GAME_REQUEST,
     TOURNAMENT_GAME_REQUEST,
+    CANCEL_GAME_REQUESTS,
 
     CLOSE_CONNECTION,
     ;

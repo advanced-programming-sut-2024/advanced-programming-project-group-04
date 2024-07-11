@@ -17,6 +17,7 @@ import mygdx.game.Main;
 import mygdx.game.controller.ProfileController;
 import mygdx.game.controller.RestrictedProfileController;
 import mygdx.game.controller.Server;
+import mygdx.game.model.GameHistory;
 import mygdx.game.model.Player;
 import mygdx.game.model.data.PlayerProfileData;
 import mygdx.game.model.data.PlayerRankData;
@@ -101,7 +102,8 @@ public class RestrictedProfileMenu extends Menu {
                 createStatisticsContent();
                 break;
             case "matchHistory":
-                contentTable.add(new Label("Match History Content", game.assetLoader.labelStyle)).pad(20);
+//                contentTable.add(new Label("Match History Content", game.assetLoader.labelStyle)).pad(20);
+                createMatchHistoryContent();
                 break;
             case "userInfo":
                 createUserInfoContent();
@@ -189,6 +191,61 @@ public class RestrictedProfileMenu extends Menu {
         contentTable.addActor(scrollPane);
     }
 
+    private void createMatchHistoryContent() {
+        Table mainTable = new Table();
+
+        ArrayList<GameHistory> allGames = controller.getMatchHistory();
+//        allPlayers.get(0).addLP(353);
+//        allPlayers.get(1).addLP(712);
+//        allPlayers.get(2).addLP(241);
+//        allPlayers.get(3).addLP(115);
+//        allPlayers.get(4).addLP(78);
+
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(new Color(0.5f, 0.7f, 1f, 1f)); // Light blue color
+        pixmap.fill();
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+        Drawable lightBlueBackground = new TextureRegionDrawable(new TextureRegion(texture));
+
+        for (int i = 0; i < allGames.size(); i++) {
+            GameHistory game = allGames.get(i);
+
+            Table playerTable = new Table();
+            playerTable.setBackground(lightBlueBackground);
+            playerTable.setSize(1300, 200);
+
+            Label rankLabel = getLabelFromString(game.getResult().toString(), Color.BLACK);
+            Table leftSection = new Table();
+            leftSection.add(rankLabel).padRight(10);
+
+            Label usernameLabel = getLabelFromString("Opponent: " + game.getOpponentUsername(), Color.GREEN);
+            Table middleSection = new Table();
+            middleSection.add(usernameLabel);
+
+            Label lpLabel = getLabelFromString( "Id: " + game.getId(), Color.BLACK);
+
+            Table rightSection = new Table();
+            rightSection.add(lpLabel).padTop(5);
+
+            playerTable.add(leftSection).expandX().left().pad(10);
+            playerTable.add(middleSection).expandX().center().pad(10);
+            playerTable.add(rightSection).expandX().right().pad(10);
+
+            mainTable.add(playerTable).fillX().pad(10);
+            mainTable.row();
+        }
+
+        ScrollPane scrollPane = new ScrollPane(mainTable);
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setScrollingDisabled(true, false);
+        scrollPane.setOverscroll(false, false);
+        scrollPane.setForceScroll(false, true);
+        scrollPane.setSize(1300, 1400);
+        scrollPane.setPosition((stage.getWidth() - 1300) / 2, (stage.getHeight() - 1400) / 2); // Center the scroll pane
+
+        contentTable.addActor(scrollPane);
+    }
 
     private Label getLabelFromString(String text, Color color) {
         BitmapFont font = AssetLoader.getFontWithCustomSize(35);

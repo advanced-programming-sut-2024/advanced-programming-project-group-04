@@ -292,6 +292,9 @@ public class Server extends Thread {
             case TOURNAMENT_GAME_REQUEST:
                 tournamentGameRequest();
                 break;
+            case CANCEL_GAME_REQUESTS:
+                cancelGameRequests();
+                break;
 
             case CLOSE_CONNECTION:
                 closeConnection();
@@ -347,6 +350,12 @@ public class Server extends Thread {
             tournamentRequests = new Vector<>();
             tournament.start();
         }
+    }
+
+    private void cancelGameRequests() throws IOException, ClassNotFoundException {
+        if (randomRequest.equals(player)) randomRequest = null;
+        tournamentRequests.remove(player);
+        gameRequests.remove(player.getId());
     }
 
     private void checkUsername() throws IOException, ClassNotFoundException {

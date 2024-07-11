@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import mygdx.game.Main;
 import mygdx.game.controller.ControllerResponse;
 import mygdx.game.controller.StartGameController;
+import mygdx.game.controller.commands.ServerCommand;
 
 public class StartGameMenu extends Menu {
     private final StartGameController controller;
@@ -54,6 +55,7 @@ public class StartGameMenu extends Menu {
         joinTournamentButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.getClient().sendToServer(ServerCommand.TOURNAMENT_GAME_REQUEST);
                 table.clear();
                 table.add(joinTournamentWaitingLabel).expandX().pad(30);
             }
@@ -63,6 +65,7 @@ public class StartGameMenu extends Menu {
         findRandomOpponentButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.getClient().sendToServer(ServerCommand.RANDOM_GAME_REQUEST);
                 table.clear();
                 table.add(findRandomOpponentWaitingLabel).expandX().pad(30);
             }
@@ -74,7 +77,6 @@ public class StartGameMenu extends Menu {
             public void clicked(InputEvent event, float x, float y) {
                 if (publicityButton.getText().equals("Public game")) publicityButton.setText("Private game");
                 if (publicityButton.getText().equals("Private game")) publicityButton.setText("Public game");
-                // TODO This is 100 % Kos sher
             }
         });
 
@@ -83,7 +85,7 @@ public class StartGameMenu extends Menu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MainMenu(game));
-                // TODO make game requests cancel
+                game.getClient().sendToServer(ServerCommand.CANCEL_GAME_REQUESTS);
             }
         });
 
