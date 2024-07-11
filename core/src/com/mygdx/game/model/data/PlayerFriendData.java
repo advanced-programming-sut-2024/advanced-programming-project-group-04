@@ -2,7 +2,9 @@ package mygdx.game.model.data;
 
 import mygdx.game.model.Player;
 
-public class PlayerFriendData {
+import java.io.Serializable;
+
+public class PlayerFriendData implements Serializable {
     private int id;
     private String username;
 

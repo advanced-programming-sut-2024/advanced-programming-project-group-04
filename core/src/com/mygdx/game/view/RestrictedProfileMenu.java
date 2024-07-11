@@ -42,6 +42,7 @@ public class RestrictedProfileMenu extends Menu {
     public RestrictedProfileMenu(Main game, int playerId) {
         super(game);
         this.controller = new RestrictedProfileController(game, playerId);
+        this.profileController = new ProfileController(game);
 
         this.skin = game.assetLoader.skin;
 

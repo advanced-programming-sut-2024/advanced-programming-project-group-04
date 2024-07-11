@@ -2,7 +2,9 @@ package mygdx.game.model.data;
 
 import mygdx.game.model.message.Message;
 
-public class MessageData {
+import java.io.Serializable;
+
+public class MessageData implements Serializable {
     private int senderId;
     private int receiverId;
     private String content;

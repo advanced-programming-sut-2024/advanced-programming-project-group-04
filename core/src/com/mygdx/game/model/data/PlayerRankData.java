@@ -3,7 +3,9 @@ package mygdx.game.model.data;
 import mygdx.game.model.Player;
 import mygdx.game.model.Rank;
 
-public class PlayerRankData {
+import java.io.Serializable;
+
+public class PlayerRankData implements Serializable {
     private final String username;
     private final int LP;
     private final int winCount;

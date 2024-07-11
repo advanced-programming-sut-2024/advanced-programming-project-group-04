@@ -2,10 +2,11 @@ package mygdx.game.model.data;
 
 import mygdx.game.model.Player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class RankData {
+public class RankData implements Serializable {
     private ArrayList<PlayerRankData> allPlayers;
 
     public RankData(Vector<Player> players) {

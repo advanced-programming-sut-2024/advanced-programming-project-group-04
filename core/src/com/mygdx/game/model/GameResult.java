@@ -1,6 +1,8 @@
 package mygdx.game.model;
 
-public enum GameResult {
+import java.io.Serializable;
+
+public enum GameResult implements Serializable {
     Win,
     Loss,
     Draw;

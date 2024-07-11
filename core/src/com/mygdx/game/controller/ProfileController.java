@@ -1,7 +1,10 @@
 package mygdx.game.controller;
 
 import com.google.gson.Gson;
+import mygdx.game.Main;
 import mygdx.game.controller.commands.ServerCommand;
+import mygdx.game.model.GameHistory;
+import mygdx.game.model.data.GameHistoryData;
 import mygdx.game.model.data.PlayerRankData;
 import mygdx.game.model.data.RankData;
 
@@ -9,9 +12,11 @@ import java.util.ArrayList;
 
 public class ProfileController {
     private Client client;
+    private Main game;
 
-    public ProfileController(Client client) {
-        this.client = client;
+    public ProfileController(Main game) {
+        this.game = game;
+        this.client = game.getClient();
     }
 
     public ArrayList<PlayerRankData> getAllPlayersRankData() {
@@ -37,6 +42,13 @@ public class ProfileController {
 
     public void setQuestion(String question, String answer) {
         client.sendToServer(ServerCommand.SET_QUESTION, question, answer);
+    }
+
+    public ArrayList<GameHistory> getMatchHistory() {
+        Gson gson = CustomGson.getGson();
+        String gameHistoryDataJson = game.getClient().sendToServer(ServerCommand.GET_GAME_HISTORY, game.getLoggedInPlayer().getId());
+        GameHistoryData gameHistoryData = gson.fromJson(gameHistoryDataJson, GameHistoryData.class);
+        return gameHistoryData.getMatchHistory();
     }
 
 }

@@ -38,7 +38,7 @@ public class ProfileMenu extends Menu {
 
     public ProfileMenu(Main game) {
         super(game);
-        this.controller = new ProfileController(game.getClient());
+        this.controller = new ProfileController(game);
 
         this.skin = game.assetLoader.skin;
 

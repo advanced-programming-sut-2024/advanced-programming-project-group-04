@@ -12,18 +12,26 @@ import mygdx.game.model.leader.Leader;
 
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static mygdx.game.controller.commands.GameClientCommand.*;
 
 public class GameServer extends Thread {
     private boolean isMyTurn;
+    private boolean isEnded;
+    private final int id;
 
     Server mySession;
     Server enemySession;
 
+    Server winner;
+    Server loser;
+
     private final GameManager gameManager;
 
     public GameServer(Server mySession, Server enemySession) {
+        Random random = new Random();
+        this.id = random.nextInt();
         this.mySession = mySession;
         this.enemySession = enemySession;
         this.isMyTurn = true;
@@ -202,6 +210,12 @@ public class GameServer extends Thread {
 //        gameMenu.changeTurn(isMyTurn);
     }
 
+    public synchronized boolean isEnded() { return this.isEnded; }
+
+    public Server getWinner() { return this.winner; }
+
+    public Server getLoser() { return this.loser; }
+
     public void removeCardFromView(Card card) {
         sendToBoth(REMOVE_FROM_VIEW, card, EOF);
     }
@@ -248,6 +262,33 @@ public class GameServer extends Thread {
     public boolean passTurn() {
         gameManager.endTurn();
         return true;
+    }
+
+    public void endGame(GameResult result) {
+        Player me = mySession.getPlayer();
+        Player enemy = enemySession.getPlayer();
+        switch (result) {
+            case Draw:
+                me.addGameHistory(GameResult.Draw, this.id, enemy.getUsername(), enemy.getId());
+                enemy.addGameHistory(GameResult.Draw, this.id, me.getUsername(), me.getId());
+                this.winner = Server.allSessions.get(me);
+                this.loser = Server.allSessions.get(enemy);
+                break;
+            case Loss:
+                me.addGameHistory(GameResult.Loss, this.id, enemy.getUsername(), enemy.getId());
+                enemy.addGameHistory(GameResult.Win, this.id, me.getUsername(), me.getId());
+                this.winner = Server.allSessions.get(enemy);
+                this.loser = Server.allSessions.get(me);
+                break;
+            case Win:
+                me.addGameHistory(GameResult.Win, this.id, enemy.getUsername(), enemy.getId());
+                enemy.addGameHistory(GameResult.Loss, this.id, me.getUsername(), me.getId());
+                this.winner = Server.allSessions.get(me);
+                this.loser = Server.allSessions.get(enemy);
+                break;
+        }
+        this.isEnded = true;
+        sendToBoth(ClientCommand.END_GAME);
     }
 
 //    public void handleCheat(String cheatCode) {

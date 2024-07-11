@@ -30,6 +30,8 @@ public class Player implements Serializable {
     private ArrayList<Player> incomingFriendRequests = new ArrayList<>();
     private ArrayList<Player> outgoingFriendRequests = new ArrayList<>();
 
+    private ArrayList<GameHistory> gameHistory = new ArrayList<>();
+
     private Deck deck;
 
     private Faction selectedFaction;
@@ -309,4 +311,22 @@ public class Player implements Serializable {
 
         return lpChange;
     }
+
+    public void addGameHistory(GameResult result, int id, String opponentUsername, int opponentId) {
+        this.gameHistory.add(new GameHistory(result, id, opponentUsername, opponentId));
+        this.gameCount++;
+        switch (result) {
+            case Draw:
+                this.drawCount++;
+                break;
+            case Win:
+                this.winCount++;
+                break;
+            case Loss:
+                this.lossCount++;
+                break;
+        }
+    }
+
+    public ArrayList<GameHistory> getMatchHistory() { return this.gameHistory; }
 }

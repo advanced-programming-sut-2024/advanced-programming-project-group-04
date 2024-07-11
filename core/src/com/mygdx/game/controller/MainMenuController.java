@@ -81,7 +81,7 @@ public class MainMenuController {
         boolean isFailed = true;
 
         if (friendUsername.isEmpty()) errorMessage = "Enter friend username";
-        else if (game.getClient().sendToServer(ServerCommand.DOES_USERNAME_EXIST, friendUsername)) errorMessage = "Player not found!";
+        else if (game.getClient().sendToServer(ServerCommand.DOES_USERNAME_EXIST, friendUsername).equals(false)) errorMessage = "Player not found!";
         else {
             isFailed = false;
             game.getClient().sendToServer(ServerCommand.SEND_FRIEND_REQUEST, friendUsername);

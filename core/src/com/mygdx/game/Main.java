@@ -135,6 +135,10 @@ public class Main extends Game {
                 setScreen(new GameMenu(this));
                 client.sendToServerVoid(GeneralCommand.CLEAR);
                 break;
+            case END_GAME:
+                setScreen(new MainMenu(this));
+                client.sendToServerVoid(GeneralCommand.CLEAR);
+                break;
         }
         System.out.println("Main finished processing command");
     }
