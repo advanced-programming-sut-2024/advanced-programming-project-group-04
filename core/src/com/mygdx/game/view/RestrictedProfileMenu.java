@@ -208,6 +208,7 @@ public class RestrictedProfileMenu extends Menu {
         pixmap.dispose();
         Drawable lightBlueBackground = new TextureRegionDrawable(new TextureRegion(texture));
 
+        if (allGames == null) return;
         for (int i = 0; i < allGames.size(); i++) {
             GameHistory game = allGames.get(i);
 

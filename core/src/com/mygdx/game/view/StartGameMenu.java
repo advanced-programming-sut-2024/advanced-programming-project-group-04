@@ -55,9 +55,9 @@ public class StartGameMenu extends Menu {
         joinTournamentButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.getClient().sendToServer(ServerCommand.TOURNAMENT_GAME_REQUEST);
                 table.clear();
                 table.add(joinTournamentWaitingLabel).expandX().pad(30);
+                game.getClient().sendToServer(ServerCommand.TOURNAMENT_GAME_REQUEST);
             }
         });
 
@@ -65,9 +65,9 @@ public class StartGameMenu extends Menu {
         findRandomOpponentButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.getClient().sendToServer(ServerCommand.RANDOM_GAME_REQUEST);
                 table.clear();
                 table.add(findRandomOpponentWaitingLabel).expandX().pad(30);
+                game.getClient().sendToServer(ServerCommand.RANDOM_GAME_REQUEST);
             }
         });
 

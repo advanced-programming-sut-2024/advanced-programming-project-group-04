@@ -93,4 +93,11 @@ public class GraphicalCard extends ImageButton {
         }
         throw new RuntimeException("Card HP not found in row");
     }
+
+    @Override
+    public boolean remove() {
+        super.remove();
+        this.labelInsideCircle.remove();
+        return true;
+    }
 }
