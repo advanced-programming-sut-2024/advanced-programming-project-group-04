@@ -57,7 +57,7 @@ public class Server extends Thread {
 
     private static void loadAllPlayers() {
         String homeDir = System.getProperty("user.home");
-        File dataDir = new File(homeDir + "/ap-project/Data/Users");
+        File dataDir = new File(homeDir + "/Desktop/ApProjectWithShabake/advanced-programming-project-group-04/Data/Users");
         System.out.println("Data directory path: " + dataDir.getAbsolutePath());
         System.out.println("Directory exists: " + dataDir.exists());
         System.out.println("Is directory: " + dataDir.isDirectory());
