@@ -74,7 +74,6 @@ public class GameMenu extends Menu implements CheatProcessor {
         super(game);
         this.game = game;
         this.gameController = new GameController(this, game.getClient(), game.getLoggedInPlayer());
-        game.getClient().setGameController(gameController);
 
         this.cheatController = new CheatController(this);
 

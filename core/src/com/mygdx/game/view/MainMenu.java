@@ -15,9 +15,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import mygdx.game.AssetLoader;
 import mygdx.game.Main;
+import mygdx.game.controller.ControllerResponse;
 import mygdx.game.controller.MainMenuController;
 import mygdx.game.controller.commands.ServerCommand;
 import mygdx.game.model.Player;
+import mygdx.game.model.data.PlayerFriendData;
 import mygdx.game.model.message.Message;
 
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ public class MainMenu extends Menu {
         startNewGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                // TODO: @Arman
 //                ControllerResponse response = mainMenuController.startNewGame();
 //                errorLabel.setText(response.getError());
 //                errorLabel.setColor(Color.RED);
@@ -93,7 +96,6 @@ public class MainMenu extends Menu {
         table.row().pad(10, 0, 10, 0);
         table.add(logoutButton).width(400).height(120).pad(10);
 
-        // Load friends and friend requests buttons
         Texture friendsTexture = game.assetManager.get(AssetLoader.FRIENDS, Texture.class);
         Texture friendRequestsTexture = game.assetManager.get(AssetLoader.FRIENDREQUESTS, Texture.class);
         friendsButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(friendsTexture)));
@@ -174,25 +176,22 @@ public class MainMenu extends Menu {
     private void loadFriendsList() {
         friendsWindow.clear();
         if (game.getLoggedInPlayer() == null) return;
-        ArrayList<Player> friends = game.getLoggedInPlayer().getFriends();
+        ArrayList<PlayerFriendData> friends = mainMenuController.getFriends();
         float buttonWidth = friendsWindow.getWidth() * 0.50f;
 
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(new Color(0f, 0.5f, 0.5f, 1f)); // blue
+        pixmap.setColor(new Color(0f, 0.5f, 0.5f, 1f));
         pixmap.fill();
         Texture texture = new Texture(pixmap);
         pixmap.dispose();
         Drawable blueBackground = new TextureRegionDrawable(new TextureRegion(texture));
 
-
         if (friends == null) return;
 
-
-        for (Player friend : friends) {
+        for (PlayerFriendData friend : friends) {
             Table friendEntry = new Table();
             friendEntry.setBackground(blueBackground);
-            System.out.println("Main menu sent is online signal");
-            boolean isOnline = game.getClient().sendToServer(ServerCommand.IS_ONLINE, friend.getUsername());
+            boolean isOnline = mainMenuController.isFriendOnline(friend.getUsername());
             Texture statusTexture = game.assetManager.get(isOnline ? AssetLoader.ONLINE : AssetLoader.OFFLINE, Texture.class);
             Image statusImage = new Image(statusTexture);
 
@@ -241,10 +240,10 @@ public class MainMenu extends Menu {
 
     private void loadFriendRequestsList() {
         friendRequestsWindow.clear();
-        ArrayList<Player> incomingRequests = game.getLoggedInPlayer().getIncomingFriendRequests();
+        ArrayList<PlayerFriendData> incomingRequests = mainMenuController.getIncomingFriendRequests();
         float buttonWidth = friendRequestsWindow.getWidth() * 0.5f;
         if (incomingRequests == null) return;
-        for (Player request : incomingRequests) {
+        for (PlayerFriendData request : incomingRequests) {
             TextButton usernameButton = new TextButton(request.getUsername(), game.assetLoader.textButtonStyle);
             usernameButton.getLabel().setAlignment(Align.center);
 
@@ -258,14 +257,16 @@ public class MainMenu extends Menu {
             acceptButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    // Handle accept button click
+                    mainMenuController.acceptFriendRequest(request.getId());
+                    loadFriendRequestsList();
                 }
             });
 
             rejectButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    // Handle reject button click
+                    mainMenuController.rejectFriendRequest(request.getId());
+                    loadFriendRequestsList();
                 }
             });
 
@@ -281,14 +282,13 @@ public class MainMenu extends Menu {
         createFriendRequestInputField(friendRequestsWindow);
     }
 
-    private void showMessageDialog(Player loggedInPlayer, Player friend) {
+    private void showMessageDialog(Player loggedInPlayer, PlayerFriendData friend) {
         Dialog messageDialog = new Dialog("Messages with " + friend.getUsername(), game.assetLoader.skin);
-        // Set dark blue background
+
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f)); // Dark blue color
+        pixmap.setColor(new Color(0.1f, 0.1f, 0.2f, 1f));
         pixmap.fill();
 
-        // Create a texture from the pixmap
         Texture texture = new Texture(pixmap);
         pixmap.dispose();
 
@@ -301,7 +301,7 @@ public class MainMenu extends Menu {
         scrollPaneStyle.background = new TextureRegionDrawable(new TextureRegion(texture));
 
         Table messageTable = new Table();
-        ArrayList<Message> messages = loggedInPlayer.getChatWithPlayer(friend);
+        ArrayList<Message> messages = mainMenuController.getChatWithFriend(friend.getId());
         for (Message message : messages) {
             Label messageLabel = new Label(message.getContent(), game.assetLoader.labelStyle);
             messageLabel.setWrap(true);
@@ -332,7 +332,7 @@ public class MainMenu extends Menu {
             public void clicked(InputEvent event, float x, float y) {
                 String messageText = messageField.getText();
                 if (!messageText.isEmpty()) {
-                    // Code to send the message
+                    mainMenuController.sendMessage(messageText, friend.getId());
                 }
             }
         });
@@ -369,9 +369,8 @@ public class MainMenu extends Menu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 String friendName = friendNameField.getText();
-                if (!friendName.isEmpty()) {
-                    // Send friend request
-                }
+                ControllerResponse response = mainMenuController.sendFriendRequest(friendName);
+                // TODO: @Arman
             }
         });
 
