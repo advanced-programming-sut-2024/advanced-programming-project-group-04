@@ -34,6 +34,7 @@ public class MainMenuController {
         return new ControllerResponse(isFail, errorMessage);
     }
 
+
     public ArrayList<PlayerFriendData> getFriends() {
         // player.getFriends();
     }
@@ -65,4 +66,9 @@ public class MainMenuController {
     public ControllerResponse sendFriendRequest(String friendUsername) {
 
     }
-}
+
+    public void challengeFriend(String username) {
+        game.getClient().sendToServer(ServerCommand.START_GAME_REQUEST, username);
+    }
+
+

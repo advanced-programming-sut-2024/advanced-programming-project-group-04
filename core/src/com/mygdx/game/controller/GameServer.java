@@ -65,9 +65,7 @@ public class GameServer extends Thread {
         Player p2 = gameManager.getPlayer2().getPlayer();
         mySession.sendToClient(SET_FACTION, p1.getSelectedFaction(), EOF);
         enemySession.sendToClient(SET_FACTION, p2.getSelectedFaction(), EOF);
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Leader.class, new Server.LeaderTypeAdapter());
-        Gson gson = builder.create();
+        Gson gson = CustomGson.getGson();
         mySession.sendToClient(SET_DECK, gson.toJson(p1.getDeck()), EOF);
         enemySession.sendToClient(SET_DECK, gson.toJson(p2.getDeck()), EOF);
         mySession.sendToClient(SET_LEADERS, p1.getDeck().getLeader(), p2.getDeck().getLeader(), EOF);
@@ -82,10 +80,11 @@ public class GameServer extends Thread {
 
     public void updateScores() {
 //        gameMenu.updateScores(p1, p2);
+        Gson gson = CustomGson.getGson();
         PlayerInGame p1 = gameManager.getPlayer1();
         PlayerInGame p2 = gameManager.getPlayer2();
-        mySession.sendToClient(UPDATE_SCORES, p1, p2, EOF);
-        enemySession.sendToClient(UPDATE_SCORES, p2, p1, EOF);
+        mySession.sendToClient(UPDATE_SCORES, gson.toJson(p1), gson.toJson(p2), gson.toJson(new CardsInBoard(gameManager)), EOF);
+        enemySession.sendToClient(UPDATE_SCORES, gson.toJson(p2), gson.toJson(p1), gson.toJson(new CardsInBoard(gameManager)), EOF);
     }
 
     public void resetPassButtons() {
@@ -111,7 +110,9 @@ public class GameServer extends Thread {
 //        return result;
 //    }
 
-    public boolean placeCard(Card card, Position position) {
+    public boolean placeCard(String cardJson, Position position) {
+        Gson gson = CustomGson.getGson();
+        Card card = gson.fromJson(cardJson, Card.class);
         System.out.println("GameServer placeCard 1");
         gameManager.placeCard(card, position);
         System.out.println("GameServer placeCard 2");
@@ -122,7 +123,9 @@ public class GameServer extends Thread {
         return true;
     }
 
-    public boolean placeCardEnemy(Card card) {
+    public boolean placeCardEnemy(String cardJson) {
+        Gson gson = CustomGson.getGson();
+        Card card = gson.fromJson(cardJson, Card.class);
         gameManager.placeCardEnemy(card);
         return true;
     }
@@ -143,7 +146,10 @@ public class GameServer extends Thread {
         return false;
     }
 
-    public boolean removeFromHand(Card card, boolean isMyHand) {
+    public boolean removeFromHand(String cardJson, boolean isMyHand) {
+        Gson gson = CustomGson.getGson();
+        Card card = gson.fromJson(cardJson, Card.class);
+        if ((isMyHand ^ !isMyTurn) == false) throw new RuntimeException("isMyHand: " + isMyHand + " isMyTurn: " + isMyTurn);
         gameManager.removeFromHand(card, isMyHand ^ !isMyTurn);
         return true;
     }
@@ -345,13 +351,13 @@ public class GameServer extends Thread {
                 sendOutput = canPlaceCardEnemy(mySession, (Card) inputs.get(1), (Position) inputs.get(2));
                 break;
             case PLACE_CARD:
-                sendOutput = placeCard((Card) inputs.get(1), (Position) inputs.get(2));
+                sendOutput = placeCard((String) inputs.get(1), (Position) inputs.get(2));
                 break;
             case PLACE_CARD_ENEMY:
-                sendOutput = placeCardEnemy((Card) inputs.get(1));
+                sendOutput = placeCardEnemy((String) inputs.get(1));
                 break;
             case REMOVE_FROM_HAND:
-                sendOutput = removeFromHand((Card) inputs.get(1), (boolean) inputs.get(2));
+                sendOutput = removeFromHand((String) inputs.get(1), ((boolean) inputs.get(2)) ^ !isMe);
                 break;
             case REMOVE_CARD:
                 sendOutput = removeCard((Card) inputs.get(1));
@@ -360,6 +366,10 @@ public class GameServer extends Thread {
                 sendOutput = addToHand((Card) inputs.get(1), ((boolean) inputs.get(2)) ^ !isMe);
                 break;
 
+            case ACTIVATE_LEADER:
+                ((Leader) inputs.get(1)).run(gameManager);
+                sendOutput = true;
+                break;
 
             default:
                 sendOutput = false;

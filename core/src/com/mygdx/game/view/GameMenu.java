@@ -201,6 +201,8 @@ public class GameMenu extends Menu implements CheatProcessor {
         return graphicalCard;
     }
 
+
+
     private void tableInit() {
         table = new Table();
 
@@ -208,7 +210,6 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemyScore = new Label("0", game.assetLoader.labelStyle);
 
         table.setBackground(backgroundImage);
-
         // TODO Add these motherfuckers to the screen where ever needed
         myMeleeScore = new Label("0", game.assetLoader.labelStyle);
         enemyMeleeScore = new Label("0", game.assetLoader.labelStyle);
@@ -222,6 +223,8 @@ public class GameMenu extends Menu implements CheatProcessor {
 
         turnIndicator = new Label(!gameController.isMyTurn() ? "Your Turn" : "Enemy's Turn", game.assetLoader.labelStyle);
 
+        myCardsCount.setPosition(300, 700);
+        enemyCardsCount.setPosition(300, 900);
 
         myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
         enemyScore.setPosition(610 - enemyScore.getWidth() / 2f, 1005 - enemyScore.getHeight() / 2f);
@@ -234,6 +237,9 @@ public class GameMenu extends Menu implements CheatProcessor {
         enemySiegeScore.setPosition(718 - enemySiegeScore.getWidth() / 2f, 1345 - enemySiegeScore.getHeight() / 2f);
         turnIndicator.setPosition(400 - turnIndicator.getWidth() / 2f, 1400 - turnIndicator.getHeight() / 2f);
         TextButton.TextButtonStyle buttonStyle = game.assetLoader.textButtonStyle;
+
+        table.addActor(myCardsCount);
+        table.addActor(enemyCardsCount);
 
         table.addActor(myScore);
         table.addActor(enemyScore);
@@ -612,7 +618,6 @@ public class GameMenu extends Menu implements CheatProcessor {
     }
 
     public void updateScores(PlayerInGame self, PlayerInGame enemy) {
-        // TODO: @Arman connect to server
         myScore.setText(self.getTotalHP());
         enemyScore.setText(enemy.getTotalHP());
         myScore.setPosition(610 - myScore.getWidth() / 2f, 472 - myScore.getHeight() / 2f);
@@ -683,26 +688,51 @@ public class GameMenu extends Menu implements CheatProcessor {
     }
 
     public void loadLeaders() {
-        Leader leader1 = players.get(0).getPlayer().getDeck().getLeader();
-        Leader leader2 = players.get(1).getPlayer().getDeck().getLeader();
-        ImageButton myLeader = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get("images/leaders/Monsters/BringerOfDeath.jpg", Texture.class))));
-        ImageButton enemyLeader = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get("images/leaders/Monsters/DestroyerOfWorlds.jpg", Texture.class))));
-        myLeader.setSize(140, 180);
-        enemyLeader.setSize(140, 180);
-        myLeader.getImageCell().size(140, 180);
-        enemyLeader.getImageCell().size(140, 180);
-        myLeaderTable.addActor(myLeader);
-        enemyLeaderTable.addActor(enemyLeader);
+        Leader myLeader = gameController.getMyLeader();
+        Leader enemyLeader = gameController.getEnemyLeader();
 
-        myLeader.addListener(new ClickListener() {
+        String myLeaderPath = myLeader.getImageURL();
+        String enemyLeaderPath = enemyLeader.getImageURL();
+
+        System.out.println("SIRK SIRK SIRK" + myLeaderPath);
+        System.out.println(enemyLeaderPath);
+        ImageButton myLeaderImage = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get(myLeaderPath, Texture.class))));
+        ImageButton enemyLeaderImage = new ImageButton(new TextureRegionDrawable(new TextureRegion(game.assetManager.get(enemyLeaderPath, Texture.class))));
+        myLeaderImage.setSize(140, 180);
+        enemyLeaderImage.setSize(140, 180);
+        myLeaderImage.getImageCell().size(140, 180);
+        enemyLeaderImage.getImageCell().size(140, 180);
+        myLeaderTable.addActor(myLeaderImage);
+        enemyLeaderTable.addActor(enemyLeaderImage);
+
+        myLeaderImage.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                myLeader.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+                myLeaderImage.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                myLeader.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+                myLeaderImage.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // TODO @Arvin ina ro kamel kon ke vaghti leader click shod chi beshe
+                gameController.runLeader(gameController.getMyLeader());
+            }
+        });
+
+        enemyLeaderImage.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                enemyLeaderImage.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                enemyLeaderImage.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
 
             @Override
@@ -711,23 +741,9 @@ public class GameMenu extends Menu implements CheatProcessor {
             }
         });
 
-        enemyLeader.addListener(new ClickListener() {
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                enemyLeader.getImage().addAction(Actions.scaleTo(1.1f, 1.1f, 0.1f));
+    }
 
-            }
-
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                enemyLeader.getImage().addAction(Actions.scaleTo(1f, 1f, 0.1f));
-            }
-
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // TODO @Arvin ina ro kamel kon ke vaghti leader click shod chi beshe
-            }
-        });
-
+    public void setTurnIndicator(boolean isMyTurn) {
+        if (!isMyTurn) turnIndicator.setText("Enemy's Turn");
     }
 }

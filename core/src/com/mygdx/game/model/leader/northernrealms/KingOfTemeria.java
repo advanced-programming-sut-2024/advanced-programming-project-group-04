@@ -14,7 +14,7 @@ public class KingOfTemeria extends Leader {
 
     @Override
     public void run(GameManager gameManager) {
-
+        System.out.println("JAVA ESHGH");
         PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
         if (currentPlayer.getIsLeaderUsed()) {
             return;
@@ -25,6 +25,11 @@ public class KingOfTemeria extends Leader {
             gameManager.placeCard(newCard, Position.SpellSiege);
         }
         currentPlayer.setIsLeaderUsed(true);
+    }
+
+    @Override
+    public String getImageURL() {
+        return "images/leaders/NorthernRealms/" + getAssetName() + ".jpg";
     }
 
 }

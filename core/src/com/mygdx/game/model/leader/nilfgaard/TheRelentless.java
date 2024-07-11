@@ -25,4 +25,9 @@ public class TheRelentless extends Leader {
 
         currentPlayer.setIsLeaderUsed(true);
     }
+
+    @Override
+    public String getImageURL() {
+        return "images/leaders/Nilfgaard/" + getAssetName() + ".jpg";
+    }
 }

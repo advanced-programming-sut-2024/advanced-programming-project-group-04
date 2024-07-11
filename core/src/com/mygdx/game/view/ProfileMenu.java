@@ -28,7 +28,9 @@ public class ProfileMenu extends Menu {
     private Label statisticsLabel;
     private Label matchHistoryLabel;
     private Label backLabel;
+    private Label userInfoLabel;
     private Table contentTable;
+
 
     Label.LabelStyle labelStyle = game.assetLoader.labelStyle;
     TextField.TextFieldStyle textFieldStyle = game.assetLoader.textFieldStyle;
@@ -59,16 +61,19 @@ public class ProfileMenu extends Menu {
         changeCredentialsLabel = createTabLabel("Change Credentials");
         statisticsLabel = createTabLabel("Statistics");
         matchHistoryLabel = createTabLabel("Match History");
+        userInfoLabel = createTabLabel("User Info");
 
         backLabel.addListener(new ChangeTabListener(backLabel, "back"));
         changeCredentialsLabel.addListener(new ChangeTabListener(changeCredentialsLabel, "changeCredentials"));
         statisticsLabel.addListener(new ChangeTabListener(statisticsLabel, "statistics"));
         matchHistoryLabel.addListener(new ChangeTabListener(matchHistoryLabel, "matchHistory"));
+        userInfoLabel.addListener(new ChangeTabListener(userInfoLabel, "userInfo"));
 
         tabTable.add(backLabel).pad(20);
         tabTable.add(changeCredentialsLabel).pad(20);
         tabTable.add(statisticsLabel).pad(20);
         tabTable.add(matchHistoryLabel).pad(20);
+        tabTable.add(userInfoLabel).pad(20);
 
         contentTable = new Table();
         contentTable.setFillParent(true);
@@ -99,6 +104,9 @@ public class ProfileMenu extends Menu {
             case "matchHistory":
                 // Add Match History content
                 contentTable.add(new Label("Match History Content", game.assetLoader.labelStyle)).pad(20);
+                break;
+            case "userInfo":
+                createUserInfoContent();
                 break;
         }
     }
@@ -356,5 +364,51 @@ public class ProfileMenu extends Menu {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+    }
+
+    private void createUserInfoContent() {
+        Player player = game.getLoggedInPlayer();
+        BitmapFont font = AssetLoader.getFontWithCustomSize(40);
+
+        Label.LabelStyle infoLabelStyle = new Label.LabelStyle();
+        infoLabelStyle.font = font;
+        infoLabelStyle.fontColor = Color.WHITE;
+
+
+
+        String factionName;
+        String leaderName;
+        factionName = (player.getSelectedFaction() != null) ? player.getSelectedFaction().getName() : "No Faction";
+        leaderName = (player.getDeck() == null || player.getDeck().getLeader() != null) ? player.getDeck().getLeader().getName() : "No Leader";
+
+        int totalCards = player.getDeck().getCards().size();
+        int unitCards = player.getDeck().getNumberOfUnits();
+        int spellCards = player.getDeck().getNumberOfSpecialCards();
+        int heroCards = player.getDeck().getNumberOfHeroCards();
+
+        Label usernameLabel = new Label("Username: " + player.getUsername(), infoLabelStyle);
+        Label nicknameLabel = new Label("Nickname: " + player.getNickname(), infoLabelStyle);
+        Label factionLabel = new Label("Faction: " + factionName, infoLabelStyle);
+        Label leaderLabel = new Label("Leader: " + leaderName, infoLabelStyle);
+        Label totalCardsLabel = new Label("Total Cards: " + totalCards, infoLabelStyle);
+        Label unitCardsLabel = new Label("Unit Cards: " + unitCards, infoLabelStyle);
+        Label spellCardsLabel = new Label("Spell Cards: " + spellCards, infoLabelStyle);
+        Label heroCardsLabel = new Label("Hero Cards: " + heroCards, infoLabelStyle);
+
+        contentTable.add(usernameLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(nicknameLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(factionLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(leaderLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(totalCardsLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(unitCardsLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(spellCardsLabel).pad(10).center();
+        contentTable.row();
+        contentTable.add(heroCardsLabel).pad(10).center();
     }
 }

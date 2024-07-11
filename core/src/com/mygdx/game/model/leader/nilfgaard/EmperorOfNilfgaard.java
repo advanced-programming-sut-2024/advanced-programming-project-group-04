@@ -12,13 +12,18 @@ public class EmperorOfNilfgaard extends Leader {
     @Override
     public void run(GameManager gameManager) {
         PlayerInGame currentPlayer = gameManager.getCurrentPlayer();
-        PlayerInGame otherplayer = gameManager.getOtherPlayer();
+        PlayerInGame otherPlayer = gameManager.getOtherPlayer();
 
         if (currentPlayer.getIsLeaderUsed()) {
             return;
         }
 
-        otherplayer.setIsLeaderUsed(true);
+        otherPlayer.setIsLeaderUsed(true);
         currentPlayer.setIsLeaderUsed(true);
+    }
+
+    @Override
+    public String getImageURL() {
+        return "images/leaders/Nilfgaard/" + getAssetName() + ".jpg";
     }
 }
