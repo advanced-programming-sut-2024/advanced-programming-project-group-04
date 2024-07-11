@@ -552,13 +552,17 @@ public class GameManager {
 
 
             if (currentPlayer.getRemainingLives() <= 0 && getOtherPlayer().getRemainingLives() <= 0) {
-
+                gameServer.endGame(GameResult.Draw);
                 System.out.println("TIED");
                 return;
             } else if (currentPlayer.getRemainingLives() <= 0) {
+                if (currentPlayer.equals(player1)) gameServer.endGame(GameResult.Loss);
+                else gameServer.endGame(GameResult.Win);
                 System.out.println(getOtherPlayer().getPlayer().getUsername() + "VICTORY");
                 return;
             } else if (getOtherPlayer().getRemainingLives() <= 0) {
+                if (currentPlayer.equals(player1)) gameServer.endGame(GameResult.Win);
+                else gameServer.endGame(GameResult.Loss);
                 System.out.println(currentPlayer.getPlayer().getUsername() + "VICTORY");
                 return;
             }

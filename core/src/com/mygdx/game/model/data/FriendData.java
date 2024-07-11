@@ -2,9 +2,10 @@ package mygdx.game.model.data;
 
 import mygdx.game.model.Player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class FriendData {
+public class FriendData implements Serializable {
     private ArrayList<PlayerFriendData> friends;
 
     public FriendData(ArrayList<Player> friends) {

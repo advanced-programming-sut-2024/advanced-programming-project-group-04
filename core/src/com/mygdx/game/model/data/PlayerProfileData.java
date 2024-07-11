@@ -4,7 +4,9 @@ import mygdx.game.model.Deck;
 import mygdx.game.model.Player;
 import mygdx.game.model.faction.Faction;
 
-public class PlayerProfileData {
+import java.io.Serializable;
+
+public class PlayerProfileData implements Serializable {
     private Faction faction;
     private Deck deck;
     private String username;

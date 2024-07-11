@@ -21,6 +21,7 @@ public enum ServerCommand implements Serializable, Command {
     TOGGLE_2FA,
     SET_QUESTION,
     GET_RANK_DATA,
+    GET_GAME_HISTORY,
 
     GET_FRIENDS,
     GET_INCOMING_FRIEND_REQUESTS,
@@ -38,6 +39,8 @@ public enum ServerCommand implements Serializable, Command {
 
     IS_ONLINE,
     START_GAME_REQUEST,
+    RANDOM_GAME_REQUEST,
+    TOURNAMENT_GAME_REQUEST,
 
     CLOSE_CONNECTION,
     ;

@@ -3,22 +3,14 @@ package mygdx.game.controller;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gson.Gson;
 import mygdx.game.model.Player;
-import mygdx.game.model.Rank;
 import mygdx.game.model.card.AllCards;
 import mygdx.game.model.card.Card;
-import mygdx.game.model.data.ChatData;
-import mygdx.game.model.data.FriendData;
-import mygdx.game.model.data.RankData;
+import mygdx.game.model.data.*;
 import mygdx.game.model.faction.Faction;
 import mygdx.game.model.leader.Leader;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import mygdx.game.controller.commands.GameServerCommand;
 import mygdx.game.controller.commands.GeneralCommand;
 import mygdx.game.controller.commands.ServerCommand;
-import mygdx.game.model.message.Message;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +26,9 @@ public class Server extends Thread {
     private static final Vector<Player> allPlayers = new Vector<>();
     private static final ConcurrentHashMap<Player, String> passwords = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, Integer> gameRequests = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Player, Server> allSessions = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Player, Server> allSessions = new ConcurrentHashMap<>();
+    private static Vector<Player> tournamentRequests = new Vector<>();
+    private static Player randomRequest;
 
     private boolean isWaiting;
     private boolean gameCommandReceived;
@@ -269,6 +263,9 @@ public class Server extends Thread {
             case GET_PROFILE_DATA:
                 getProfileData();
                 break;
+            case GET_GAME_HISTORY:
+                getGameHistory();
+                break;
 
             case SELECT_FACTION:
                 selectFaction();
@@ -285,9 +282,17 @@ public class Server extends Thread {
             case IS_ONLINE:
                 isOnline();
                 break;
+
             case START_GAME_REQUEST:
                 sendGameRequest();
                 break;
+            case RANDOM_GAME_REQUEST:
+                randomGameRequest();
+                break;
+            case TOURNAMENT_GAME_REQUEST:
+                tournamentGameRequest();
+                break;
+
             case CLOSE_CONNECTION:
                 closeConnection();
                 return;
@@ -323,6 +328,24 @@ public class Server extends Thread {
             gameRequests.putIfAbsent(senderId, receiverId);
             gameRequests.replace(senderId, receiverId);
             out.writeObject(false);
+        }
+    }
+
+    private void randomGameRequest() throws IOException, ClassNotFoundException {
+        if (randomRequest != null) {
+            Server randomRequestSession = allSessions.get(randomRequest);
+            randomRequest = null;
+            GameServer gameServer = new GameServer(randomRequestSession, allSessions.get(player));
+            gameServer.start();
+        } else randomRequest = player;
+    }
+
+    private void tournamentGameRequest() throws IOException, ClassNotFoundException {
+        tournamentRequests.add(this.player);
+        if (tournamentRequests.size() >= 4) {
+            Tournament tournament = new Tournament(tournamentRequests);
+            tournamentRequests = new Vector<>();
+            tournament.start();
         }
     }
 
@@ -522,7 +545,14 @@ public class Server extends Thread {
         int id = (int) in.readObject();
         Player friendPlayer = findPlayerById(id);
         Gson gson = CustomGson.getGson();
-        out.writeObject(gson.toJson(friendPlayer));
+        out.writeObject(gson.toJson(new PlayerProfileData(friendPlayer)));
+    }
+
+    private void getGameHistory() throws IOException, ClassNotFoundException {
+        int id = (int) in.readObject();
+        Player player = findPlayerById(id);
+        Gson gson = CustomGson.getGson();
+        out.writeObject(gson.toJson(new GameHistoryData(player)));
     }
 
     private void selectFaction() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {

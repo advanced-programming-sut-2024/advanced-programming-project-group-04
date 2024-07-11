@@ -2,9 +2,10 @@ package mygdx.game.model.data;
 
 import mygdx.game.model.message.Message;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ChatData {
+public class ChatData implements Serializable {
     private ArrayList<MessageData> messageList;
 
     public ChatData(ArrayList<Message> messageList) {
