@@ -14,12 +14,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Align;
 import mygdx.game.AssetLoader;
 import mygdx.game.Main;
+import mygdx.game.controller.ProfileController;
+import mygdx.game.controller.RestrictedProfileController;
 import mygdx.game.controller.Server;
 import mygdx.game.model.Player;
+import mygdx.game.model.data.PlayerProfileData;
+import mygdx.game.model.data.PlayerRankData;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class RestrictedProfileMenu extends Menu {
+    private RestrictedProfileController controller;
+    private ProfileController profileController;
     private final Skin skin;
     private final Image backgroundImage;
 
@@ -29,14 +36,12 @@ public class RestrictedProfileMenu extends Menu {
     private Label userInfoLabel;
     private Table contentTable;
 
-    private Player displayedPlayer;
-
     Label.LabelStyle labelStyle = game.assetLoader.labelStyle;
     TextField.TextFieldStyle textFieldStyle = game.assetLoader.textFieldStyle;
 
     public RestrictedProfileMenu(Main game, int playerId) {
         super(game);
-        this.displayedPlayer = player;
+        this.controller = new RestrictedProfileController(game, playerId);
 
         this.skin = game.assetLoader.skin;
 
@@ -106,12 +111,12 @@ public class RestrictedProfileMenu extends Menu {
     private void createStatisticsContent() {
         Table mainTable = new Table();
 
-        Vector<Player> allPlayers = Server.getAllPlayers();
-        allPlayers.get(0).addLP(353);
-        allPlayers.get(1).addLP(712);
-        allPlayers.get(2).addLP(241);
-        allPlayers.get(3).addLP(115);
-        allPlayers.get(4).addLP(78);
+        ArrayList<PlayerRankData> allPlayers = profileController.getAllPlayersRankData();
+//        allPlayers.get(0).addLP(353);
+//        allPlayers.get(1).addLP(712);
+//        allPlayers.get(2).addLP(241);
+//        allPlayers.get(3).addLP(115);
+//        allPlayers.get(4).addLP(78);
 
         allPlayers.sort((p1, p2) -> Integer.compare(p2.getLP(), p1.getLP()));
 
@@ -127,7 +132,7 @@ public class RestrictedProfileMenu extends Menu {
         int previousLP = -1;
 
         for (int i = 0; i < allPlayers.size(); i++) {
-            Player player = allPlayers.get(i);
+            PlayerRankData player = allPlayers.get(i);
 
             if (player.getLP() != previousLP) {
                 currentRank = i + 1;
@@ -210,7 +215,7 @@ public class RestrictedProfileMenu extends Menu {
     }
 
     private void createUserInfoContent() {
-        Player player = displayedPlayer;
+        PlayerProfileData player = controller.getPlayer();
         BitmapFont font = AssetLoader.getFontWithCustomSize(40);
 
         Label.LabelStyle infoLabelStyle = new Label.LabelStyle();
